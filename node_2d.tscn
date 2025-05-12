@@ -1,0 +1,41 @@
+[gd_scene load_steps=5 format=3 uid="uid://5nq607jqvt50"]
+
+[ext_resource type="Script" uid="uid://buf7gkrb2px63" path="res://camera_2d.gd" id="1_wtcfe"]
+
+[sub_resource type="Gradient" id="Gradient_y32ns"]
+offsets = PackedFloat32Array(0, 0.283582, 1)
+colors = PackedColorArray(0.9457, 0.224426, 0.13923, 1, 0.283582, 0.283582, 0.283582, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_wtcfe"]
+gradient = SubResource("Gradient_y32ns")
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_0e48y"]
+specular_texture = SubResource("GradientTexture2D_wtcfe")
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Node2D" type="Node2D" parent="."]
+scale = Vector2(32, 32)
+
+[node name="Sprite2D" type="Sprite2D" parent="Node2D"]
+modulate = Color(5.29438e-06, 0.74963, 0.284281, 1)
+texture = SubResource("CanvasTexture_0e48y")
+
+[node name="Node2D2" type="Node2D" parent="."]
+position = Vector2(0, 31)
+scale = Vector2(32, 32)
+
+[node name="Sprite2D" type="Sprite2D" parent="Node2D2"]
+modulate = Color(5.29438e-06, 0.74963, 0.284281, 1)
+texture = SubResource("CanvasTexture_0e48y")
+
+[node name="Node2D3" type="Node2D" parent="."]
+position = Vector2(32, 0)
+scale = Vector2(32, 32)
+
+[node name="Sprite2D" type="Sprite2D" parent="Node2D3"]
+modulate = Color(5.29438e-06, 0.74963, 0.284281, 1)
+texture = SubResource("CanvasTexture_0e48y")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+script = ExtResource("1_wtcfe")
