@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://5nq607jqvt50"]
+[gd_scene load_steps=6 format=3 uid="uid://5nq607jqvt50"]
 
 [ext_resource type="Script" uid="uid://buf7gkrb2px63" path="res://camera_2d.gd" id="1_wtcfe"]
+[ext_resource type="PackedScene" uid="uid://d36crc7kindbf" path="res://scenes/person.tscn" id="2_0e48y"]
 
 [sub_resource type="Gradient" id="Gradient_y32ns"]
 offsets = PackedFloat32Array(0, 0.283582, 1)
@@ -39,3 +40,5 @@ texture = SubResource("CanvasTexture_0e48y")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 script = ExtResource("1_wtcfe")
+
+[node name="Person" parent="." instance=ExtResource("2_0e48y")]
