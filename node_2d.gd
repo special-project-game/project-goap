@@ -4,17 +4,21 @@ const SAVE_FILE := "user://save.json"
 const TILE_WATER = 0
 const TILE_DIRT = 1
 const TILE_GRASS = 2
+const TILE_SAND = 3
 
 @onready var camera = $Camera2D
 @onready var tilemap := $TileMapLayer
 
 func _input(_event):
+	var tile_pos = tilemap.local_to_map(get_local_mouse_position())
 	if Input.is_action_pressed("place_grass"):
-		var tile_pos = tilemap.local_to_map(get_local_mouse_position())
 		tilemap.set_cell(tile_pos, TILE_GRASS, Vector2i(0,0))
 	elif Input.is_action_pressed("place_dirt"):
-		var tile_pos = tilemap.local_to_map(get_local_mouse_position())
 		tilemap.set_cell(tile_pos, TILE_DIRT, Vector2i(0,0))
+	elif Input.is_action_pressed("place_sand"):
+		tilemap.set_cell(tile_pos, TILE_SAND, Vector2i(0,0))
+	elif Input.is_action_pressed("place_water"):
+		tilemap.set_cell(tile_pos, TILE_WATER, Vector2i(0,0))
 
 	if Input.is_action_just_pressed("save_game"):
 		save_tiles_to_file()
@@ -25,6 +29,8 @@ func save_tiles_to_file():
 	var save_data = {"tiles": {}}
 	for pos in tilemap.get_used_cells():
 		var tile_id = tilemap.get_cell_source_id(pos)
+		if tile_id == TILE_WATER: # we don't need to save water tils as they're the fallback
+			continue
 		var pos_str = str([pos.x, pos.y])
 		save_data["tiles"][pos_str] = tile_id
 		
