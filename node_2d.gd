@@ -26,13 +26,16 @@ func _input(_event):
 
 func save_tiles_to_file():
 	print("Saving")
-	var save_data = {"tiles": {}}
+	var save_data = {"tiles": {}, "camera": {}}
 	for pos in tilemap.get_used_cells():
 		var tile_id = tilemap.get_cell_source_id(pos)
 		if tile_id == TILE_WATER: # we don't need to save water tils as they're the fallback
 			continue
 		var pos_str = str([pos.x, pos.y])
 		save_data["tiles"][pos_str] = tile_id
+		
+	save_data["camera"]["pos"] = vec2_to_arr(camera.global_position)
+	save_data["camera"]["zoom"] = vec2_to_arr(camera.zoom)
 		
 	var file = FileAccess.open("user://save.json", FileAccess.WRITE)
 	file.store_string(JSON.stringify(save_data))
@@ -65,3 +68,13 @@ func load_tiles_from_file():
 		var pos_vector = Vector2i(pos[0], pos[1])
 		var tile_id = data["tiles"][pos_str]
 		tilemap.set_cell(pos_vector, tile_id, Vector2i(0,0))
+
+	camera.global_position = arr_to_vec2(data["camera"]["pos"])
+	camera.zoom = arr_to_vec2(data["camera"]["zoom"])
+
+func vec2_to_arr(vec: Vector2):
+	return [vec.x, vec.y]
+	
+func arr_to_vec2(arr: Array):
+	assert(arr.size() == 2, "Array size needs to be 2")
+	return Vector2(arr[0], arr[1])
