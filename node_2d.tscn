@@ -1,7 +1,8 @@
-[gd_scene load_steps=12 format=3 uid="uid://5nq607jqvt50"]
+[gd_scene load_steps=15 format=3 uid="uid://5nq607jqvt50"]
 
 [ext_resource type="Script" uid="uid://bdlt6d32wqywm" path="res://node_2d.gd" id="1_0e48y"]
 [ext_resource type="Script" uid="uid://buf7gkrb2px63" path="res://camera_2d.gd" id="1_wtcfe"]
+[ext_resource type="Texture2D" uid="uid://toj63dgghusn" path="res://grass.png" id="3_d21ai"]
 [ext_resource type="Texture2D" uid="uid://dq74tc3tjvsjh" path="res://grass_tile.png" id="3_epypp"]
 [ext_resource type="Texture2D" uid="uid://dd32htellvqvr" path="res://Water+.png" id="3_q6r6c"]
 [ext_resource type="Texture2D" uid="uid://bll17odox8c4p" path="res://sandy_terrain_01.png" id="4_0hol4"]
@@ -38,6 +39,19 @@ sources/0 = SubResource("TileSetAtlasSource_kdubu")
 sources/2 = SubResource("TileSetAtlasSource_0hol4")
 sources/3 = SubResource("TileSetAtlasSource_d21ai")
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_rj586"]
+resource_name = "grass"
+texture = ExtResource("3_d21ai")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+1:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_4d7sh"]
+tile_size = Vector2i(32, 32)
+sources/0 = SubResource("TileSetAtlasSource_rj586")
+
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_0e48y")
 
@@ -45,5 +59,8 @@ script = ExtResource("1_0e48y")
 position = Vector2(-16, -16)
 script = ExtResource("1_wtcfe")
 
-[node name="TileMapLayer" type="TileMapLayer" parent="."]
+[node name="BaseLayer" type="TileMapLayer" parent="."]
 tile_set = SubResource("TileSet_0e48y")
+
+[node name="ObjectLayer" type="TileMapLayer" parent="."]
+tile_set = SubResource("TileSet_4d7sh")
