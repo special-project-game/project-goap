@@ -1,13 +1,13 @@
 [gd_scene load_steps=17 format=3 uid="uid://5nq607jqvt50"]
 
-[ext_resource type="Script" uid="uid://bdlt6d32wqywm" path="res://node_2d.gd" id="1_0e48y"]
-[ext_resource type="Script" uid="uid://buf7gkrb2px63" path="res://camera_2d.gd" id="1_wtcfe"]
-[ext_resource type="Texture2D" uid="uid://toj63dgghusn" path="res://grass.png" id="3_d21ai"]
-[ext_resource type="Texture2D" uid="uid://dq74tc3tjvsjh" path="res://grass_tile.png" id="3_epypp"]
-[ext_resource type="Texture2D" uid="uid://dd32htellvqvr" path="res://Water+.png" id="3_q6r6c"]
-[ext_resource type="Texture2D" uid="uid://bll17odox8c4p" path="res://sandy_terrain_01.png" id="4_0hol4"]
-[ext_resource type="Texture2D" uid="uid://bpnmnl0se5hfy" path="res://sand.png" id="6_kdubu"]
-[ext_resource type="Texture2D" uid="uid://c2t7upegnwr4t" path="res://berry_bush.png" id="8_rj586"]
+[ext_resource type="Script" uid="uid://bdlt6d32wqywm" path="res://Scripts/node_2d.gd" id="1_0e48y"]
+[ext_resource type="Script" uid="uid://buf7gkrb2px63" path="res://Scripts/camera_2d.gd" id="1_wtcfe"]
+[ext_resource type="Texture2D" uid="uid://toj63dgghusn" path="res://Textures/Objects/grass.png" id="3_d21ai"]
+[ext_resource type="Texture2D" uid="uid://dq74tc3tjvsjh" path="res://Textures/Bg_Tiles/grass_tile.png" id="3_epypp"]
+[ext_resource type="Texture2D" uid="uid://dd32htellvqvr" path="res://Textures/Bg_Tiles/Water+.png" id="3_q6r6c"]
+[ext_resource type="Texture2D" uid="uid://bll17odox8c4p" path="res://Textures/Bg_Tiles/sandy_terrain_01.png" id="4_0hol4"]
+[ext_resource type="Texture2D" uid="uid://bpnmnl0se5hfy" path="res://Textures/Bg_Tiles/sand.png" id="6_kdubu"]
+[ext_resource type="Texture2D" uid="uid://c2t7upegnwr4t" path="res://Textures/Objects/berry_bush.png" id="8_rj586"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_kdubu"]
 resource_name = "water"
