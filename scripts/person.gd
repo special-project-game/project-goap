@@ -18,6 +18,7 @@ func _process(delta):
 	if wander_time > 0:
 		wander_time -= delta
 	else:
+		
 		randomize_wander()
 
 func _physics_process(delta):
