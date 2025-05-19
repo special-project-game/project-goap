@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bll17odox8c4p"
-path="res://.godot/imported/sandy_terrain_01.png-04c7548ac8b0a68332c3c872050b78b5.ctex"
+uid="uid://dq74tc3tjvsjh"
+path="res://.godot/imported/grass_tile.png-2bed71d4045ad7b6a0aa3ee12542b959.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Textures/Bg_Tiles/sandy_terrain_01.png"
-dest_files=["res://.godot/imported/sandy_terrain_01.png-04c7548ac8b0a68332c3c872050b78b5.ctex"]
+source_file="res://textures/bg_tiles/grass_tile.png"
+dest_files=["res://.godot/imported/grass_tile.png-2bed71d4045ad7b6a0aa3ee12542b959.ctex"]
 
 [params]
 
