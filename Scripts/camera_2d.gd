@@ -1,7 +1,7 @@
 extends Camera2D
 
-@export var speed: float = 200.0
-@export var zoom_step: float = 0.1
+@export var speed: float = 500.0
+@export var zoom_step: float = 1
 @export var min_zoom: float = 0.1
 @export var max_zoom: float = 4.0
 
@@ -22,10 +22,10 @@ func _process(delta):
 		global_position += direction * speed * delta
 
 	# Handle zoom input
-	if Input.is_action_just_pressed("camera_zoom_in"):
-		zoom *= 1.0 - zoom_step
-	elif Input.is_action_just_pressed("camera_zoom_out"):
-		zoom *= 1.0 + zoom_step
+	if Input.is_action_pressed("camera_zoom_in"):
+		zoom *= 1.0 - zoom_step * delta
+	elif Input.is_action_pressed("camera_zoom_out"):
+		zoom *= 1.0 + zoom_step * delta
 
 	# Clamp zoom
 	zoom.x = clamp(zoom.x, min_zoom, max_zoom)
