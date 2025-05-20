@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="EntityAttributes" load_steps=2 format=3 uid="uid://1kod5flnkwd5"]
+
+[ext_resource type="Script" uid="uid://dcesm0vb2yxi8" path="res://Scripts/entity_attributes.gd" id="1_gi3wh"]
+
+[resource]
+script = ExtResource("1_gi3wh")
+name = "Bob"
+health = 100
+hunger = 100
+metadata/_custom_type_script = "uid://dcesm0vb2yxi8"

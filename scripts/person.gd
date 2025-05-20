@@ -2,6 +2,7 @@ extends CharacterBody2D
 
 const SPEED : float = 10.0
 
+@export var stats : Resource
 @export var move_speed : float = SPEED
 @export var animation_tree : AnimationTree
 
@@ -15,6 +16,9 @@ func randomize_wander():
 	direction = Vector2(randf_range(-1, 1), randf_range(-1, 1))
 	direction = direction.normalized()
 	wander_time = randf_range(0, 10)
+	print("I'm " + str(stats.name) + " and I am moving to " + str(direction))
+	print("Health: " + str(stats.health))
+	print("Hunger: " + str(stats.hunger))
 
 func _ready():
 	animation_tree.active = true
@@ -40,7 +44,6 @@ func _physics_process(delta):
 	var idle = !velocity
 	if !idle:
 		last_facing_direction = velocity.normalized()
-		print(last_facing_direction)
 	
 	if velocity == Vector2.ZERO:
 		animation_tree.get("parameters/playback").travel("Idle")
@@ -49,6 +52,5 @@ func _physics_process(delta):
 		
 		animation_tree.set("parameters/Walk/blend_position", last_facing_direction)
 		animation_tree.set("parameters/Idle/blend_position", last_facing_direction)
-		print("Idle:", idle, " Walk:", !idle)
 		move_and_slide()
 	
