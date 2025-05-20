@@ -24,7 +24,8 @@ shape = SubResource("RectangleShape2D_vplca")
 
 [node name="HealthComponent" parent="." instance=ExtResource("3_qd6xs")]
 
-[node name="HitboxComponent" parent="." instance=ExtResource("4_ake3r")]
+[node name="HitboxComponent" parent="." node_paths=PackedStringArray("health_component") instance=ExtResource("4_ake3r")]
+health_component = NodePath("../HealthComponent")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxComponent"]
 position = Vector2(0, -8)

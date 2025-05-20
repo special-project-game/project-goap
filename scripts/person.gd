@@ -2,9 +2,10 @@ extends CharacterBody2D
 
 const SPEED : float = 10.0
 
-@export var stats : Resource
 @export var move_speed : float = SPEED
 @export var animation_tree : AnimationTree
+@onready var health_component = $HealthComponent
+@onready var attack = $Attack
 
 var direction : Vector2
 var wander_time : float
@@ -16,9 +17,10 @@ func randomize_wander():
 	direction = Vector2(randf_range(-1, 1), randf_range(-1, 1))
 	direction = direction.normalized()
 	wander_time = randf_range(0, 10)
-	print("I'm " + str(stats.name) + " and I am moving to " + str(direction))
-	print("Health: " + str(stats.health))
-	print("Hunger: " + str(stats.hunger))
+	#print("I'm " + str(stats.name) + " and I am moving to " + str(direction))
+	print("Health: " + str(health_component.health))
+	print("Attack " + str(attack.attack_damage))
+	#print("Hunger: " + str(stats.hunger))
 
 func _ready():
 	animation_tree.active = true
