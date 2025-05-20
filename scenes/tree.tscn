@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://dkoe6am328ofj"]
+[gd_scene load_steps=6 format=3 uid="uid://dkoe6am328ofj"]
 
 [ext_resource type="Texture2D" uid="uid://rbu1dpxhu3vu" path="res://textures/texture_sets/MiniWorldSprites/Nature/Trees.png" id="1_avsvi"]
 [ext_resource type="Script" uid="uid://dqo31kj1e3psu" path="res://Scripts/tree.gd" id="1_vplca"]
 [ext_resource type="Script" uid="uid://sjiltdgenjtl" path="res://scripts/health_component.gd" id="3_viusy"]
+[ext_resource type="Script" uid="uid://bwj7vumkhy7fe" path="res://scripts/hitbox_component.gd" id="4_qd6xs"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vplca"]
 size = Vector2(16, 16)
@@ -24,5 +25,8 @@ shape = SubResource("RectangleShape2D_vplca")
 [node name="HealthComponent" type="Node2D" parent="."]
 script = ExtResource("3_viusy")
 MAX_HEALTH = null
+
+[node name="HitboxComponent" type="Area2D" parent="."]
+script = ExtResource("4_qd6xs")
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
