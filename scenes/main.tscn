@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://5nq607jqvt50"]
+[gd_scene load_steps=20 format=3 uid="uid://5nq607jqvt50"]
 
 [ext_resource type="Script" uid="uid://bdlt6d32wqywm" path="res://Scripts/node_2d.gd" id="1_85g3d"]
 [ext_resource type="Script" uid="uid://buf7gkrb2px63" path="res://Scripts/camera_2d.gd" id="2_choun"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://c2t7upegnwr4t" path="res://textures/objects/berry_bush.png" id="8_jbj1t"]
 [ext_resource type="PackedScene" uid="uid://d36crc7kindbf" path="res://scenes/person.tscn" id="9_muem4"]
 [ext_resource type="Resource" uid="uid://1kod5flnkwd5" path="res://resources/bob.tres" id="10_choun"]
+[ext_resource type="PackedScene" uid="uid://dkoe6am328ofj" path="res://scenes/tree.tscn" id="11_ya4ey"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_kdubu"]
 resource_name = "water"
@@ -77,3 +78,5 @@ tile_set = SubResource("TileSet_4d7sh")
 
 [node name="Person" parent="." instance=ExtResource("9_muem4")]
 stats = ExtResource("10_choun")
+
+[node name="Tree" parent="." instance=ExtResource("11_ya4ey")]
