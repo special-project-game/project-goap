@@ -19,7 +19,7 @@ const atlas_coordinates_reversed = {
 }
 
 @onready var cursor := $Cursor
-@onready var camera = $Camera2D
+@onready var camera := $Camera2D
 @onready var tilemap_water_grass := $Water_Grass
 @onready var tilemap_dirt := $Dirt
 @onready var objectlayer := $ObjectLayer
@@ -49,12 +49,15 @@ func get_cell_type(pos: Vector2i) -> TileType:
 	return TileType.WATER
 	
 	
-func _input(_event):
+func place_mouse():
 	var mouse_world_pos: Vector2 = get_global_mouse_position()
 	mouse_world_pos -= Vector2(8,8)
 	cursor.position = mouse_world_pos.snapped(Vector2i(16,16))
 	cursor.position += Vector2(8,8)
 
+
+func _input(_event):
+	place_mouse()
 	# Background Tiles
 	var tile_pos = tilemap_water_grass.local_to_map(get_local_mouse_position())
 	if Input.is_action_pressed("place_grass"):
