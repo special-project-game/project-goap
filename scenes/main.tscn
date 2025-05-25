@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://5nq607jqvt50"]
+[gd_scene load_steps=21 format=3 uid="uid://5nq607jqvt50"]
 
 [ext_resource type="Script" uid="uid://bdlt6d32wqywm" path="res://scripts/node_2d.gd" id="1_85g3d"]
 [ext_resource type="Script" uid="uid://buf7gkrb2px63" path="res://scripts/camera_2d.gd" id="2_choun"]
@@ -7,7 +7,9 @@
 [ext_resource type="Texture2D" uid="uid://be08o206u0gb6" path="res://textures/texture_sets/dirt_transp.png" id="5_tipki"]
 [ext_resource type="Texture2D" uid="uid://toj63dgghusn" path="res://textures/objects/grass.png" id="7_jkv2x"]
 [ext_resource type="Texture2D" uid="uid://c2t7upegnwr4t" path="res://textures/objects/berry_bush.png" id="8_jbj1t"]
+[ext_resource type="Texture2D" uid="uid://ca83mvjabm0fm" path="res://textures/cursor/1.png" id="9_choun"]
 [ext_resource type="PackedScene" uid="uid://d36crc7kindbf" path="res://scenes/person.tscn" id="9_muem4"]
+[ext_resource type="Texture2D" uid="uid://dobrvyh6v4vo0" path="res://textures/cursor/2.png" id="10_ya4ey"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_choun"]
 light_mode = 2
@@ -250,6 +252,20 @@ texture = ExtResource("8_jbj1t")
 sources/0 = SubResource("TileSetAtlasSource_rj586")
 sources/1 = SubResource("TileSetAtlasSource_4d7sh")
 
+[sub_resource type="SpriteFrames" id="SpriteFrames_eb6dy"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_choun")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_ya4ey")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_85g3d")
 
@@ -273,3 +289,7 @@ metadata/_custom_type_script = "uid://cjk8nronimk5r"
 tile_set = SubResource("TileSet_4d7sh")
 
 [node name="Person" parent="." instance=ExtResource("9_muem4")]
+
+[node name="Cursor" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_eb6dy")
+frame_progress = 0.206317

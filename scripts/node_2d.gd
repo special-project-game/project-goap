@@ -18,6 +18,7 @@ const atlas_coordinates_reversed = {
 	[TileLayer.DIRT, Vector2i(2,1)]: TileType.DIRT
 }
 
+@onready var cursor := $Cursor
 @onready var camera = $Camera2D
 @onready var tilemap_water_grass := $Water_Grass
 @onready var tilemap_dirt := $Dirt
@@ -49,6 +50,11 @@ func get_cell_type(pos: Vector2i) -> TileType:
 	
 	
 func _input(_event):
+	var mouse_world_pos: Vector2 = get_global_mouse_position()
+	mouse_world_pos -= Vector2(8,8)
+	cursor.position = mouse_world_pos.snapped(Vector2i(16,16))
+	cursor.position += Vector2(8,8)
+
 	# Background Tiles
 	var tile_pos = tilemap_water_grass.local_to_map(get_local_mouse_position())
 	if Input.is_action_pressed("place_grass"):
@@ -98,7 +104,7 @@ func save_tiles_to_file():
 	file.close()
 
 func _ready():
-	print("Loading")
+	cursor.play()
 	load_tiles_from_file()
 	fill_empty_with_water(100, 100)
 
