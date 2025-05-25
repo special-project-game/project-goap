@@ -29,9 +29,14 @@ func place_cell(pos: Vector2i, cell: TileType):
 		TileType.DIRT:
 			tilemap_dirt.set_cell(pos, 0, atlas_coordinates[cell][1])
 			tilemap_water_grass.erase_cell(pos)
-		TileType.GRASS, TileType.WATER:
+		TileType.GRASS:
 			tilemap_water_grass.set_cell(pos, 0, atlas_coordinates[cell][1])
 			tilemap_dirt.erase_cell(pos)
+		TileType.WATER:
+			tilemap_water_grass.set_cell(pos, 0, atlas_coordinates[cell][1])
+			tilemap_dirt.erase_cell(pos)
+			# for water, also remove object layer
+			objectlayer.erase_cell(pos)
 	
 func get_cell_type(pos: Vector2i) -> TileType:
 	var atlas_coords = tilemap_water_grass.get_cell_atlas_coords(pos)
