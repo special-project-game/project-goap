@@ -274,12 +274,14 @@ position = Vector2(-16, -16)
 script = ExtResource("2_choun")
 
 [node name="Water_Grass" type="TileMapLayer" parent="."]
+texture_filter = 1
 material = SubResource("CanvasItemMaterial_choun")
 tile_set = SubResource("TileSet_eb6dy")
 script = ExtResource("5_85g3d")
 metadata/_custom_type_script = "uid://cjk8nronimk5r"
 
 [node name="Dirt" type="TileMapLayer" parent="."]
+texture_filter = 1
 material = SubResource("CanvasItemMaterial_tipki")
 tile_set = SubResource("TileSet_choun")
 script = ExtResource("5_85g3d")
@@ -291,5 +293,6 @@ tile_set = SubResource("TileSet_4d7sh")
 [node name="Person" parent="." instance=ExtResource("9_muem4")]
 
 [node name="Cursor" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_eb6dy")
-frame_progress = 0.206317
+frame_progress = 0.548559
