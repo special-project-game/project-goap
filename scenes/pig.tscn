@@ -8,7 +8,7 @@
 [ext_resource type="Script" uid="uid://c6p2h7qwgsloj" path="res://scripts/wander.gd" id="6_e1p3k"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4a8uq"]
-size = Vector2(8, 8)
+size = Vector2(4, 4)
 
 [sub_resource type="Animation" id="Animation_sq5kf"]
 resource_name = "walk_left"
@@ -91,22 +91,22 @@ states/Walk/position = Vector2(394, 38)
 transitions = ["Start", "Walk", SubResource("AnimationNodeStateMachineTransition_bfkq4")]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ct3s0"]
-size = Vector2(8, 8)
+size = Vector2(4, 4)
 
 [node name="Pig" type="CharacterBody2D" node_paths=PackedStringArray("animation_tree")]
 script = ExtResource("1_ct3s0")
 animation_tree = NodePath("AnimationTree")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(0, -4)
-scale = Vector2(0.5, 0.5)
+position = Vector2(0, -2)
+scale = Vector2(0.25, 0.25)
 texture = ExtResource("1_sq5kf")
 hframes = 4
 vframes = 8
 frame = 12
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -4)
+position = Vector2(0, -2)
 shape = SubResource("RectangleShape2D_4a8uq")
 disabled = true
 
@@ -128,7 +128,7 @@ parameters/Walk/blend_position = 0.0
 health_component = NodePath("../HealthComponent")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBoxComponent"]
-position = Vector2(0, -4)
+position = Vector2(0, -2)
 shape = SubResource("RectangleShape2D_ct3s0")
 disabled = true
 
