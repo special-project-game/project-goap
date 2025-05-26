@@ -385,6 +385,8 @@ script = ExtResource("1_85g3d")
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(-16, -16)
 script = ExtResource("2_choun")
+min_zoom = 1.0
+max_zoom = 10.0
 
 [node name="Water_Grass" type="TileMapLayer" parent="."]
 texture_filter = 1

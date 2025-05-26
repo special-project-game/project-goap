@@ -1,6 +1,6 @@
 [gd_scene load_steps=31 format=3 uid="uid://d36crc7kindbf"]
 
-[ext_resource type="Script" uid="uid://carxwlbbbo7o" path="res://Scripts/person.gd" id="1_5dovg"]
+[ext_resource type="Script" uid="uid://carxwlbbbo7o" path="res://scripts/person.gd" id="1_5dovg"]
 [ext_resource type="Texture2D" uid="uid://tow4k7h2qrjt" path="res://textures/texture_sets/MiniWorldSprites/Characters/Workers/FarmerTemplate.png" id="2_5dovg"]
 [ext_resource type="PackedScene" uid="uid://d3eq3jv6marhl" path="res://scenes/health_component.tscn" id="3_h4n5y"]
 [ext_resource type="PackedScene" uid="uid://ds3doyrucb6ae" path="res://scenes/hitbox_component.tscn" id="4_8487m"]
@@ -260,6 +260,7 @@ frame = 1
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -2)
 shape = SubResource("RectangleShape2D_5dovg")
+disabled = true
 
 [node name="AnimationTree" type="AnimationTree" parent="."]
 tree_root = SubResource("AnimationNodeStateMachine_ym70v")
@@ -280,5 +281,6 @@ health_component = NodePath("../HealthComponent")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxComponent"]
 position = Vector2(0, -2)
 shape = SubResource("RectangleShape2D_5dovg")
+disabled = true
 
 [node name="Attack" parent="." instance=ExtResource("5_8487m")]
