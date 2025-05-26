@@ -1,134 +1,113 @@
 extends CharacterBody2D
 class_name Person
 
-const SPEED : float = 20.0
-const WAYPOINT_THRESHOLD_SQ: float = 25.0
+const SPEED : float = 5.0
+const WAYPOINT_THRESHOLD_SQ: float = 25.0 # (5 pixels)^2
 const WANDER_RADIUS: int = 5
 const MAX_PATHFINDING_ATTEMPTS: int = 10
+const PAUSE_AT_DESTINATION_DURATION: float = 3.0 # Seconds to pause
 
 @export var move_speed : float = SPEED
 @export var animation_tree : AnimationTree
 @onready var health_component = $HealthComponent
 @onready var attack = $Attack
-@onready var mainNode := get_parent()
-@onready var baseTileMap: TileMapDual = get_parent().get_node("Water_Grass")
+@onready var baseTileMap: TileMapDual = get_parent().get_node("Water_Grass") # Still needed for local_to_map etc.
 
 var direction : Vector2 = Vector2.ZERO
-var wander_time : float = 0.0
-var thinking : bool = false
+var wander_time : float = 0.0 # For fallback random movement
+var thinking : bool = false # True while actively requesting/waiting for path
 var last_facing_direction := Vector2.LEFT
 
-var astar := AStar2D.new()
-var point_id_map: Dictionary = {}
 var current_path : PackedVector2Array = []
 var path_index : int = 0
 var _tile_size_half: Vector2
 
+# New state variables for pausing
+var is_pausing_at_destination: bool = false
+var pause_timer: float = 0.0
+
 func _ready():
 	animation_tree.active = true
 
+	if not is_instance_valid(baseTileMap):
+		printerr("Character: BaseTileMap is not properly assigned or configured! Disabling movement.")
+		set_physics_process(false)
+		return
+		
 	_tile_size_half = baseTileMap.tile_set.tile_size / 2.0
 
-	call_deferred("randomize_wander")
+	# Ensure NavigationManager is ready (it should be if initialized in Main scene)
+	if not NavigationManager.is_graph_ready():
+		printerr("Character: NavigationManager graph is not ready. Waiting or fallback might be needed.")
+		# Optionally, you could implement a short wait or retry here,
+		# but it's better if Main scene guarantees initialization first.
+	
+	call_deferred("_request_new_path")
 
+	# Debug prints
 	print("I'm " + str(self.name) + " initialized.")
-	print("Health: " + str(health_component.health))
-	print("Attack " + str(attack.attack_damage))
+	# print("Health: " + str(health_component.health))
+	# print("Attack " + str(attack.attack_damage))
 
-func _build_astar_graph():
-	if not is_instance_valid(baseTileMap):
-		printerr("Character: Cannot build A* graph, baseTileMap is not valid.")
-		return
-
-	astar.clear() 
-	point_id_map.clear() 
-
-	var used_cells = baseTileMap.get_used_cells()
-
-	for y in range(-100, 100):
-		for x in range(-100, 100):
-			var pos = Vector2i(x,y)
-			if mainNode.get_cell_type(pos) != 0: 
-				var point_id = astar.get_available_point_id()
-				astar.add_point(point_id, pos)
-				point_id_map[pos] = point_id
-
-	for cell_map_coords_v2i in point_id_map.keys():
-		var current_id = point_id_map[cell_map_coords_v2i]
-		var neighbors = [
-			cell_map_coords_v2i + Vector2i.LEFT,
-			cell_map_coords_v2i + Vector2i.RIGHT,
-			cell_map_coords_v2i + Vector2i.UP,
-			cell_map_coords_v2i + Vector2i.DOWN
-		]
-		for neighbor_map_coords_v2i in neighbors:
-			if point_id_map.has(neighbor_map_coords_v2i):
-				var neighbor_id = point_id_map[neighbor_map_coords_v2i]
-				astar.connect_points(current_id, neighbor_id)
-
-
-func randomize_wander():
+func _request_new_path():
 	thinking = true
+	is_pausing_at_destination = false # Exiting pause state if we were in it
 	current_path.clear()
 	path_index = 0
 
-	_build_astar_graph()
-
-	if astar.get_point_count() == 0:
-		printerr("Character: A* graph is empty after build. No navigation possible.")
-		_set_fallback_wander("A* graph empty.")
+	if not NavigationManager.is_graph_ready():
+		printerr("Character ", name, ": Navigation graph not ready, falling back.")
+		_set_fallback_wander("Nav graph not ready.")
 		return
 
 	var start_map_pos: Vector2i = baseTileMap.local_to_map(self.position)
-
-	if not point_id_map.has(start_map_pos):
-		printerr("Character at ", self.position, " (map: ", start_map_pos, ") is on a non-navigable tile or outside built A* graph.")
-		_set_fallback_wander("Start position not in A* graph after rebuild.")
-		return
-
-	var start_id = point_id_map[start_map_pos]
-	var target_map_pos: Vector2i
-	var target_id: int = -1
 	
 	var attempts = 0
 	while attempts < MAX_PATHFINDING_ATTEMPTS:
+		# Choose a random target tile within WANDER_RADIUS that is different from start
 		var x_rand = randi_range(start_map_pos.x - WANDER_RADIUS, start_map_pos.x + WANDER_RADIUS)
 		var y_rand = randi_range(start_map_pos.y - WANDER_RADIUS, start_map_pos.y + WANDER_RADIUS)
-		target_map_pos = Vector2i(x_rand, y_rand)
+		var target_map_pos = Vector2i(x_rand, y_rand)
 
-		if point_id_map.has(target_map_pos) and target_map_pos != start_map_pos:
-			target_id = point_id_map[target_map_pos]
-			var new_path: PackedVector2Array = astar.get_point_path(start_id, target_id)
+		if target_map_pos != start_map_pos: # Ensure target is not the current tile
+			var new_path = NavigationManager.get_nav_path(start_map_pos, target_map_pos)
 			
-			if not new_path.is_empty() and new_path.size() > 1:
+			if not new_path.is_empty() and new_path.size() > 1: # Path needs at least start and one step
 				current_path = new_path
 				path_index = 0
 				thinking = false
-				print("Found A* path from ", start_map_pos, " to ", target_map_pos, ": ", current_path.size(), " steps.")
+				#print("Character ", name, ": Found A* path from ", start_map_pos, " to ", target_map_pos, ": ", current_path.size(), " steps.")
 				return
 		attempts += 1
 	
 	_set_fallback_wander("Could not find A* path after " + str(MAX_PATHFINDING_ATTEMPTS) + " attempts from " + str(start_map_pos))
 
 func _set_fallback_wander(reason: String):
-	print("Fallback wander: ", reason)
+	print("Character ", name, ": Fallback wander. Reason: ", reason)
 	direction = Vector2(randf_range(-1, 1), randf_range(-1, 1)).normalized()
 	if direction == Vector2.ZERO:
 		direction = Vector2.LEFT
 	wander_time = randf_range(1.0, 3.0)
 	thinking = false
+	is_pausing_at_destination = false
 	current_path.clear()
 
 func _physics_process(delta):
 	var current_move_speed = SPEED
 	var target_velocity = Vector2.ZERO
 
-	if not is_instance_valid(baseTileMap): 
+	if not is_instance_valid(baseTileMap): # Safety check
 		velocity = Vector2.ZERO
 		return
 
-	if thinking:
+	if is_pausing_at_destination:
 		current_move_speed = 0.0
+		pause_timer -= delta
+		if pause_timer <= 0:
+			is_pausing_at_destination = false
+			call_deferred("_request_new_path") # Time to find a new path
+	elif thinking:
+		current_move_speed = 0.0 # Stop while requesting/waiting for path
 	elif not current_path.is_empty():
 		if path_index < current_path.size():
 			var next_waypoint_map_coords_v2: Vector2 = current_path[path_index]
@@ -140,21 +119,27 @@ func _physics_process(delta):
 			if self.position.distance_squared_to(target_world_pos) < WAYPOINT_THRESHOLD_SQ:
 				path_index += 1
 				if path_index >= current_path.size():
+					# Reached destination
 					current_path.clear()
-					call_deferred("randomize_wander")
-		else:
+					is_pausing_at_destination = true
+					pause_timer = PAUSE_AT_DESTINATION_DURATION
+					#print("Character ", name, ": Reached destination. Pausing for ", PAUSE_AT_DESTINATION_DURATION, "s.")
+		else: # Should not happen if logic is correct
 			current_path.clear()
-			call_deferred("randomize_wander")
-	else: 
+			is_pausing_at_destination = true # Safety: if path index out of bounds, pause and retry
+			pause_timer = PAUSE_AT_DESTINATION_DURATION 
+			# call_deferred("_request_new_path") # Or request immediately
+	else: # No A* path, not thinking, not pausing (e.g., fallback wander or needs new path)
 		if wander_time > 0:
 			target_velocity = direction * current_move_speed
 			wander_time -= delta
 		else:
-			call_deferred("randomize_wander") 
+			# Fallback wander time expired, or initial state before first path
+			call_deferred("_request_new_path")
 
 	velocity = target_velocity
 	
-	var is_idle = velocity.length_squared() < 0.01
+	var is_idle = velocity.length_squared() < 0.01 # Check if velocity is near zero
 	
 	if not is_idle:
 		last_facing_direction = velocity.normalized()

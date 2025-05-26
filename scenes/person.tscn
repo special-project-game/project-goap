@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://d36crc7kindbf"]
+[gd_scene load_steps=31 format=3 uid="uid://d36crc7kindbf"]
 
 [ext_resource type="Script" uid="uid://carxwlbbbo7o" path="res://scripts/person.gd" id="1_5dovg"]
 [ext_resource type="Texture2D" uid="uid://tow4k7h2qrjt" path="res://textures/texture_sets/MiniWorldSprites/Characters/Workers/FarmerTemplate.png" id="2_5dovg"]
@@ -245,10 +245,6 @@ _data = {
 &"walk_up": SubResource("Animation_yhvuw")
 }
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_8487m"]
-disabled = true
-size = Vector2(4, 4)
-
 [node name="Person" type="CharacterBody2D" node_paths=PackedStringArray("animation_tree")]
 script = ExtResource("1_5dovg")
 animation_tree = NodePath("AnimationTree")
@@ -286,3 +282,4 @@ health_component = NodePath("../HealthComponent")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBoxComponent"]
 position = Vector2(0, -2)
+disabled = true

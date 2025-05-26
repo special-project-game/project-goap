@@ -31,6 +31,8 @@ const atlas_coordinates_reversed = {
 @onready var tilemap_sand := $Sand
 @onready var objectlayer := $ObjectLayer
 
+signal tile_changed(map_coords: Vector2i) # Signal emitted when a tile changes
+
 func place_cell(pos: Vector2i, cell: TileType):
 	# when placing cells on one tilemaplayer, we also need to remove it from higher layers, to make sure it will be visible
 	match cell:
@@ -52,11 +54,12 @@ func place_cell(pos: Vector2i, cell: TileType):
 			tilemap_sand.set_cell(pos, 0, atlas_coordinates[cell][1])
 			tilemap_dirt.erase_cell(pos)
 			tilemap_water_grass.erase_cell(pos)
+	emit_signal("tile_changed", pos)
 	
 func get_cell_type(pos: Vector2i) -> TileType:
 	if not is_instance_valid(tilemap_water_grass):
 		printerr("mainNode: water_grass_tilemap is not valid in get_cell_type!")
-		return 0 # Default to unwalkable if tilemap isn't there
+		return TileType.WATER
 
 	
 	var atlas_coords = tilemap_water_grass.get_cell_atlas_coords(pos)
@@ -124,6 +127,7 @@ func save_tiles_to_file():
 		save_data["objects"][pos_str] = tile_id
 	# save persons
 	for child in get_children():
+		print("child")
 		if child is Person:
 			save_data["entities"].append({
 				"type": "person",
@@ -142,6 +146,7 @@ func _ready():
 	cursor.play()
 	load_tiles_from_file()
 	fill_empty_with_water(100, 100)
+	NavigationManager.initialize_navigation(tilemap_water_grass, self)
 
 func fill_empty_with_water(area_width: int, area_height: int):
 	for y in range(-area_height, area_height):
@@ -178,8 +183,7 @@ func load_tiles_from_file():
 	for entity in data["entities"]:
 		if entity["type"] == "person":
 			var person = person_scene.instantiate()
-			var position = Vector2(entity["position"][0], entity["position"][1])
-			person.position = position
+			person.position = Vector2(entity["position"][0], entity["position"][1])
 			self.add_child(person)
 
 	camera.global_position = arr_to_vec2(data["camera"]["pos"])
