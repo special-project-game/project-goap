@@ -2,26 +2,29 @@ extends Node2D
 
 const SAVE_FILE := "user://save.json"
 
-enum TileLayer {WATER_GRASS, DIRT}
+enum TileLayer {WATER_GRASS, DIRT, SAND}
 enum TileType {WATER, DIRT, GRASS, SAND}
 enum ObjectType {GRASS}
 
 const atlas_coordinates = {
 	TileType.WATER: [TileLayer.WATER_GRASS, Vector2i(0,3)],
 	TileType.GRASS: [TileLayer.WATER_GRASS, Vector2i(2,1)],
-	TileType.DIRT: [TileLayer.DIRT, Vector2i(2,1)]
+	TileType.DIRT: [TileLayer.DIRT, Vector2i(2,1)],
+	TileType.SAND: [TileLayer.SAND, Vector2i(2,1)],
 }
 
 const atlas_coordinates_reversed = {
 	[TileLayer.WATER_GRASS, Vector2i(0,3)]: TileType.WATER,
 	[TileLayer.WATER_GRASS, Vector2i(2,1)]: TileType.GRASS,
-	[TileLayer.DIRT, Vector2i(2,1)]: TileType.DIRT
+	[TileLayer.DIRT, Vector2i(2,1)]: TileType.DIRT,
+	[TileLayer.SAND, Vector2i(2,1)]: TileType.SAND,
 }
 
 @onready var cursor := $Cursor
 @onready var camera := $Camera2D
 @onready var tilemap_water_grass := $Water_Grass
 @onready var tilemap_dirt := $Dirt
+@onready var tilemap_sand := $Sand
 @onready var objectlayer := $ObjectLayer
 
 func place_cell(pos: Vector2i, cell: TileType):
@@ -30,14 +33,21 @@ func place_cell(pos: Vector2i, cell: TileType):
 		TileType.DIRT:
 			tilemap_dirt.set_cell(pos, 0, atlas_coordinates[cell][1])
 			tilemap_water_grass.erase_cell(pos)
+			tilemap_sand.erase_cell(pos)
 		TileType.GRASS:
 			tilemap_water_grass.set_cell(pos, 0, atlas_coordinates[cell][1])
 			tilemap_dirt.erase_cell(pos)
+			tilemap_sand.erase_cell(pos)
 		TileType.WATER:
 			tilemap_water_grass.set_cell(pos, 0, atlas_coordinates[cell][1])
 			tilemap_dirt.erase_cell(pos)
 			# for water, also remove object layer
 			objectlayer.erase_cell(pos)
+			tilemap_sand.erase_cell(pos)
+		TileType.SAND:
+			tilemap_sand.set_cell(pos, 0, atlas_coordinates[cell][1])
+			tilemap_dirt.erase_cell(pos)
+			tilemap_water_grass.erase_cell(pos)
 	
 func get_cell_type(pos: Vector2i) -> TileType:
 	var atlas_coords = tilemap_water_grass.get_cell_atlas_coords(pos)
