@@ -1,11 +1,14 @@
-[gd_scene load_steps=6 format=3 uid="uid://dkoe6am328ofj"]
+[gd_scene load_steps=7 format=3 uid="uid://dkoe6am328ofj"]
 
 [ext_resource type="Texture2D" uid="uid://rbu1dpxhu3vu" path="res://textures/texture_sets/MiniWorldSprites/Nature/Trees.png" id="1_avsvi"]
 [ext_resource type="Script" uid="uid://dqo31kj1e3psu" path="res://Scripts/tree.gd" id="1_vplca"]
 [ext_resource type="PackedScene" uid="uid://d3eq3jv6marhl" path="res://scenes/health_component.tscn" id="3_qd6xs"]
-[ext_resource type="PackedScene" uid="uid://ds3doyrucb6ae" path="res://scenes/hitbox_component.tscn" id="4_ake3r"]
+[ext_resource type="PackedScene" uid="uid://ds3doyrucb6ae" path="res://scenes/hurtbox_component.tscn" id="4_ake3r"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vplca"]
+size = Vector2(16, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qd6xs"]
 size = Vector2(16, 16)
 
 [node name="Tree" type="StaticBody2D"]
@@ -24,11 +27,10 @@ shape = SubResource("RectangleShape2D_vplca")
 
 [node name="HealthComponent" parent="." instance=ExtResource("3_qd6xs")]
 
-[node name="HitboxComponent" parent="." node_paths=PackedStringArray("health_component") instance=ExtResource("4_ake3r")]
-health_component = NodePath("../HealthComponent")
+[node name="HurtBoxComponent" parent="." instance=ExtResource("4_ake3r")]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxComponent"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBoxComponent"]
 position = Vector2(0, -8)
-shape = SubResource("RectangleShape2D_vplca")
+shape = SubResource("RectangleShape2D_qd6xs")
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
