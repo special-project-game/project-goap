@@ -1,6 +1,8 @@
-[gd_scene load_steps=12 format=3 uid="uid://d2ktstoah5df7"]
+[gd_scene load_steps=15 format=3 uid="uid://d2ktstoah5df7"]
 
 [ext_resource type="Texture2D" uid="uid://kxl8xhlpyk4y" path="res://textures/texture_sets/MiniWorldSprites/Animals/Pig.png" id="1_sq5kf"]
+[ext_resource type="PackedScene" uid="uid://d3eq3jv6marhl" path="res://scenes/health_component.tscn" id="2_4a8uq"]
+[ext_resource type="PackedScene" uid="uid://ds3doyrucb6ae" path="res://scenes/hurtbox_component.tscn" id="3_j740r"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4a8uq"]
 size = Vector2(16, 16)
@@ -85,6 +87,9 @@ states/Walk/node = SubResource("AnimationNodeBlendSpace1D_e1p3k")
 states/Walk/position = Vector2(394, 38)
 transitions = ["Start", "Walk", SubResource("AnimationNodeStateMachineTransition_bfkq4")]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ct3s0"]
+size = Vector2(16, 16)
+
 [node name="Pig" type="CharacterBody2D"]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -107,3 +112,12 @@ libraries = {
 tree_root = SubResource("AnimationNodeStateMachine_kb7da")
 anim_player = NodePath("../AnimationPlayer")
 parameters/Walk/blend_position = 0.21791
+
+[node name="HealthComponent" parent="." instance=ExtResource("2_4a8uq")]
+
+[node name="HurtBoxComponent" parent="." node_paths=PackedStringArray("health_component") instance=ExtResource("3_j740r")]
+health_component = NodePath("../HealthComponent")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBoxComponent"]
+position = Vector2(0, -8)
+shape = SubResource("RectangleShape2D_ct3s0")
