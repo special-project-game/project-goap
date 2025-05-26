@@ -2,6 +2,10 @@ extends Node2D
 
 const SAVE_FILE := "user://save.json"
 
+const person_scene_path = "res://scenes/person.tscn"
+var person_scene = preload(person_scene_path)
+var person_node = person_scene.instantiate()
+
 enum TileLayer {WATER_GRASS, DIRT, SAND}
 enum TileType {WATER, DIRT, GRASS, SAND}
 enum ObjectType {GRASS}
@@ -50,6 +54,11 @@ func place_cell(pos: Vector2i, cell: TileType):
 			tilemap_water_grass.erase_cell(pos)
 	
 func get_cell_type(pos: Vector2i) -> TileType:
+	if not is_instance_valid(tilemap_water_grass):
+		printerr("mainNode: water_grass_tilemap is not valid in get_cell_type!")
+		return 0 # Default to unwalkable if tilemap isn't there
+
+	
 	var atlas_coords = tilemap_water_grass.get_cell_atlas_coords(pos)
 	if atlas_coords != Vector2i(-1,-1):
 		return atlas_coordinates_reversed[[TileLayer.WATER_GRASS, atlas_coords]]
@@ -78,7 +87,12 @@ func _input(_event):
 		place_cell(tile_pos, TileType.SAND)
 	elif Input.is_action_pressed("place_water"):
 		place_cell(tile_pos, TileType.WATER)
-		
+	
+	if Input.is_action_just_pressed("summon_person"):
+		var person = person_scene.instantiate()
+		person.position = get_local_mouse_position()
+		self.add_child(person)
+	
 	# Objects
 	var obj_pos = objectlayer.local_to_map(get_local_mouse_position())
 	if Input.is_action_pressed("place_grass_object"):	
@@ -93,7 +107,7 @@ func _input(_event):
 
 func save_tiles_to_file():
 	print("Saving")
-	var save_data = {"tiles": {}, "camera": {}, "objects": {}}
+	var save_data = {"tiles": {}, "camera": {}, "objects": {}, "entities": []}
 	for pos in tilemap_water_grass.get_used_cells():
 		var type = get_cell_type(pos)
 		if type == TileType.WATER: # we don't need to save water tils as they're the fallback
@@ -108,7 +122,15 @@ func save_tiles_to_file():
 		var tile_id = objectlayer.get_cell_source_id(pos)
 		var pos_str = str([pos.x, pos.y])
 		save_data["objects"][pos_str] = tile_id
-		
+	# save persons
+	for child in get_children():
+		if child is Person:
+			save_data["entities"].append({
+				"type": "person",
+				"position": [child.position.x, child.position.y],
+				"health": child.get_node("HealthComponent").health
+			})
+					
 	save_data["camera"]["pos"] = vec2_to_arr(camera.global_position)
 	save_data["camera"]["zoom"] = vec2_to_arr(camera.zoom)
 		
@@ -151,6 +173,14 @@ func load_tiles_from_file():
 		var pos_vector = Vector2i(pos[0], pos[1])
 		var tile_id = data["objects"][pos_str]
 		objectlayer.set_cell(pos_vector, tile_id, Vector2i.ZERO)
+		
+	# load entities
+	for entity in data["entities"]:
+		if entity["type"] == "person":
+			var person = person_scene.instantiate()
+			var position = Vector2(entity["position"][0], entity["position"][1])
+			person.position = position
+			self.add_child(person)
 
 	camera.global_position = arr_to_vec2(data["camera"]["pos"])
 	camera.zoom = arr_to_vec2(data["camera"]["zoom"])
