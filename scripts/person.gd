@@ -24,6 +24,24 @@ var current_path : PackedVector2Array = []
 var path_index : int = 0
 var _tile_size_half: Vector2
 
+# test code for FindTree Action, will be moved to FindTree State
+@onready var scanner_component = $ScannerComponent
+@onready var person = $"."
+var nearby_trees : Array = []
+
+func test_scan_trees():
+	var tree_distances : Array
+	var self_position = person.global_position
+	nearby_trees = scanner_component.get_overlapping_bodies()
+	for tree in nearby_trees:
+		var tree_position = tree.global_position
+		tree_distances.append([tree, tree_position.distance_to(self_position)])
+	tree_distances.sort_custom(func(a, b): return a[1] < b[1])
+	if tree_distances.size() > 0:
+		var closest_tree = tree_distances[0]
+		print("closest tree: " + str(closest_tree))
+		
+
 func _ready():
 	animation_tree.active = true
 
@@ -120,6 +138,7 @@ func _set_fallback_wander(reason: String):
 	current_path.clear()
 
 func _physics_process(delta):
+	test_scan_trees()
 	var current_move_speed = SPEED
 	var target_velocity = Vector2.ZERO
 

@@ -413,18 +413,15 @@ metadata/_custom_type_script = "uid://cjk8nronimk5r"
 [node name="ObjectLayer" type="TileMapLayer" parent="."]
 tile_set = SubResource("TileSet_4d7sh")
 
-[node name="Person" parent="." groups=["entities"] instance=ExtResource("9_muem4")]
+[node name="Person" parent="." instance=ExtResource("9_muem4")]
 
 [node name="Cursor" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_eb6dy")
 frame_progress = 0.548559
 
-[node name="Pig" parent="." groups=["entities"] instance=ExtResource("12_eb6dy")]
+[node name="Pig" parent="." instance=ExtResource("12_eb6dy")]
 position = Vector2(21, 0)
 
 [node name="Tree" parent="." instance=ExtResource("13_trceg")]
 position = Vector2(13, 31)
-
-[node name="Tree2" parent="." instance=ExtResource("13_trceg")]
-position = Vector2(83, -42)
