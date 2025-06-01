@@ -5,7 +5,7 @@ extends Camera2D
 @export var min_zoom: float = 0.1
 @export var max_zoom: float = 4.0
 
-@onready var label = $ZoomLevel
+@export var label: Label
 
 func _process(delta):
 	var direction = Vector2.ZERO
