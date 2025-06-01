@@ -382,12 +382,6 @@ animations = [{
 [node name="MainNode" type="Node2D"]
 script = ExtResource("1_85g3d")
 
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(-16, -16)
-script = ExtResource("2_choun")
-min_zoom = 1.0
-max_zoom = 10.0
-
 [node name="Water_Grass" type="TileMapLayer" parent="."]
 texture_filter = 1
 material = SubResource("CanvasItemMaterial_choun")
@@ -418,3 +412,20 @@ frame_progress = 0.548559
 
 [node name="Pig" parent="." instance=ExtResource("12_eb6dy")]
 position = Vector2(21, 0)
+
+[node name="Camera2D" type="Camera2D" parent="." node_paths=PackedStringArray("label")]
+position = Vector2(-16, -16)
+script = ExtResource("2_choun")
+min_zoom = 1.0
+max_zoom = 10.0
+label = NodePath("../CanvasLayer/ZoomLevel")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ZoomLevel" type="Label" parent="CanvasLayer"]
+offset_left = 20.0
+offset_top = 15.0
+offset_right = 125.0
+offset_bottom = 1106.0
+scale = Vector2(0.05, 0.05)
+theme_override_font_sizes/font_size = 800
