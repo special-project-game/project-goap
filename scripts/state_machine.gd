@@ -5,6 +5,10 @@ extends Node
 var current_state : State
 var states: Dictionary = {}
 
+func _input(event):
+	if Input.is_action_just_pressed("toggle_find_tree"):
+		current_state.Transitioned.emit(current_state, "findtree")
+
 func _ready():
 	for child in get_children():
 		if child is State:
@@ -14,6 +18,7 @@ func _ready():
 	if initial_state:
 		initial_state.Enter()
 		current_state = initial_state
+	print("state: " + str(current_state))
 
 func _process(delta):
 	if current_state:

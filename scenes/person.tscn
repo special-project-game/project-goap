@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://d36crc7kindbf"]
+[gd_scene load_steps=35 format=3 uid="uid://d36crc7kindbf"]
 
 [ext_resource type="Script" uid="uid://carxwlbbbo7o" path="res://Scripts/person.gd" id="1_5dovg"]
 [ext_resource type="Texture2D" uid="uid://tow4k7h2qrjt" path="res://textures/texture_sets/MiniWorldSprites/Characters/Workers/FarmerTemplate.png" id="2_5dovg"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://bd67twu1oip6e" path="res://scenes/attack.tscn" id="5_8487m"]
 [ext_resource type="PackedScene" uid="uid://bxyc5lb87o0rm" path="res://scenes/state_machine.tscn" id="6_pfaeq"]
 [ext_resource type="Script" uid="uid://nr2ety0ah7ia" path="res://Scripts/find_tree.gd" id="7_2jjoq"]
+[ext_resource type="Script" uid="uid://c6p2h7qwgsloj" path="res://Scripts/wander.gd" id="8_ym70v"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5dovg"]
 size = Vector2(4, 4)
@@ -299,12 +300,15 @@ scale = Vector2(10, 10)
 shape = SubResource("RectangleShape2D_2jjoq")
 
 [node name="StateMachine" parent="." node_paths=PackedStringArray("initial_state") instance=ExtResource("6_pfaeq")]
-initial_state = NodePath("FindTree")
+initial_state = NodePath("Wander")
 
 [node name="FindTree" type="Node" parent="StateMachine"]
 script = ExtResource("7_2jjoq")
 
 [node name="ChopTree" type="Node" parent="StateMachine"]
+
+[node name="Wander" type="Node" parent="StateMachine"]
+script = ExtResource("8_ym70v")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 debug_enabled = true

@@ -19,9 +19,8 @@ func scan_trees():
 	tree_distances.sort_custom(func(a, b): return a[1] < b[1])
 	if tree_distances.size() > 0:
 		var closest_tree = tree_distances[0]
+		target = closest_tree[0]
 		print("closest tree: " + str(closest_tree))
-	
-	target = tree_distances[0][0]
 
 func setup_target():
 	await get_tree().physics_frame
@@ -42,6 +41,7 @@ func Physics_Update(delta):
 	if is_instance_valid(target):
 		navigation_agent_2d.target_position = target.global_position
 	if navigation_agent_2d.is_navigation_finished():
+		Transitioned.emit(self, "wander")
 		return
 
 	var current_agent_position = person.global_position
