@@ -6,9 +6,6 @@ class_name Attack
 
 var last_attack_time : float
 
-func _process(delta):
-	attack()
-
 func can_attack():
 	return (Time.get_ticks_msec() / 1000) - last_attack_time >= cooldown_time
 
