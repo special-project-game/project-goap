@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://ds3doyrucb6ae" path="res://scenes/hurtbox_component.tscn" id="4_8487m"]
 [ext_resource type="PackedScene" uid="uid://bd67twu1oip6e" path="res://scenes/attack.tscn" id="5_8487m"]
 [ext_resource type="PackedScene" uid="uid://bxyc5lb87o0rm" path="res://scenes/state_machine.tscn" id="6_pfaeq"]
-[ext_resource type="Script" uid="uid://nr2ety0ah7ia" path="res://scripts/find_tree.gd" id="7_2jjoq"]
+[ext_resource type="Script" uid="uid://nr2ety0ah7ia" path="res://Scripts/find_tree.gd" id="7_2jjoq"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5dovg"]
 size = Vector2(4, 4)
@@ -298,9 +298,13 @@ position = Vector2(0, -2)
 scale = Vector2(10, 10)
 shape = SubResource("RectangleShape2D_2jjoq")
 
-[node name="StateMachine" parent="." instance=ExtResource("6_pfaeq")]
+[node name="StateMachine" parent="." node_paths=PackedStringArray("initial_state") instance=ExtResource("6_pfaeq")]
+initial_state = NodePath("FindTree")
 
 [node name="FindTree" type="Node" parent="StateMachine"]
 script = ExtResource("7_2jjoq")
 
 [node name="ChopTree" type="Node" parent="StateMachine"]
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+debug_enabled = true
