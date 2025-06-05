@@ -85,6 +85,7 @@ func _input(_event):
 	
 	if Input.is_action_just_pressed("summon_person"):
 		var person = person_scene.instantiate()
+		person.baseTileMap = layers[TypeDefs.Layer.WATER_GRASS]
 		person.position = get_local_mouse_position()
 		self.add_child(person)
 	
@@ -175,6 +176,7 @@ func load_tiles_from_file():
 	for entity in data["entities"]:
 		if entity["type"] == TypeDefs.Entity.PERSON:
 			var person = person_scene.instantiate()
+			person.baseTileMap = layers[TypeDefs.Layer.WATER_GRASS]
 			person.position = Vector2(entity["position"][0], entity["position"][1])
 			self.add_child(person)
 
