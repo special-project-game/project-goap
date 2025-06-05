@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://djhnoqa2fj1yq" path="res://textures/texture_sets/grass_water.png" id="4_tipki"]
 [ext_resource type="Script" uid="uid://cjk8nronimk5r" path="res://addons/TileMapDual/TileMapDual.gd" id="5_85g3d"]
 [ext_resource type="Texture2D" uid="uid://be08o206u0gb6" path="res://textures/texture_sets/dirt_transp.png" id="5_tipki"]
-[ext_resource type="Texture2D" uid="uid://dhrjh2x4iky87" path="res://textures/texture_sets/tileset_standard.png" id="6_ya4ey"]
+[ext_resource type="Texture2D" uid="uid://cwmevhhm48npo" path="res://textures/texture_sets/sand_trans.png" id="5_ya4ey"]
 [ext_resource type="Texture2D" uid="uid://toj63dgghusn" path="res://textures/objects/grass.png" id="7_jkv2x"]
 [ext_resource type="Texture2D" uid="uid://c2t7upegnwr4t" path="res://textures/objects/berry_bush.png" id="8_jbj1t"]
 [ext_resource type="Texture2D" uid="uid://ca83mvjabm0fm" path="res://textures/cursor/1.png" id="9_choun"]
@@ -240,7 +240,7 @@ sources/0 = SubResource("TileSetAtlasSource_85g3d")
 light_mode = 2
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_trceg"]
-texture = ExtResource("6_ya4ey")
+texture = ExtResource("5_ya4ey")
 0:3/0 = 0
 0:3/0/terrain_set = 0
 0:3/0/terrain = 0

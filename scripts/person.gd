@@ -9,6 +9,7 @@ const PAUSE_AT_DESTINATION_DURATION: float = 3.0 # Seconds to pause
 
 @export var move_speed : float = SPEED
 @export var animation_tree : AnimationTree
+@onready var root = get_parent()
 @onready var health_component = $HealthComponent
 @onready var attack = $Attack
 @onready var baseTileMap: TileMapDual = get_parent().get_node("Water_Grass") # Still needed for local_to_map etc.
@@ -57,7 +58,6 @@ func _request_new_path():
 
 	if not NavigationManager.is_graph_ready():
 		printerr("Character ", name, ": Navigation graph not ready, falling back.")
-		_set_fallback_wander("Nav graph not ready.")
 		return
 
 	var start_map_pos: Vector2i = baseTileMap.local_to_map(self.position)
@@ -68,6 +68,9 @@ func _request_new_path():
 		var x_rand = randi_range(start_map_pos.x - WANDER_RADIUS, start_map_pos.x + WANDER_RADIUS)
 		var y_rand = randi_range(start_map_pos.y - WANDER_RADIUS, start_map_pos.y + WANDER_RADIUS)
 		var target_map_pos = Vector2i(x_rand, y_rand)
+		if root.get_cell_type(target_map_pos) == TypeDefs.Tile.WATER:
+			# can't walk on water
+			continue
 
 		if target_map_pos != start_map_pos: # Ensure target is not the current tile
 			var new_path = NavigationManager.get_nav_path(start_map_pos, target_map_pos)
@@ -79,18 +82,6 @@ func _request_new_path():
 				#print("Character ", name, ": Found A* path from ", start_map_pos, " to ", target_map_pos, ": ", current_path.size(), " steps.")
 				return
 		attempts += 1
-	
-	_set_fallback_wander("Could not find A* path after " + str(MAX_PATHFINDING_ATTEMPTS) + " attempts from " + str(start_map_pos))
-
-func _set_fallback_wander(reason: String):
-	print("Character ", name, ": Fallback wander. Reason: ", reason)
-	direction = Vector2(randf_range(-1, 1), randf_range(-1, 1)).normalized()
-	if direction == Vector2.ZERO:
-		direction = Vector2.LEFT
-	wander_time = randf_range(1.0, 3.0)
-	thinking = false
-	is_pausing_at_destination = false
-	current_path.clear()
 
 func _physics_process(delta):
 	var current_move_speed = SPEED
