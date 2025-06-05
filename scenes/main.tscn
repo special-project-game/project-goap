@@ -410,8 +410,9 @@ texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_eb6dy")
 frame_progress = 0.548559
 
-[node name="Pig" parent="." instance=ExtResource("12_eb6dy")]
+[node name="Pig" parent="." node_paths=PackedStringArray("baseTileMap") instance=ExtResource("12_eb6dy")]
 position = Vector2(21, 0)
+baseTileMap = NodePath("../Water_Grass")
 
 [node name="Camera2D" type="Camera2D" parent="." node_paths=PackedStringArray("label")]
 position = Vector2(-16, -16)
