@@ -8,6 +8,7 @@ extends State
 
 var nearby_trees : Array = []
 var target : Node2D = null
+var target_position : Vector2
 
 func scan_trees():
 	var tree_distances : Array
@@ -17,18 +18,20 @@ func scan_trees():
 		var tree_position = tree.global_position
 		tree_distances.append([tree, tree_position.distance_to(self_position)])
 	tree_distances.sort_custom(func(a, b): return a[1] < b[1])
+	
 	if tree_distances.size() > 0:
 		var closest_tree = tree_distances[0]
 		target = closest_tree[0]
-		print("closest tree: " + str(closest_tree))
+		target_position = target.global_position
+		#print("closest tree: " + str(closest_tree))
 
 func setup_target():
 	await get_tree().physics_frame
 	scan_trees()
-	print(target)
 	
 	if is_instance_valid(target):
 		navigation_agent_2d.target_position = target.global_position
+		print(target)
 		print(navigation_agent_2d.target_position)
 
 func Enter():
@@ -40,8 +43,12 @@ func Update(delta):
 func Physics_Update(delta):
 	if is_instance_valid(target):
 		navigation_agent_2d.target_position = target.global_position
-	if navigation_agent_2d.is_navigation_finished():
+	else:
 		Transitioned.emit(self, "wander")
+		return
+
+	if navigation_agent_2d.is_navigation_finished():
+		Transitioned.emit(self, "choptree")
 		return
 
 	var current_agent_position = person.global_position

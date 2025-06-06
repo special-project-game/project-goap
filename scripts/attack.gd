@@ -1,7 +1,7 @@
 extends Node2D
 class_name Attack
 
-@export var attack_damage := 10.0
+@export var attack_damage := 1.0
 @export var cooldown_time := 2.0
 
 var last_attack_time : float
@@ -14,4 +14,6 @@ func attack():
 		return
 
 	last_attack_time = Time.get_ticks_msec() / 1000
-	print("attacking, " + str(last_attack_time))
+
+	GlobalSignal.Attacking.emit(attack_damage)
+	print(owner.name + " is attacking, atk dmg: " + str(attack_damage))

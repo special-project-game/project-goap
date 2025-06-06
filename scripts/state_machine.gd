@@ -18,7 +18,7 @@ func _ready():
 	if initial_state:
 		initial_state.Enter()
 		current_state = initial_state
-	print("state: " + str(current_state))
+	print("state: " + str(current_state.name))
 
 func _process(delta):
 	if current_state:
@@ -42,4 +42,4 @@ func on_child_transition(source_state, new_state_name):
 	
 	new_state.Enter()
 	current_state = new_state
-	print("state: " + str(current_state))
+	print("state: " + str(current_state.name))
