@@ -1,6 +1,7 @@
 extends State
 
-@onready var animation_tree = %AnimationTree
+@onready var animation_tree = $"../../AnimationTree"
+
 @onready var move_speed : float = owner.move_speed
 
 var direction : Vector2
