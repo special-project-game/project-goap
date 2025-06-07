@@ -5,6 +5,8 @@ extends Camera2D
 @export var min_zoom: float = 0.1
 @export var max_zoom: float = 4.0
 
+@export var label: Label
+
 func _process(delta):
 	var direction = Vector2.ZERO
 
@@ -30,3 +32,5 @@ func _process(delta):
 	# Clamp zoom
 	zoom.x = clamp(zoom.x, min_zoom, max_zoom)
 	zoom.y = clamp(zoom.y, min_zoom, max_zoom)
+
+	label.text = "Zoom Level: %.2f" % zoom.x

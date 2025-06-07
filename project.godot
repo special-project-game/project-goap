@@ -17,6 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+NavigationManager="*res://scripts/NavigationManager.gd"
 GlobalSignal="*res://Scripts/global_signal.gd"
 
 [display]
