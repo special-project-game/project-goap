@@ -1,5 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://5nq607jqvt50"]
-
+[gd_scene load_steps=27 format=3 uid="uid://5nq607jqvt50"]
 
 [ext_resource type="Script" uid="uid://bdlt6d32wqywm" path="res://scripts/node_2d.gd" id="1_85g3d"]
 [ext_resource type="Script" uid="uid://buf7gkrb2px63" path="res://scripts/camera_2d.gd" id="2_choun"]
@@ -413,15 +412,22 @@ metadata/_custom_type_script = "uid://cjk8nronimk5r"
 [node name="ObjectLayer" type="TileMapLayer" parent="."]
 tile_set = SubResource("TileSet_4d7sh")
 
+[node name="Pig" parent="." node_paths=PackedStringArray("baseTileMap") instance=ExtResource("12_eb6dy")]
+position = Vector2(21, 0)
+baseTileMap = NodePath("../Water_Grass")
+
+[node name="ThingsContainer" type="Node" parent="."]
+
+[node name="Tree" parent="ThingsContainer" instance=ExtResource("13_trceg")]
+position = Vector2(13, 31)
+
+[node name="Tree2" parent="ThingsContainer" instance=ExtResource("13_trceg")]
+position = Vector2(83, -42)
+
 [node name="Cursor" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_eb6dy")
 frame_progress = 0.548559
-
-
-[node name="Pig" parent="." node_paths=PackedStringArray("baseTileMap") instance=ExtResource("12_eb6dy")]
-position = Vector2(21, 0)
-baseTileMap = NodePath("../Water_Grass")
 
 [node name="Camera2D" type="Camera2D" parent="." node_paths=PackedStringArray("label")]
 position = Vector2(-16, -16)
@@ -442,11 +448,3 @@ theme_override_font_sizes/font_size = 800
 
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
 navigation_polygon = SubResource("NavigationPolygon_trceg")
-
-[node name="ThingsContainer" type="Node" parent="."]
-
-[node name="Tree" parent="ThingsContainer" instance=ExtResource("13_trceg")]
-position = Vector2(13, 31)
-
-[node name="Tree2" parent="ThingsContainer" instance=ExtResource("13_trceg")]
-position = Vector2(83, -42)
