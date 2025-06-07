@@ -11,7 +11,9 @@ size = Vector2(16, 16)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qd6xs"]
 size = Vector2(16, 16)
 
-[node name="Tree" type="StaticBody2D"]
+[node name="Tree" type="StaticBody2D" groups=["trees"]]
+collision_layer = 4
+collision_mask = 0
 script = ExtResource("1_vplca")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -27,10 +29,15 @@ shape = SubResource("RectangleShape2D_vplca")
 
 [node name="HealthComponent" parent="." instance=ExtResource("3_qd6xs")]
 
-[node name="HurtBoxComponent" parent="." instance=ExtResource("4_ake3r")]
+[node name="HurtBoxComponent" parent="." node_paths=PackedStringArray("health_component") instance=ExtResource("4_ake3r")]
+collision_layer = 0
+collision_mask = 2
+health_component = NodePath("../HealthComponent")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBoxComponent"]
 position = Vector2(0, -8)
 shape = SubResource("RectangleShape2D_qd6xs")
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="area_entered" from="HurtBoxComponent" to="HurtBoxComponent" method="_on_area_entered"]
+[connection signal="area_exited" from="HurtBoxComponent" to="HurtBoxComponent" method="_on_area_exited"]

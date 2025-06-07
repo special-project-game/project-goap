@@ -1,12 +1,12 @@
 extends StaticBody2D
 
-enum State {Baby, Teen, Adult, Old}
+enum States {Baby, Teen, Adult, Old}
 
 @export var state: State
 @onready var timer = $Timer
 @onready var sprite = $Sprite2D
 
-var current_state := State.Baby
+var current_state := States.Baby
 
 func _ready():
 	timer.one_shot = true
@@ -14,27 +14,27 @@ func _ready():
 
 
 
-func enter_state(new_state: State):
+func enter_state(new_state: States):
 	current_state = new_state
 	match current_state:
-		State.Baby:
+		States.Baby:
 			sprite.frame = 0
 			timer.wait_time = 5
 			timer.start()
-		State.Teen:
+		States.Teen:
 			sprite.frame = 1
 			timer.wait_time = 10
 			timer.start()
-		State.Adult:
+		States.Adult:
 			sprite.frame = 2
 			timer.wait_time = 15
 			timer.start()
-		State.Old:
+		States.Old:
 			sprite.frame = 3
 
 
 func _on_timer_timeout():
-	if current_state == State.Old:
+	if current_state == States.Old:
 		pass
 
 	enter_state(current_state + 1)

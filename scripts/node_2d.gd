@@ -88,6 +88,10 @@ func _input(_event):
 		person.baseTileMap = layers[TypeDefs.Layer.WATER_GRASS]
 		person.position = get_local_mouse_position()
 		self.add_child(person)
+	elif Input.is_action_just_pressed("clear"):
+		var entities = get_tree().get_nodes_in_group("entities")
+		for i in entities:
+			i.queue_free()
 	
 	# Objects
 	var obj_pos = objectlayer.local_to_map(get_local_mouse_position())

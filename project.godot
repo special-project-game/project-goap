@@ -18,10 +18,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 NavigationManager="*res://scripts/NavigationManager.gd"
-
-[debug]
-
-settings/stdout/print_fps=true
+GlobalSignal="*res://Scripts/global_signal.gd"
 
 [display]
 
@@ -30,6 +27,11 @@ window/stretch/scale_mode="integer"
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/TileMapDual/plugin.cfg")
+
+[global_group]
+
+trees=""
+entities="people, animal. monster"
 
 [input]
 
@@ -98,6 +100,22 @@ summon_person={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":80,"key_label":0,"unicode":112,"location":0,"echo":false,"script":null)
 ]
 }
+clear={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194312,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+]
+}
+toggle_find_tree={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":84,"key_label":0,"unicode":116,"location":0,"echo":false,"script":null)
+]
+}
+
+[layer_names]
+
+2d_physics/layer_1="world"
+2d_physics/layer_2="entities"
+2d_physics/layer_3="plants"
 
 [rendering]
 
