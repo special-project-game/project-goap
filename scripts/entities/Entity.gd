@@ -124,13 +124,10 @@ func _request_new_path():
 	var start_map_pos: Vector2i = baseTileMap.local_to_map(self.position)
 	
 	var attempts = 0
-	print("current", start_map_pos)
 	while attempts < MAX_PATHFINDING_ATTEMPTS:
 		var x_rand = randi_range(start_map_pos.x - wander_radius, start_map_pos.x + wander_radius)
 		var y_rand = randi_range(start_map_pos.y - wander_radius, start_map_pos.y + wander_radius)
 		var target_map_pos = Vector2i(x_rand, y_rand)
-		print("target", target_map_pos)
-		
 
 		# Hook for subclasses to validate target tile
 		if not _is_valid_target_tile(target_map_pos):
@@ -150,6 +147,9 @@ func _request_new_path():
 	
 	# Failed to find a path after attempts
 	printerr(name, ": Failed to find a valid path after ", MAX_PATHFINDING_ATTEMPTS, " attempts. Will retry.")
+	# destroy this entity as its stuck.
+	self.queue_free()
+
 	thinking = false # Allow retry or fallback (e.g. could set wander_time here)
 	# Consider a small delay before retrying to avoid spamming if stuck
 	get_tree().create_timer(1.0).timeout.connect(func(): call_deferred("_request_new_path") )

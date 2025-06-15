@@ -12,7 +12,7 @@ func _process(delta):
 
 	if Input.is_action_pressed("camera_up"):
 		direction.y -= 1
-	if Input.is_action_pressed("camera_down"):
+	if Input.is_action_pressed("camera_down") and not Input.is_key_pressed(KEY_CTRL):
 		direction.y += 1
 	if Input.is_action_pressed("camera_left"):
 		direction.x -= 1

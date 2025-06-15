@@ -2,9 +2,14 @@ extends Node2D
 
 const SAVE_FILE := "user://save.json"
 
-const person_scene_path = "res://scenes/person.tscn"
-var person_scene = preload(person_scene_path)
-var person_node = person_scene.instantiate()
+var is_left_mouse_dragging: bool = false
+var last_placed_tile_map_pos: Vector2i = Vector2i(-1,-1)
+var current_mode = TypeDefs.Mode.VIEW
+
+var entities = {
+		TypeDefs.Entity.PERSON: preload("res://scenes/person.tscn"),
+		TypeDefs.Entity.PIG: preload("res://scenes/pig.tscn")
+	}
 
 const atlas_coordinates = {
 	TypeDefs.Tile.WATER: [TypeDefs.Layer.WATER_GRASS, Vector2i(0,3)],
@@ -68,42 +73,84 @@ func place_mouse():
 	mouse_world_pos -= Vector2(8,8)
 	cursor.position = mouse_world_pos.snapped(Vector2i(16,16))
 	cursor.position += Vector2(8,8)
-
-
+		
 func _input(_event):
 	place_mouse()
-	# Background Tiles
-	var tile_pos = layers[TypeDefs.Layer.WATER_GRASS].local_to_map(get_local_mouse_position())
-	if Input.is_action_pressed("place_grass"):
-		place_cell(tile_pos, TypeDefs.Tile.GRASS)
-	elif Input.is_action_pressed("place_dirt"):
-		place_cell(tile_pos, TypeDefs.Tile.DIRT)
-	elif Input.is_action_pressed("place_sand"):
-		place_cell(tile_pos, TypeDefs.Tile.SAND)
-	elif Input.is_action_pressed("place_water"):
-		place_cell(tile_pos, TypeDefs.Tile.WATER)
+
+func _unhandled_input(event):
+	# Saving
+	if Input.is_action_just_pressed("save_game"):
+		save_tiles_to_file()
+		get_viewport().set_input_as_handled()
+		return
+
+	var current_mouse_pos = get_local_mouse_position()
+	# Assuming 'layers' is a dictionary of TileMap nodes and WATER_GRASS is a valid key
+	# Ensure this TileMap node exists and is correctly referenced.
+	var active_tilemap = layers[TypeDefs.Layer.WATER_GRASS] # Get the relevant TileMap
+	var current_tile_map_pos = active_tilemap.local_to_map(current_mouse_pos)
+
+	# Handle Mouse Button Press/Release
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		if event.is_pressed():
+			is_left_mouse_dragging = true
+			match current_mode:
+				TypeDefs.Mode.PLACE_TILE:
+					var tile_to_place = $CanvasLayer/OptionButton.get_selected_id()
+					place_cell(current_tile_map_pos, tile_to_place)
+					last_placed_tile_map_pos = current_tile_map_pos # Record placement
+				TypeDefs.Mode.PLACE_OBJECT:
+					var object_to_place = $CanvasLayer/OptionButton.get_selected_id()
+					place_obj(current_tile_map_pos, object_to_place)
+					last_placed_tile_map_pos = current_tile_map_pos # Record placement
+				TypeDefs.Mode.PLACE_ENTITY:
+					var entity_to_place = $CanvasLayer/OptionButton.get_selected_id()
+					summon(current_mouse_pos, entity_to_place)
+					last_placed_tile_map_pos = current_tile_map_pos # Record placement
+		else: # Mouse button released
+			is_left_mouse_dragging = false
+			last_placed_tile_map_pos = Vector2i(-1,-1) # Reset last placed position
+
+	# Handle Mouse Motion (Dragging)
+	elif event is InputEventMouseMotion and is_left_mouse_dragging:
+		if current_mode == TypeDefs.Mode.PLACE_TILE:
+			# Check if the mouse has moved to a new tile cell
+			if current_tile_map_pos != last_placed_tile_map_pos:
+				var tile_to_place = $CanvasLayer/OptionButton.get_selected_id()
+				place_cell(current_tile_map_pos, tile_to_place)
+				last_placed_tile_map_pos = current_tile_map_pos # Update last placed position
+		elif current_mode == TypeDefs.Mode.PLACE_OBJECT:
+			if current_tile_map_pos != last_placed_tile_map_pos:
+				var object_to_place = $CanvasLayer/OptionButton.get_selected_id()
+				place_obj(current_tile_map_pos, object_to_place)
+	
+	if event is InputEventMouseButton and event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
+		if current_mode == TypeDefs.Mode.PLACE_TILE:
+			var tile_pos = layers[TypeDefs.Layer.WATER_GRASS].local_to_map(get_local_mouse_position())
+			var tile_to_place = $CanvasLayer/OptionButton.get_selected_id()
+			place_cell(tile_pos, tile_to_place)
+		elif current_mode == TypeDefs.Mode.PLACE_OBJECT:
+			var object_pos = objectlayer.local_to_map(get_local_mouse_position())
+			var object_to_place = $CanvasLayer/OptionButton.get_selected_id()
+			place_obj(object_pos, object_to_place)
 	
 	if Input.is_action_just_pressed("summon_person"):
-		var person = person_scene.instantiate()
-		person.baseTileMap = layers[TypeDefs.Layer.WATER_GRASS]
-		person.position = get_local_mouse_position()
-		self.add_child(person)
+		summon(get_local_mouse_position(), TypeDefs.Entity.PERSON)
 	elif Input.is_action_just_pressed("clear"):
 		var entities = get_tree().get_nodes_in_group("entities")
 		for i in entities:
 			i.queue_free()
-	
-	# Objects
-	var obj_pos = objectlayer.local_to_map(get_local_mouse_position())
-	if Input.is_action_pressed("place_grass_object"):	
-		# don't allow placing on water
-		if not get_cell_type(obj_pos) == TypeDefs.Tile.WATER:
-			objectlayer.set_cell(obj_pos, TypeDefs.Objects.GRASS, Vector2i.ZERO)
 
-	# Saving
-	if Input.is_action_just_pressed("save_game"):
-		save_tiles_to_file()
-		return
+func summon(pos: Vector2, entityType: TypeDefs.Entity):
+	var entity = entities[entityType].instantiate()
+	entity.baseTileMap = layers[TypeDefs.Layer.WATER_GRASS]
+	entity.position = pos
+	self.add_child(entity)
+
+func place_obj(pos: Vector2i, obj: TypeDefs.Objects):
+	var obj_pos = objectlayer.local_to_map(get_local_mouse_position())
+	if not get_cell_type(obj_pos) == TypeDefs.Tile.WATER:
+			objectlayer.set_cell(obj_pos, TypeDefs.Objects.GRASS, Vector2i.ZERO)
 
 func save_tiles_to_file():
 	print("Saving")
@@ -124,13 +171,19 @@ func save_tiles_to_file():
 		save_data["objects"][pos_str] = tile_id
 	# save persons
 	for child in get_children():
-		print("child")
 		if child is Person:
 			save_data["entities"].append({
 				"type": TypeDefs.Entity.PERSON,
 				"position": [child.position.x, child.position.y],
 				"health": child.get_node("HealthComponent").health
 			})
+		elif child is Pig:
+			save_data["entities"].append({
+				"type": TypeDefs.Entity.PIG,
+				"position": [child.position.x, child.position.y],
+				"health": child.get_node("HealthComponent").health
+			})
+			
 					
 	save_data["camera"]["pos"] = vec2_to_arr(camera.global_position)
 	save_data["camera"]["zoom"] = vec2_to_arr(camera.zoom)
@@ -178,11 +231,8 @@ func load_tiles_from_file():
 		
 	# load entities
 	for entity in data["entities"]:
-		if entity["type"] == TypeDefs.Entity.PERSON:
-			var person = person_scene.instantiate()
-			person.baseTileMap = layers[TypeDefs.Layer.WATER_GRASS]
-			person.position = Vector2(entity["position"][0], entity["position"][1])
-			self.add_child(person)
+		var type = entity["type"] as TypeDefs.Entity
+		summon(Vector2(entity["position"][0], entity["position"][1]), type)
 
 	camera.global_position = arr_to_vec2(data["camera"]["pos"])
 	camera.zoom = arr_to_vec2(data["camera"]["zoom"])
@@ -204,3 +254,30 @@ static func reverse_dictionary(dict: Dictionary) -> Dictionary:
 			# Decide how to handle: overwrite (default), make an array, or error
 		reversed_dict[value] = key
 	return reversed_dict
+
+
+func _on_mode_option_button_item_selected(index: int) -> void:
+	current_mode = index
+	if index == TypeDefs.Mode.VIEW:
+		$CanvasLayer/OptionButton.set_visible(false)
+	else:
+		make_place_cell_selection(index)
+		$CanvasLayer/OptionButton.set_visible(true)
+		
+
+func make_place_cell_selection(mode: TypeDefs.Mode):
+	print("mode is " , mode)
+	$CanvasLayer/OptionButton.clear()
+	match mode:
+		TypeDefs.Mode.PLACE_TILE:
+			for tiletype in TypeDefs.Tile.values():
+				$CanvasLayer/OptionButton.add_item(TypeDefs.TileName[tiletype], tiletype)
+			$CanvasLayer/OptionButton.select(TypeDefs.Tile.WATER)
+		TypeDefs.Mode.PLACE_OBJECT:
+			for objtype in TypeDefs.Objects.values():
+				$CanvasLayer/OptionButton.add_item(TypeDefs.ObjectName[objtype], objtype)
+			$CanvasLayer/OptionButton.select(TypeDefs.Tile.GRASS)
+		TypeDefs.Mode.PLACE_ENTITY:
+			for entitytype in TypeDefs.Entity.values():
+				$CanvasLayer/OptionButton.add_item(TypeDefs.EntityName[entitytype], entitytype)
+			$CanvasLayer/OptionButton.select(TypeDefs.Entity.PERSON)
