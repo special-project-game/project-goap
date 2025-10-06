@@ -134,9 +134,7 @@ func _unhandled_input(event):
 			var object_to_place = $CanvasLayer/OptionButton.get_selected_id()
 			place_obj(object_pos, object_to_place)
 	
-	if Input.is_action_just_pressed("summon_person"):
-		summon(get_local_mouse_position(), TypeDefs.Entity.PERSON)
-	elif Input.is_action_just_pressed("clear"):
+	if Input.is_action_just_pressed("clear"):
 		var entities = get_tree().get_nodes_in_group("entities")
 		for i in entities:
 			i.queue_free()
