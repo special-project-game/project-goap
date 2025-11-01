@@ -59,7 +59,6 @@ func _process(delta: float):
 	
 	# Update world state and check for replanning
 	if time_since_update >= update_interval:
-		print(entity.name, ": Update triggered. current_goal=", current_goal.goal_name if current_goal else "None", " plan_size=", current_plan.size())
 		time_since_update = 0.0
 		_update_world_state()
 		

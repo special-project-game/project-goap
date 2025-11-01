@@ -157,6 +157,7 @@ func _is_tree_reachable(agent: Node, tree: Node) -> bool:
 	var map_rid = navigation_agent.get_navigation_map()
 	if not map_rid.is_valid():
 		# Navigation not ready yet - reject all trees for now
+		print(agent.name, ": Navigation map not ready, rejecting all trees")
 		return false
 	
 	var path = NavigationServer2D.map_get_path(
@@ -168,14 +169,19 @@ func _is_tree_reachable(agent: Node, tree: Node) -> bool:
 	
 	# If path is empty or too short, position is unreachable
 	if path.size() < 2:
+		print(agent.name, ": Tree at ", tree.global_position, " UNREACHABLE - no path (size: ", path.size(), ")")
 		return false
 	
 	# Check if the path actually gets close to the target
 	var last_point = path[path.size() - 1]
 	var distance_to_target = last_point.distance_to(tree.global_position)
 	
-	# If the last point of the path is too far from target, it's unreachable
-	if distance_to_target >= ARRIVED_THRESHOLD * 2.0:
+	# Path must end very close to the target (within a few pixels)
+	# If the tree is on water, the path will stop at the shore and this check will fail
+	var max_acceptable_distance = 5.0 # Very strict - path must end almost exactly at tree
+	if distance_to_target >= max_acceptable_distance:
+		print(agent.name, ": Tree at ", tree.global_position, " UNREACHABLE - path ends ", distance_to_target, " units away (max: ", max_acceptable_distance, ")")
 		return false
 	
+	print(agent.name, ": Tree at ", tree.global_position, " is REACHABLE (path size: ", path.size(), ", end distance: ", distance_to_target, ")")
 	return true
