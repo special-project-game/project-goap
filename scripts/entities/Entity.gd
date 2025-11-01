@@ -45,10 +45,14 @@ func _ready():
 		
 	_tile_size_half = Vector2i(16, 16) / 2
 
-	if not NavigationManager.is_graph_ready():
+	# Note: NavigationManager is only used for non-GOAP controlled entities
+	# GOAP entities use NavigationAgent2D directly
+	if not goap_controlled and not NavigationManager.is_graph_ready():
 		printerr(name, ": NavigationManager graph is not ready. Pathfinding might fail initially.")
 	
-	call_deferred("_request_new_path")
+	if not goap_controlled:
+		call_deferred("_request_new_path")
+	
 	_on_entity_ready() # Hook for subclasses
 
 # Hook for subclasses to add their own _ready logic

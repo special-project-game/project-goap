@@ -77,6 +77,18 @@ func _process(delta: float):
 	
 	# Execute current plan
 	if current_action and not is_planning:
+		# Check if action is still valid before performing
+		var is_action_valid = current_action.is_valid(entity, world_state)
+		if not is_action_valid:
+			print(entity.name, ": Action ", current_action.action_name, " became invalid, abandoning plan and goal")
+			current_action.on_exit(entity)
+			current_action = null
+			current_plan.clear()
+			current_action_index = 0
+			current_goal = null # Clear goal so we select a new one
+			time_since_update = update_interval # Force immediate replan
+			return
+		
 		var action_complete = current_action.perform(entity, delta)
 		
 		if action_complete:

@@ -18,15 +18,31 @@ func _setup_action() -> void:
 	add_effect("has_food", true)
 	add_effect("near_tree", false)
 
-func is_valid(_agent: Node, _world_state: Dictionary) -> bool:
+func is_valid(agent: Node, _world_state: Dictionary) -> bool:
+	# Check if we have a valid tree target from FindTreeAction
+	# If FindTreeAction set a target and it's still valid, we can get an apple
+	# This allows the action to be planned but will fail if tree is destroyed
+	if agent.has_node("GOAPAgent"):
+		var goap_agent = agent.get_node("GOAPAgent")
+		var find_action = _get_find_tree_action(goap_agent)
+		if find_action and is_instance_valid(find_action.target):
+			return true
+	
 	# Valid as long as trees exist (FindTreeAction will get us there)
 	return true
+
+func _get_find_tree_action(goap_agent: Node) -> FindTreeAction:
+	"""Helper to get the FindTreeAction from the GOAP agent"""
+	for child in goap_agent.get_children():
+		if child is FindTreeAction:
+			return child
+	return null
 
 func on_enter(agent: Node) -> void:
 	super.on_enter(agent)
 	print(agent.name, ": Getting apple from tree")
 
-func perform(agent: Node, delta: float) -> bool:
+func perform(agent: Node, _delta: float) -> bool:
 	# Stop moving
 	agent.velocity = Vector2.ZERO
 	

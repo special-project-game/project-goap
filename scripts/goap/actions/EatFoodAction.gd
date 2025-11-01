@@ -20,6 +20,11 @@ func _setup_action() -> void:
 	add_effect("is_hungry", false)
 	add_effect("has_food", false)
 
+func is_valid(_agent: Node, _world_state: Dictionary) -> bool:
+	# Eating is always theoretically possible
+	# The preconditions (has_food, is_hungry) determine when it can actually happen
+	return true
+
 func on_enter(agent: Node) -> void:
 	super.on_enter(agent)
 	eat_timer = 0.0

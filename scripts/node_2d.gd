@@ -3,7 +3,7 @@ extends Node2D
 const SAVE_FILE := "user://save.json"
 
 var is_left_mouse_dragging: bool = false
-var last_placed_tile_map_pos: Vector2i = Vector2i(-1,-1)
+var last_placed_tile_map_pos: Vector2i = Vector2i(-1, -1)
 var current_mode = TypeDefs.Mode.VIEW
 
 var entities = {
@@ -12,23 +12,24 @@ var entities = {
 	}
 
 const atlas_coordinates = {
-	TypeDefs.Tile.WATER: [TypeDefs.Layer.WATER_GRASS, Vector2i(0,3)],
-	TypeDefs.Tile.GRASS: [TypeDefs.Layer.WATER_GRASS, Vector2i(2,1)],
-	TypeDefs.Tile.DIRT: [TypeDefs.Layer.DIRT, Vector2i(2,1)],
-	TypeDefs.Tile.SAND: [TypeDefs.Layer.SAND, Vector2i(2,1)],
+	TypeDefs.Tile.WATER: [TypeDefs.Layer.WATER_GRASS, Vector2i(0, 3)],
+	TypeDefs.Tile.GRASS: [TypeDefs.Layer.WATER_GRASS, Vector2i(2, 1)],
+	TypeDefs.Tile.DIRT: [TypeDefs.Layer.DIRT, Vector2i(2, 1)],
+	TypeDefs.Tile.SAND: [TypeDefs.Layer.SAND, Vector2i(2, 1)],
 }
 
 const atlas_coordinates_reversed = {
-	[TypeDefs.Layer.WATER_GRASS, Vector2i(0,3)]: TypeDefs.Tile.WATER,
-	[TypeDefs.Layer.WATER_GRASS, Vector2i(2,1)]: TypeDefs.Tile.GRASS,
-	[TypeDefs.Layer.DIRT, Vector2i(2,1)]: TypeDefs.Tile.DIRT,
-	[TypeDefs.Layer.SAND, Vector2i(2,1)]: TypeDefs.Tile.SAND,
+	[TypeDefs.Layer.WATER_GRASS, Vector2i(0, 3)]: TypeDefs.Tile.WATER,
+	[TypeDefs.Layer.WATER_GRASS, Vector2i(2, 1)]: TypeDefs.Tile.GRASS,
+	[TypeDefs.Layer.DIRT, Vector2i(2, 1)]: TypeDefs.Tile.DIRT,
+	[TypeDefs.Layer.SAND, Vector2i(2, 1)]: TypeDefs.Tile.SAND,
 }
 
 @onready var cursor := $Cursor
 @onready var camera := $Camera2D
-@onready var layers := [$Water_Grass,$Dirt, $Sand]
+@onready var layers := [$Water_Grass, $Dirt, $Sand]
 @onready var objectlayer := $ObjectLayer
+@onready var navigation_region := $NavigationRegion2D
 
 signal tile_changed(map_coords: Vector2i) # Signal emitted when a tile changes
 
@@ -56,13 +57,13 @@ func get_cell_type(pos: Vector2i) -> TypeDefs.Tile:
 
 	
 	var atlas_coords = layers[TypeDefs.Layer.DIRT].get_cell_atlas_coords(pos)
-	if atlas_coords != Vector2i(-1,-1):
+	if atlas_coords != Vector2i(-1, -1):
 		return atlas_coordinates_reversed[[TypeDefs.Layer.DIRT, atlas_coords]]
 	atlas_coords = layers[TypeDefs.Layer.SAND].get_cell_atlas_coords(pos)
-	if atlas_coords != Vector2i(-1,-1):
+	if atlas_coords != Vector2i(-1, -1):
 		return atlas_coordinates_reversed[[TypeDefs.Layer.SAND, atlas_coords]]
 	atlas_coords = layers[TypeDefs.Layer.WATER_GRASS].get_cell_atlas_coords(pos)
-	if atlas_coords != Vector2i(-1,-1):
+	if atlas_coords != Vector2i(-1, -1):
 		return atlas_coordinates_reversed[[TypeDefs.Layer.WATER_GRASS, atlas_coords]]
 
 	return TypeDefs.Tile.WATER
@@ -70,9 +71,9 @@ func get_cell_type(pos: Vector2i) -> TypeDefs.Tile:
 	
 func place_mouse():
 	var mouse_world_pos: Vector2 = get_global_mouse_position()
-	mouse_world_pos -= Vector2(8,8)
-	cursor.position = mouse_world_pos.snapped(Vector2i(16,16))
-	cursor.position += Vector2(8,8)
+	mouse_world_pos -= Vector2(8, 8)
+	cursor.position = mouse_world_pos.snapped(Vector2i(16, 16))
+	cursor.position += Vector2(8, 8)
 		
 func _input(_event):
 	place_mouse()
@@ -109,7 +110,7 @@ func _unhandled_input(event):
 					last_placed_tile_map_pos = current_tile_map_pos # Record placement
 		else: # Mouse button released
 			is_left_mouse_dragging = false
-			last_placed_tile_map_pos = Vector2i(-1,-1) # Reset last placed position
+			last_placed_tile_map_pos = Vector2i(-1, -1) # Reset last placed position
 
 	# Handle Mouse Motion (Dragging)
 	elif event is InputEventMouseMotion and is_left_mouse_dragging:
@@ -197,7 +198,14 @@ func _ready():
 	cursor.play()
 	load_tiles_from_file()
 	fill_empty_with_water(100, 100)
-	NavigationManager.initialize_navigation(layers[TypeDefs.Layer.WATER_GRASS], self)
+	
+	# Bake navigation based on walkable tiles (excludes water)
+	if navigation_region:
+		await NavigationBaker.bake_navigation_from_tilemap(layers[TypeDefs.Layer.WATER_GRASS], self, navigation_region)
+		# Enable debug visualization (optional - comment out if you don't want to see it)
+		NavigationServer2D.set_debug_enabled(true)
+	else:
+		printerr("NavigationRegion2D not found!")
 
 func fill_empty_with_water(area_width: int, area_height: int):
 	for y in range(-area_height, area_height):
@@ -267,7 +275,7 @@ func _on_mode_option_button_item_selected(index: int) -> void:
 		
 
 func make_place_cell_selection(mode: TypeDefs.Mode):
-	print("mode is " , mode)
+	print("mode is ", mode)
 	$CanvasLayer/OptionButton.clear()
 	match mode:
 		TypeDefs.Mode.PLACE_TILE:

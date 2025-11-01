@@ -82,6 +82,10 @@ func perform(agent: Node, delta: float) -> bool:
 					if goap_agent.has_method("add_wood"):
 						goap_agent.add_wood(1)
 				
+				# Destroy the tree
+				if is_instance_valid(target):
+					target.queue_free()
+				
 				print(agent.name, ": Tree chopped! Got wood.")
 				return true
 		
