@@ -1,15 +1,15 @@
 [gd_scene load_steps=39 format=3 uid="uid://d36crc7kindbf"]
 
-[ext_resource type="Script" uid="uid://carxwlbbbo7o" path="res://scripts/entities/person.gd" id="1_5dovg"]
+[ext_resource type="Script" uid="uid://carxwlbbbo7o" path="res://Scripts/entities/person.gd" id="1_5dovg"]
 [ext_resource type="Texture2D" uid="uid://tow4k7h2qrjt" path="res://textures/texture_sets/MiniWorldSprites/Characters/Workers/FarmerTemplate.png" id="2_5dovg"]
 [ext_resource type="PackedScene" uid="uid://d3eq3jv6marhl" path="res://scenes/health_component.tscn" id="3_h4n5y"]
 [ext_resource type="PackedScene" uid="uid://ds3doyrucb6ae" path="res://scenes/hurtbox_component.tscn" id="4_8487m"]
 [ext_resource type="PackedScene" uid="uid://bd67twu1oip6e" path="res://scenes/attack.tscn" id="5_8487m"]
 [ext_resource type="PackedScene" uid="uid://datnoswldfogg" path="res://scenes/hit_box_component.tscn" id="6_8qhow"]
 [ext_resource type="PackedScene" uid="uid://bxyc5lb87o0rm" path="res://scenes/state_machine.tscn" id="6_pfaeq"]
-[ext_resource type="Script" path="res://scripts/find_tree.gd" id="7_2jjoq"]
-[ext_resource type="Script" uid="uid://c6p2h7qwgsloj" path="res://scripts/wander.gd" id="8_ym70v"]
-[ext_resource type="Script" path="res://scripts/chop_tree.gd" id="9_526uv"]
+[ext_resource type="Script" uid="uid://nr2ety0ah7ia" path="res://scripts/find_tree.gd" id="7_2jjoq"]
+[ext_resource type="Script" uid="uid://c6p2h7qwgsloj" path="res://Scripts/wander.gd" id="8_ym70v"]
+[ext_resource type="Script" uid="uid://usjdejqsykwr" path="res://scripts/chop_tree.gd" id="9_526uv"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5dovg"]
 size = Vector2(4, 4)

@@ -8,7 +8,7 @@ var current_mode = TypeDefs.Mode.VIEW
 
 var entities = {
 		TypeDefs.Entity.PERSON: preload("res://scenes/person.tscn"),
-		TypeDefs.Entity.PIG: preload("res://scenes/pig.tscn")
+		TypeDefs.Entity.PIG: preload("res://scenes/pig.tscn"),
 	}
 
 const atlas_coordinates = {
@@ -132,6 +132,7 @@ func _unhandled_input(event):
 		elif current_mode == TypeDefs.Mode.PLACE_OBJECT:
 			var object_pos = objectlayer.local_to_map(get_local_mouse_position())
 			var object_to_place = $CanvasLayer/OptionButton.get_selected_id()
+			print("object:", object_to_place)
 			place_obj(object_pos, object_to_place)
 	
 	if Input.is_action_just_pressed("clear"):
@@ -147,8 +148,10 @@ func summon(pos: Vector2, entityType: TypeDefs.Entity):
 
 func place_obj(pos: Vector2i, obj: TypeDefs.Objects):
 	var obj_pos = objectlayer.local_to_map(get_local_mouse_position())
+	var source_id = 1 # for the TileSet, I used scenes collection instead, 1 is the ID for the collection
+	# obj should be the ID of the 'scene' inside the collection
 	if not get_cell_type(obj_pos) == TypeDefs.Tile.WATER:
-			objectlayer.set_cell(obj_pos, TypeDefs.Objects.GRASS, Vector2i.ZERO)
+			objectlayer.set_cell(obj_pos, source_id, Vector2i.ZERO, obj)
 
 func save_tiles_to_file():
 	print("Saving")
@@ -274,7 +277,7 @@ func make_place_cell_selection(mode: TypeDefs.Mode):
 		TypeDefs.Mode.PLACE_OBJECT:
 			for objtype in TypeDefs.Objects.values():
 				$CanvasLayer/OptionButton.add_item(TypeDefs.ObjectName[objtype], objtype)
-			$CanvasLayer/OptionButton.select(TypeDefs.Tile.GRASS)
+			$CanvasLayer/OptionButton.select(TypeDefs.Objects.TREE)
 		TypeDefs.Mode.PLACE_ENTITY:
 			for entitytype in TypeDefs.Entity.values():
 				$CanvasLayer/OptionButton.add_item(TypeDefs.EntityName[entitytype], entitytype)

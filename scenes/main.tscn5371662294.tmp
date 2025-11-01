@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://5nq607jqvt50"]
+[gd_scene load_steps=27 format=3 uid="uid://5nq607jqvt50"]
 
 [ext_resource type="Script" uid="uid://bdlt6d32wqywm" path="res://Scripts/node_2d.gd" id="1_85g3d"]
 [ext_resource type="Script" uid="uid://buf7gkrb2px63" path="res://Scripts/camera_2d.gd" id="2_choun"]
@@ -6,6 +6,8 @@
 [ext_resource type="Script" uid="uid://cjk8nronimk5r" path="res://addons/TileMapDual/TileMapDual.gd" id="5_85g3d"]
 [ext_resource type="Texture2D" uid="uid://be08o206u0gb6" path="res://textures/texture_sets/dirt_transp.png" id="5_tipki"]
 [ext_resource type="Texture2D" uid="uid://cwmevhhm48npo" path="res://textures/texture_sets/sand_trans.png" id="5_ya4ey"]
+[ext_resource type="Texture2D" uid="uid://toj63dgghusn" path="res://textures/objects/grass.png" id="7_jkv2x"]
+[ext_resource type="Texture2D" uid="uid://c2t7upegnwr4t" path="res://textures/objects/berry_bush.png" id="8_jbj1t"]
 [ext_resource type="Texture2D" uid="uid://ca83mvjabm0fm" path="res://textures/cursor/1.png" id="9_choun"]
 [ext_resource type="Texture2D" uid="uid://dobrvyh6v4vo0" path="res://textures/cursor/2.png" id="10_ya4ey"]
 [ext_resource type="PackedScene" uid="uid://dkoe6am328ofj" path="res://scenes/tree.tscn" id="13_trceg"]
@@ -346,12 +348,26 @@ terrain_set_0/terrain_1/name = "FG -tileset_standard.png"
 terrain_set_0/terrain_1/color = Color(0.5, 0.4375, 0.25, 1)
 sources/0 = SubResource("TileSetAtlasSource_trceg")
 
-[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_85g3d"]
-resource_name = "Plants"
-scenes/0/scene = ExtResource("13_trceg")
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_rj586"]
+resource_name = "grass"
+texture = ExtResource("7_jkv2x")
+0:0/0 = 0
+1:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4d7sh"]
+resource_name = "berry_bush"
+texture = ExtResource("8_jbj1t")
+0:0/0 = 0
+
+[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_ya4ey"]
+scenes/1/scene = ExtResource("13_trceg")
 
 [sub_resource type="TileSet" id="TileSet_4d7sh"]
-sources/1 = SubResource("TileSetScenesCollectionSource_85g3d")
+sources/0 = SubResource("TileSetAtlasSource_rj586")
+sources/1 = SubResource("TileSetAtlasSource_4d7sh")
+sources/3 = SubResource("TileSetScenesCollectionSource_ya4ey")
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_eb6dy"]
 animations = [{
