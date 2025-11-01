@@ -26,5 +26,5 @@ func Physics_Update(delta):
 	if direction == Vector2.ZERO:
 		pass
 	else:
-		animation_tree.set("parameters/Walk/blend_position", direction.x)
+		animation_tree.set("parameters/Walk/blend_position", direction)
 	

@@ -15,6 +15,9 @@ const PAUSE_AT_DESTINATION_DURATION: float = 3.0 # Seconds to pause
 @export var animation_tree: AnimationTree
 @export var baseTileMap: TileMapDual
 
+# --- GOAP Control ---
+var goap_controlled: bool = false # Set to true when GOAP is controlling movement
+
 # --- Internal State ---
 var direction: Vector2 = Vector2.ZERO
 var wander_time: float = 0.0 # For fallback random movement (less used with current pathing)
@@ -40,7 +43,7 @@ func _ready():
 		#set_physics_process(false)
 		#return
 		
-	_tile_size_half = Vector2i(16,16)/2
+	_tile_size_half = Vector2i(16, 16) / 2
 
 	if not NavigationManager.is_graph_ready():
 		printerr(name, ": NavigationManager graph is not ready. Pathfinding might fail initially.")
@@ -53,6 +56,13 @@ func _on_entity_ready():
 	pass
 
 func _physics_process(delta: float):
+	# If GOAP is controlling movement, skip autonomous pathfinding
+	if goap_controlled:
+		_handle_animation() # Still handle animations
+		move_and_slide()
+		_on_entity_physics_process(delta)
+		return
+	
 	var current_target_velocity = Vector2.ZERO # Renamed to avoid conflict with inherited 'velocity'
 #
 	#if not is_instance_valid(base_tilemap): # Safety check
@@ -91,6 +101,11 @@ func _physics_process(delta: float):
 
 	velocity = current_target_velocity # Set the final velocity for CharacterBody2D
 	
+	_handle_animation()
+	move_and_slide()
+	_on_entity_physics_process(delta) # Hook for subclasses
+
+func _handle_animation() -> void:
 	# Animation control
 	if is_instance_valid(animation_tree):
 		var is_idle = velocity.length_squared() < 0.01 # Check if velocity is near zero
@@ -101,9 +116,6 @@ func _physics_process(delta: float):
 		else:
 			animation_tree.get("parameters/playback").travel("Idle")
 		animation_tree.set("parameters/Idle/blend_position", last_facing_direction)
-	
-	move_and_slide()
-	_on_entity_physics_process(delta) # Hook for subclasses
 
 # Hook for subclasses to add their own _physics_process logic
 func _on_entity_physics_process(delta: float):
@@ -152,7 +164,7 @@ func _request_new_path():
 
 	thinking = false # Allow retry or fallback (e.g. could set wander_time here)
 	# Consider a small delay before retrying to avoid spamming if stuck
-	get_tree().create_timer(1.0).timeout.connect(func(): call_deferred("_request_new_path") )
+	get_tree().create_timer(1.0).timeout.connect(func(): call_deferred("_request_new_path"))
 
 
 # --- Hooks for Subclasses (Protected-like methods) ---
@@ -171,4 +183,4 @@ func _is_valid_target_tile(map_pos: Vector2i) -> bool:
 	# You'll likely want to check if it's within map bounds if your wander_radius is large
 	# and NavigationManager doesn't already handle out-of-bounds requests gracefully.
 	# For now, we assume NavigationManager handles invalid coords.
-	return true 
+	return true
