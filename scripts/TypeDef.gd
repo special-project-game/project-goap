@@ -7,8 +7,9 @@ const TileName = {
 	TypeDefs.Tile.SAND: "Sand",
 }
 enum Layer {WATER_GRASS, DIRT, SAND}
-enum Objects {GRASS}
+enum Objects {TREE, GRASS}
 const ObjectName = {
+	TypeDefs.Objects.TREE: "Tree",
 	TypeDefs.Objects.GRASS: "Grass",
 }
 enum Entity {PERSON, PIG}
