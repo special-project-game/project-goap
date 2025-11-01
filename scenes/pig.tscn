@@ -1,11 +1,11 @@
 [gd_scene load_steps=18 format=3 uid="uid://d2ktstoah5df7"]
 
-[ext_resource type="Script" uid="uid://b365as4jnvtyi" path="res://Scripts/pig.gd" id="1_ct3s0"]
+[ext_resource type="Script" uid="uid://b365as4jnvtyi" path="res://scripts/entities/pig.gd" id="1_ct3s0"]
 [ext_resource type="Texture2D" uid="uid://kxl8xhlpyk4y" path="res://textures/texture_sets/MiniWorldSprites/Animals/Pig.png" id="1_sq5kf"]
 [ext_resource type="PackedScene" uid="uid://d3eq3jv6marhl" path="res://scenes/health_component.tscn" id="2_4a8uq"]
 [ext_resource type="PackedScene" uid="uid://ds3doyrucb6ae" path="res://scenes/hurtbox_component.tscn" id="3_j740r"]
 [ext_resource type="PackedScene" uid="uid://bxyc5lb87o0rm" path="res://scenes/state_machine.tscn" id="5_bnrkt"]
-[ext_resource type="Script" uid="uid://c6p2h7qwgsloj" path="res://Scripts/wander.gd" id="6_e1p3k"]
+[ext_resource type="Script" uid="uid://c6p2h7qwgsloj" path="res://scripts/wander.gd" id="6_e1p3k"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4a8uq"]
 size = Vector2(4, 4)
