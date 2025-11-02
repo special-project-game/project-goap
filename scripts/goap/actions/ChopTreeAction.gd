@@ -82,8 +82,20 @@ func perform(agent: Node, delta: float) -> bool:
 					if goap_agent.has_method("add_wood"):
 						goap_agent.add_wood(1)
 				
-				# Destroy the tree
+				# Get the tree's tile position before destroying it
 				if is_instance_valid(target):
+					# Find the objectlayer using group
+					var objectlayers = agent.get_tree().get_nodes_in_group("objectlayer")
+					if objectlayers.size() > 0:
+						var objectlayer = objectlayers[0]
+						var tree_map_pos = objectlayer.local_to_map(target.global_position)
+						# Erase the cell from the TileMapLayer
+						objectlayer.erase_cell(tree_map_pos)
+						print(agent.name, ": Erased tree cell at ", tree_map_pos)
+					else:
+						printerr(agent.name, ": ObjectLayer not found in 'objectlayer' group!")
+					
+					# Destroy the tree instance
 					target.queue_free()
 				
 				print(agent.name, ": Tree chopped! Got wood.")

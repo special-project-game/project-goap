@@ -158,7 +158,14 @@ func place_obj(pos: Vector2i, obj: TypeDefs.Objects):
 	var source_id = 1 # for the TileSet, I used scenes collection instead, 1 is the ID for the collection
 	# obj should be the ID of the 'scene' inside the collection
 	if not get_cell_type(obj_pos) == TypeDefs.Tile.WATER:
-			objectlayer.set_cell(obj_pos, source_id, Vector2i.ZERO, obj)
+		# Check if there's already an object here
+		var existing_cell = objectlayer.get_cell_source_id(obj_pos)
+		if existing_cell != -1:
+			print("Object already exists at ", obj_pos, " - erasing first")
+			objectlayer.erase_cell(obj_pos)
+		
+		objectlayer.set_cell(obj_pos, source_id, Vector2i.ZERO, obj)
+		print("Placed object at ", obj_pos)
 
 func save_tiles_to_file():
 	print("Saving")
@@ -202,6 +209,11 @@ func save_tiles_to_file():
 
 func _ready():
 	cursor.play()
+	
+	# Add ObjectLayer to a group so it can be found by actions
+	if objectlayer:
+		objectlayer.add_to_group("objectlayer")
+	
 	load_tiles_from_file()
 	fill_empty_with_water(100, 100)
 	

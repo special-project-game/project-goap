@@ -15,6 +15,10 @@ static func bake_navigation_from_tilemap(tilemap: TileMapDual, main_node, naviga
 	
 	var nav_polygon = NavigationPolygon.new()
 	
+	# Set agent radius to create margin around obstacles
+	# This effectively shrinks the navigation area away from water
+	nav_polygon.agent_radius = 4.0
+	
 	# Get tile size
 	var tile_size = tilemap.tile_set.tile_size if tilemap.tile_set else Vector2i(16, 16)
 	var half_size = Vector2(tile_size) / 2.0
@@ -34,6 +38,7 @@ static func bake_navigation_from_tilemap(tilemap: TileMapDual, main_node, naviga
 				var world_pos = tilemap.map_to_local(map_pos)
 				
 				# Add 4 vertices for this tile (counter-clockwise)
+				# agent_radius will create margin automatically
 				all_vertices.append(world_pos + Vector2(-half_size.x, -half_size.y)) # Top-left
 				all_vertices.append(world_pos + Vector2(half_size.x, -half_size.y)) # Top-right
 				all_vertices.append(world_pos + Vector2(half_size.x, half_size.y)) # Bottom-right

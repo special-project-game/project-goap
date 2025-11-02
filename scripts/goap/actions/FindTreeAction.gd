@@ -193,5 +193,4 @@ func _is_tree_reachable(agent: Node, tree: Node) -> bool:
 		print(agent.name, ": Tree at ", tree.global_position, " UNREACHABLE - path ends ", distance_to_target, " units away (max: ", max_acceptable_distance, ")")
 		return false
 	
-	print(agent.name, ": Tree at ", tree.global_position, " is REACHABLE (path size: ", path.size(), ", end distance: ", distance_to_target, ")")
 	return true
