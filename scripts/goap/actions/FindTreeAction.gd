@@ -7,7 +7,7 @@ class_name FindTreeAction
 @onready var scanner_component: Area2D
 @onready var navigation_agent: NavigationAgent2D
 
-const ARRIVED_THRESHOLD: float = 30.0
+const ARRIVED_THRESHOLD: float = 10.0
 
 func _setup_action() -> void:
 	action_name = "FindTree"
@@ -27,12 +27,18 @@ func is_valid(agent: Node, world_state: Dictionary) -> bool:
 		if not is_instance_valid(target):
 			print(agent.name, ": FindTreeAction.is_valid() - Tree target destroyed/freed, returning FALSE")
 			target = null
+			# Clear navigation visualization
+			if navigation_agent:
+				navigation_agent.target_position = agent.global_position
 			return false
 		
 		# Target is valid, check if reachable
 		if not _is_tree_reachable(agent, target):
 			print(agent.name, ": FindTreeAction.is_valid() - Tree target unreachable, returning FALSE")
 			target = null
+			# Clear navigation visualization
+			if navigation_agent:
+				navigation_agent.target_position = agent.global_position
 			return false
 		
 		# Target is valid and reachable
@@ -108,6 +114,10 @@ func perform(agent: Node, _delta: float) -> bool:
 func on_exit(agent: Node) -> void:
 	super.on_exit(agent)
 	agent.velocity = Vector2.ZERO
+	
+	# Clear navigation target to remove debug visualization
+	if navigation_agent:
+		navigation_agent.target_position = agent.global_position
 
 func _find_nearest_tree(agent: Node) -> Node:
 	if not scanner_component:

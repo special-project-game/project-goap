@@ -74,6 +74,10 @@ func perform(agent: Node, delta: float) -> bool:
 func on_exit(agent: Node) -> void:
 	super.on_exit(agent)
 	agent.velocity = Vector2.ZERO
+	
+	# Clear navigation target to remove debug visualization
+	if navigation_agent:
+		navigation_agent.target_position = agent.global_position
 
 func _find_nearest_food(agent: Node) -> Node:
 	if not scanner_component:

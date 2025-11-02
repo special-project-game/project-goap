@@ -31,6 +31,12 @@ const atlas_coordinates_reversed = {
 @onready var objectlayer := $ObjectLayer
 @onready var navigation_region := $NavigationRegion2D
 
+# Navigation rebake state
+var navigation_rebake_timer: Timer = null
+var needs_navigation_rebake: bool = false
+var enable_auto_rebake: bool = false # Only enable after initial setup
+const NAVIGATION_REBAKE_DELAY: float = 0.5 # Wait 0.5s after last tile change before rebaking
+
 signal tile_changed(map_coords: Vector2i) # Signal emitted when a tile changes
 
 func place_cell(pos: Vector2i, cell: TypeDefs.Tile):
@@ -199,13 +205,46 @@ func _ready():
 	load_tiles_from_file()
 	fill_empty_with_water(100, 100)
 	
+	# Setup navigation rebake timer
+	navigation_rebake_timer = Timer.new()
+	navigation_rebake_timer.one_shot = true
+	navigation_rebake_timer.wait_time = NAVIGATION_REBAKE_DELAY
+	navigation_rebake_timer.timeout.connect(_on_navigation_rebake_timer_timeout)
+	add_child(navigation_rebake_timer)
+	
+	# Connect tile changed signal to trigger rebake
+	tile_changed.connect(_on_tile_changed)
+	
 	# Bake navigation based on walkable tiles (excludes water)
 	if navigation_region:
 		await NavigationBaker.bake_navigation_from_tilemap(layers[TypeDefs.Layer.WATER_GRASS], self, navigation_region)
 		# Enable debug visualization (optional - comment out if you don't want to see it)
 		NavigationServer2D.set_debug_enabled(true)
+		
+		# Now enable auto-rebake for runtime tile changes
+		enable_auto_rebake = true
+		print("Navigation auto-rebake enabled")
 	else:
 		printerr("NavigationRegion2D not found!")
+
+func _on_tile_changed(_map_coords: Vector2i) -> void:
+	"""Called when a tile is changed - schedules navigation rebake"""
+	if not enable_auto_rebake:
+		return # Skip during initial setup
+	
+	needs_navigation_rebake = true
+	
+	# Restart the timer to debounce multiple rapid changes
+	if navigation_rebake_timer:
+		navigation_rebake_timer.start()
+
+func _on_navigation_rebake_timer_timeout() -> void:
+	"""Called after tile changes have settled - rebakes navigation"""
+	if needs_navigation_rebake and navigation_region:
+		print("Rebaking navigation due to tile changes...")
+		needs_navigation_rebake = false
+		await NavigationBaker.bake_navigation_from_tilemap(layers[TypeDefs.Layer.WATER_GRASS], self, navigation_region)
+		print("Navigation rebake complete!")
 
 func fill_empty_with_water(area_width: int, area_height: int):
 	for y in range(-area_height, area_height):
