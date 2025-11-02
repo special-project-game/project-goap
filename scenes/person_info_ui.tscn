@@ -1,0 +1,138 @@
+[gd_scene load_steps=2 format=3 uid="uid://bwm8kqp2vnhxy"]
+
+[ext_resource type="Script" path="res://scripts/ui/PersonInfoUI.gd" id="1_person_info"]
+
+[node name="PersonInfoUI" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 300.0
+offset_bottom = 400.0
+script = ExtResource("1_person_info")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HeaderContainer" type="HBoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="LevelLabel" type="Label" parent="Panel/VBoxContainer/HeaderContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Level 1"
+vertical_alignment = 1
+
+[node name="ExpLabel" type="Label" parent="Panel/VBoxContainer/HeaderContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Exp: 0/200"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="CloseButton" type="Button" parent="Panel/VBoxContainer/HeaderContainer"]
+layout_mode = 2
+text = "X"
+
+[node name="HSeparator" type="HSeparator" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="StatsContainer" type="VBoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="HealthBar" type="ProgressBar" parent="Panel/VBoxContainer/StatsContainer"]
+layout_mode = 2
+max_value = 10.0
+value = 10.0
+show_percentage = false
+
+[node name="HealthLabel" type="Label" parent="Panel/VBoxContainer/StatsContainer/HealthBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Health: 10/10"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HungerBar" type="ProgressBar" parent="Panel/VBoxContainer/StatsContainer"]
+layout_mode = 2
+max_value = 100.0
+show_percentage = false
+
+[node name="HungerLabel" type="Label" parent="Panel/VBoxContainer/StatsContainer/HungerBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Hunger: 0/100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HSeparator2" type="HSeparator" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="InventoryContainer" type="VBoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="InventoryTitle" type="Label" parent="Panel/VBoxContainer/InventoryContainer"]
+layout_mode = 2
+theme_type_variation = &"HeaderMedium"
+text = "Inventory"
+
+[node name="InventoryLabel" type="Label" parent="Panel/VBoxContainer/InventoryContainer"]
+layout_mode = 2
+text = "  Wood: 0"
+
+[node name="HSeparator3" type="HSeparator" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="TaskContainer" type="VBoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="TaskTitle" type="Label" parent="Panel/VBoxContainer/TaskContainer"]
+layout_mode = 2
+theme_type_variation = &"HeaderMedium"
+text = "Current Task"
+
+[node name="TaskLabel" type="Label" parent="Panel/VBoxContainer/TaskContainer"]
+layout_mode = 2
+text = "  Goal: None
+  Action: Idle"
+
+[node name="HSeparator4" type="HSeparator" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="PlanContainer" type="VBoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PlanTitle" type="Label" parent="Panel/VBoxContainer/PlanContainer"]
+layout_mode = 2
+theme_type_variation = &"HeaderMedium"
+text = "Action Plan"
+
+[node name="PlanLabel" type="Label" parent="Panel/VBoxContainer/PlanContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "  No active plan"
+vertical_alignment = 1

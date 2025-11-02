@@ -3,7 +3,7 @@ extends Node2D
 const SAVE_FILE := "user://save.json"
 
 var is_left_mouse_dragging: bool = false
-var last_placed_tile_map_pos: Vector2i = Vector2i(-1,-1)
+var last_placed_tile_map_pos: Vector2i = Vector2i(-1, -1)
 var current_mode = TypeDefs.Mode.VIEW
 
 var entities = {
@@ -12,23 +12,30 @@ var entities = {
 	}
 
 const atlas_coordinates = {
-	TypeDefs.Tile.WATER: [TypeDefs.Layer.WATER_GRASS, Vector2i(0,3)],
-	TypeDefs.Tile.GRASS: [TypeDefs.Layer.WATER_GRASS, Vector2i(2,1)],
-	TypeDefs.Tile.DIRT: [TypeDefs.Layer.DIRT, Vector2i(2,1)],
-	TypeDefs.Tile.SAND: [TypeDefs.Layer.SAND, Vector2i(2,1)],
+	TypeDefs.Tile.WATER: [TypeDefs.Layer.WATER_GRASS, Vector2i(0, 3)],
+	TypeDefs.Tile.GRASS: [TypeDefs.Layer.WATER_GRASS, Vector2i(2, 1)],
+	TypeDefs.Tile.DIRT: [TypeDefs.Layer.DIRT, Vector2i(2, 1)],
+	TypeDefs.Tile.SAND: [TypeDefs.Layer.SAND, Vector2i(2, 1)],
 }
 
 const atlas_coordinates_reversed = {
-	[TypeDefs.Layer.WATER_GRASS, Vector2i(0,3)]: TypeDefs.Tile.WATER,
-	[TypeDefs.Layer.WATER_GRASS, Vector2i(2,1)]: TypeDefs.Tile.GRASS,
-	[TypeDefs.Layer.DIRT, Vector2i(2,1)]: TypeDefs.Tile.DIRT,
-	[TypeDefs.Layer.SAND, Vector2i(2,1)]: TypeDefs.Tile.SAND,
+	[TypeDefs.Layer.WATER_GRASS, Vector2i(0, 3)]: TypeDefs.Tile.WATER,
+	[TypeDefs.Layer.WATER_GRASS, Vector2i(2, 1)]: TypeDefs.Tile.GRASS,
+	[TypeDefs.Layer.DIRT, Vector2i(2, 1)]: TypeDefs.Tile.DIRT,
+	[TypeDefs.Layer.SAND, Vector2i(2, 1)]: TypeDefs.Tile.SAND,
 }
 
 @onready var cursor := $Cursor
 @onready var camera := $Camera2D
-@onready var layers := [$Water_Grass,$Dirt, $Sand]
+@onready var layers := [$Water_Grass, $Dirt, $Sand]
 @onready var objectlayer := $ObjectLayer
+@onready var navigation_region := $NavigationRegion2D
+
+# Navigation rebake state
+var navigation_rebake_timer: Timer = null
+var needs_navigation_rebake: bool = false
+var enable_auto_rebake: bool = false # Only enable after initial setup
+const NAVIGATION_REBAKE_DELAY: float = 0.5 # Wait 0.5s after last tile change before rebaking
 
 signal tile_changed(map_coords: Vector2i) # Signal emitted when a tile changes
 
@@ -56,13 +63,13 @@ func get_cell_type(pos: Vector2i) -> TypeDefs.Tile:
 
 	
 	var atlas_coords = layers[TypeDefs.Layer.DIRT].get_cell_atlas_coords(pos)
-	if atlas_coords != Vector2i(-1,-1):
+	if atlas_coords != Vector2i(-1, -1):
 		return atlas_coordinates_reversed[[TypeDefs.Layer.DIRT, atlas_coords]]
 	atlas_coords = layers[TypeDefs.Layer.SAND].get_cell_atlas_coords(pos)
-	if atlas_coords != Vector2i(-1,-1):
+	if atlas_coords != Vector2i(-1, -1):
 		return atlas_coordinates_reversed[[TypeDefs.Layer.SAND, atlas_coords]]
 	atlas_coords = layers[TypeDefs.Layer.WATER_GRASS].get_cell_atlas_coords(pos)
-	if atlas_coords != Vector2i(-1,-1):
+	if atlas_coords != Vector2i(-1, -1):
 		return atlas_coordinates_reversed[[TypeDefs.Layer.WATER_GRASS, atlas_coords]]
 
 	return TypeDefs.Tile.WATER
@@ -70,9 +77,9 @@ func get_cell_type(pos: Vector2i) -> TypeDefs.Tile:
 	
 func place_mouse():
 	var mouse_world_pos: Vector2 = get_global_mouse_position()
-	mouse_world_pos -= Vector2(8,8)
-	cursor.position = mouse_world_pos.snapped(Vector2i(16,16))
-	cursor.position += Vector2(8,8)
+	mouse_world_pos -= Vector2(8, 8)
+	cursor.position = mouse_world_pos.snapped(Vector2i(16, 16))
+	cursor.position += Vector2(8, 8)
 		
 func _input(_event):
 	place_mouse()
@@ -109,7 +116,7 @@ func _unhandled_input(event):
 					last_placed_tile_map_pos = current_tile_map_pos # Record placement
 		else: # Mouse button released
 			is_left_mouse_dragging = false
-			last_placed_tile_map_pos = Vector2i(-1,-1) # Reset last placed position
+			last_placed_tile_map_pos = Vector2i(-1, -1) # Reset last placed position
 
 	# Handle Mouse Motion (Dragging)
 	elif event is InputEventMouseMotion and is_left_mouse_dragging:
@@ -151,7 +158,14 @@ func place_obj(pos: Vector2i, obj: TypeDefs.Objects):
 	var source_id = 1 # for the TileSet, I used scenes collection instead, 1 is the ID for the collection
 	# obj should be the ID of the 'scene' inside the collection
 	if not get_cell_type(obj_pos) == TypeDefs.Tile.WATER:
-			objectlayer.set_cell(obj_pos, source_id, Vector2i.ZERO, obj)
+		# Check if there's already an object here
+		var existing_cell = objectlayer.get_cell_source_id(obj_pos)
+		if existing_cell != -1:
+			print("Object already exists at ", obj_pos, " - erasing first")
+			objectlayer.erase_cell(obj_pos)
+		
+		objectlayer.set_cell(obj_pos, source_id, Vector2i.ZERO, obj)
+		print("Placed object at ", obj_pos)
 
 func save_tiles_to_file():
 	print("Saving")
@@ -195,9 +209,54 @@ func save_tiles_to_file():
 
 func _ready():
 	cursor.play()
+	
+	# Add ObjectLayer to a group so it can be found by actions
+	if objectlayer:
+		objectlayer.add_to_group("objectlayer")
+	
 	load_tiles_from_file()
 	fill_empty_with_water(100, 100)
-	NavigationManager.initialize_navigation(layers[TypeDefs.Layer.WATER_GRASS], self)
+	
+	# Setup navigation rebake timer
+	navigation_rebake_timer = Timer.new()
+	navigation_rebake_timer.one_shot = true
+	navigation_rebake_timer.wait_time = NAVIGATION_REBAKE_DELAY
+	navigation_rebake_timer.timeout.connect(_on_navigation_rebake_timer_timeout)
+	add_child(navigation_rebake_timer)
+	
+	# Connect tile changed signal to trigger rebake
+	tile_changed.connect(_on_tile_changed)
+	
+	# Bake navigation based on walkable tiles (excludes water)
+	if navigation_region:
+		await NavigationBaker.bake_navigation_from_tilemap(layers[TypeDefs.Layer.WATER_GRASS], self, navigation_region)
+		# Enable debug visualization (optional - comment out if you don't want to see it)
+		NavigationServer2D.set_debug_enabled(true)
+		
+		# Now enable auto-rebake for runtime tile changes
+		enable_auto_rebake = true
+		print("Navigation auto-rebake enabled")
+	else:
+		printerr("NavigationRegion2D not found!")
+
+func _on_tile_changed(_map_coords: Vector2i) -> void:
+	"""Called when a tile is changed - schedules navigation rebake"""
+	if not enable_auto_rebake:
+		return # Skip during initial setup
+	
+	needs_navigation_rebake = true
+	
+	# Restart the timer to debounce multiple rapid changes
+	if navigation_rebake_timer:
+		navigation_rebake_timer.start()
+
+func _on_navigation_rebake_timer_timeout() -> void:
+	"""Called after tile changes have settled - rebakes navigation"""
+	if needs_navigation_rebake and navigation_region:
+		print("Rebaking navigation due to tile changes...")
+		needs_navigation_rebake = false
+		await NavigationBaker.bake_navigation_from_tilemap(layers[TypeDefs.Layer.WATER_GRASS], self, navigation_region)
+		print("Navigation rebake complete!")
 
 func fill_empty_with_water(area_width: int, area_height: int):
 	for y in range(-area_height, area_height):
@@ -267,7 +326,7 @@ func _on_mode_option_button_item_selected(index: int) -> void:
 		
 
 func make_place_cell_selection(mode: TypeDefs.Mode):
-	print("mode is " , mode)
+	print("mode is ", mode)
 	$CanvasLayer/OptionButton.clear()
 	match mode:
 		TypeDefs.Mode.PLACE_TILE:

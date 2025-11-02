@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3 uid="uid://d36crc7kindbf"]
+[gd_scene load_steps=48 format=3 uid="uid://d36crc7kindbf"]
 
 [ext_resource type="Script" uid="uid://carxwlbbbo7o" path="res://Scripts/entities/person.gd" id="1_5dovg"]
 [ext_resource type="Texture2D" uid="uid://tow4k7h2qrjt" path="res://textures/texture_sets/MiniWorldSprites/Characters/Workers/FarmerTemplate.png" id="2_5dovg"]
@@ -8,8 +8,19 @@
 [ext_resource type="PackedScene" uid="uid://datnoswldfogg" path="res://scenes/hit_box_component.tscn" id="6_8qhow"]
 [ext_resource type="PackedScene" uid="uid://bxyc5lb87o0rm" path="res://scenes/state_machine.tscn" id="6_pfaeq"]
 [ext_resource type="Script" uid="uid://nr2ety0ah7ia" path="res://scripts/find_tree.gd" id="7_2jjoq"]
-[ext_resource type="Script" uid="uid://c6p2h7qwgsloj" path="res://Scripts/wander.gd" id="8_ym70v"]
+[ext_resource type="Script" uid="uid://c6p2h7qwgsloj" path="res://scripts/wander.gd" id="8_ym70v"]
 [ext_resource type="Script" uid="uid://usjdejqsykwr" path="res://scripts/chop_tree.gd" id="9_526uv"]
+[ext_resource type="Script" uid="uid://b8pvj3qnxrn3y" path="res://scripts/goap/PersonGOAPAgent.gd" id="11_cqdfk"]
+[ext_resource type="Script" uid="uid://bdjo5p4xt3g3k" path="res://scripts/goap/actions/FindTreeAction.gd" id="12_ov3s6"]
+[ext_resource type="Script" uid="uid://cu7hk8m2wvnlx" path="res://scripts/goap/actions/ChopTreeAction.gd" id="13_pm2lx"]
+[ext_resource type="Script" path="res://scripts/goap/actions/GetAppleAction.gd" id="14_apple"]
+[ext_resource type="Script" uid="uid://dw3v7jfkqbmh0" path="res://scripts/goap/actions/FindFoodAction.gd" id="14_bgppu"]
+[ext_resource type="Script" uid="uid://cytwmkd2rsj1b" path="res://scripts/goap/actions/EatFoodAction.gd" id="15_2xfh2"]
+[ext_resource type="Script" uid="uid://ds5oy3kcm2rjp" path="res://scripts/goap/actions/RestAction.gd" id="16_rmolt"]
+[ext_resource type="Script" path="res://scripts/goap/actions/WanderAction.gd" id="17_wander"]
+[ext_resource type="Script" uid="uid://dyh4jnm5p8rwk" path="res://scripts/goap/goals/SatisfyHungerGoal.gd" id="17_ls67o"]
+[ext_resource type="Script" uid="uid://cwf2h8yx5vn3q" path="res://scripts/goap/goals/LevelUpGoal.gd" id="18_1qagf"]
+[ext_resource type="Script" uid="uid://bxm3k7qp2vnhw" path="res://scripts/goap/goals/IdleGoal.gd" id="19_pir7x"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5dovg"]
 size = Vector2(4, 4)
@@ -73,7 +84,7 @@ advance_expression = "velocity"
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_ym70v"]
 states/Idle/node = SubResource("AnimationNodeBlendSpace2D_526uv")
 states/Idle/position = Vector2(322, 168)
-states/Start/position = Vector2(205, 108)
+states/Start/position = Vector2(204.5, 108)
 states/Walk/node = SubResource("AnimationNodeBlendSpace2D_2jjoq")
 states/Walk/position = Vector2(322, 42)
 transitions = ["Start", "Walk", SubResource("AnimationNodeStateMachineTransition_gqr4j"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_5dovg"), "Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_jf287")]
@@ -258,7 +269,7 @@ size = Vector2(5, 5)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2jjoq"]
 
-[node name="Person" type="CharacterBody2D" node_paths=PackedStringArray("animation_tree") groups=["entities"]]
+[node name="Person" type="CharacterBody2D" node_paths=PackedStringArray("animation_tree") groups=["entities", "person"]]
 collision_layer = 2
 collision_mask = 2
 script = ExtResource("1_5dovg")
@@ -311,13 +322,12 @@ position = Vector2(0, -2)
 shape = SubResource("RectangleShape2D_526uv")
 
 [node name="ScannerComponent" type="Area2D" parent="."]
-visible = false
 collision_layer = 0
 collision_mask = 6
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ScannerComponent"]
 position = Vector2(0, -2)
-scale = Vector2(10, 10)
+scale = Vector2(200, 200)
 shape = SubResource("RectangleShape2D_2jjoq")
 
 [node name="StateMachine" parent="." node_paths=PackedStringArray("initial_state") instance=ExtResource("6_pfaeq")]
@@ -335,3 +345,44 @@ script = ExtResource("8_ym70v")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 debug_enabled = true
+
+[node name="GOAPAgent" type="Node" parent="." node_paths=PackedStringArray("entity")]
+script = ExtResource("11_cqdfk")
+entity = NodePath("..")
+
+[node name="FindTreeAction" type="Node" parent="GOAPAgent"]
+script = ExtResource("12_ov3s6")
+
+[node name="ChopTreeAction" type="Node" parent="GOAPAgent"]
+script = ExtResource("13_pm2lx")
+metadata/_custom_type_script = "uid://cu7hk8m2wvnlx"
+
+[node name="GetAppleAction" type="Node" parent="GOAPAgent"]
+script = ExtResource("14_apple")
+
+[node name="FindFoodAction" type="Node" parent="GOAPAgent"]
+script = ExtResource("14_bgppu")
+metadata/_custom_type_script = "uid://dw3v7jfkqbmh0"
+
+[node name="EatFoodAction" type="Node" parent="GOAPAgent"]
+script = ExtResource("15_2xfh2")
+metadata/_custom_type_script = "uid://cytwmkd2rsj1b"
+
+[node name="RestAction" type="Node" parent="GOAPAgent"]
+script = ExtResource("16_rmolt")
+metadata/_custom_type_script = "uid://ds5oy3kcm2rjp"
+
+[node name="WanderAction" type="Node" parent="GOAPAgent"]
+script = ExtResource("17_wander")
+
+[node name="SatisfyHungerGoal" type="Node" parent="GOAPAgent"]
+script = ExtResource("17_ls67o")
+metadata/_custom_type_script = "uid://dyh4jnm5p8rwk"
+
+[node name="LevelUpGoal" type="Node" parent="GOAPAgent"]
+script = ExtResource("18_1qagf")
+metadata/_custom_type_script = "uid://cwf2h8yx5vn3q"
+
+[node name="IdleGoal" type="Node" parent="GOAPAgent"]
+script = ExtResource("19_pir7x")
+metadata/_custom_type_script = "uid://bxm3k7qp2vnhw"
