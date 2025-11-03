@@ -1,7 +1,7 @@
 extends Node2D
 class_name Attack
 
-@export var attack_damage := 1.0
+@export var attack_damage := 5.0
 @export var cooldown_time := 2.0
 
 var last_attack_time : float

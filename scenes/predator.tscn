@@ -1,0 +1,50 @@
+[gd_scene load_steps=11 format=3 uid="uid://dhn4oxv8akx34"]
+
+[ext_resource type="Texture2D" uid="uid://d1yrbcnqjiusl" path="res://icon.svg" id="1_2ixv2"]
+[ext_resource type="Script" uid="uid://cwlkvctdpg85k" path="res://scripts/entities/predator.gd" id="1_w6bwu"]
+[ext_resource type="PackedScene" uid="uid://bd67twu1oip6e" path="res://scenes/attack.tscn" id="2_voa5e"]
+[ext_resource type="PackedScene" uid="uid://d3eq3jv6marhl" path="res://scenes/health_component.tscn" id="3_w6bwu"]
+[ext_resource type="PackedScene" uid="uid://datnoswldfogg" path="res://scenes/hit_box_component.tscn" id="4_gymde"]
+[ext_resource type="PackedScene" uid="uid://ds3doyrucb6ae" path="res://scenes/hurtbox_component.tscn" id="5_7ds8v"]
+[ext_resource type="Script" uid="uid://87gnbrp5xu1g" path="res://scripts/goap/PredatorGOAPAgentt.gd" id="7_gymde"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wacsr"]
+size = Vector2(4, 4)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_r2jyc"]
+size = Vector2(6, 6)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_elnvq"]
+size = Vector2(4, 4)
+
+[node name="Predator" type="CharacterBody2D"]
+script = ExtResource("1_w6bwu")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -2)
+scale = Vector2(0.031, 0.031)
+texture = ExtResource("1_2ixv2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -2)
+shape = SubResource("RectangleShape2D_wacsr")
+
+[node name="Attack" parent="." instance=ExtResource("2_voa5e")]
+
+[node name="HealthComponent" parent="." instance=ExtResource("3_w6bwu")]
+
+[node name="HitBoxComponent" parent="." instance=ExtResource("4_gymde")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitBoxComponent"]
+position = Vector2(0, -2)
+shape = SubResource("RectangleShape2D_r2jyc")
+
+[node name="HurtBoxComponent" parent="." instance=ExtResource("5_7ds8v")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBoxComponent"]
+position = Vector2(0, -2)
+shape = SubResource("RectangleShape2D_elnvq")
+disabled = true
+
+[node name="GOAPAgent" type="Node" parent="."]
+script = ExtResource("7_gymde")
