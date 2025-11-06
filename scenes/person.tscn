@@ -346,7 +346,6 @@ debug_enabled = true
 
 [node name="GOAPAgent" type="Node" parent="." node_paths=PackedStringArray("entity")]
 script = ExtResource("11_cqdfk")
-hunger_rate = 10.0
 entity = NodePath("..")
 
 [node name="FindTreeAction" type="Node" parent="GOAPAgent"]

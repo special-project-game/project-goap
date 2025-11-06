@@ -9,6 +9,7 @@ class_name PersonGOAPAgent
 var hunger: float = 0.0
 var max_hunger: float = 100.0
 @export var hunger_rate: float = 1.0 # Hunger per second
+@export var heal_rate: float = 1.0
 
 var wood_count: int = 0
 var food_count: int = 0
@@ -50,9 +51,14 @@ func _process(delta: float):
 	# if hunger maxed out, lose health
 	if hunger >= max_hunger and health_component:
 		health_component.health = max(0.0, health_component.health - 0.5 * delta) # Lose 0.5 health per second when starving
-	
+
 	if health_component.health <= 0:
 		owner.queue_free()
+	
+	if hunger <= 30.0 and health_component.health < health_component.MAX_HEALTH:
+		health_component.health = min(health_component.health + heal_rate * delta, health_component.MAX_HEALTH)
+		hunger = min(hunger + hunger_rate * delta, max_hunger)
+		
 	
 	super._process(delta)
 
