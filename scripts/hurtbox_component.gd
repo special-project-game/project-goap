@@ -27,3 +27,5 @@ func _on_area_exited(hitbox: HitBoxComponent):
 	GlobalSignal.Attacking.disconnect(receive_attack)
 	#if owner:
 		#print("receive_attack disconnected from " + str(owner.name))
+
+# for person to take damage

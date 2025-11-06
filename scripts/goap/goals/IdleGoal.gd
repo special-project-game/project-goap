@@ -4,9 +4,10 @@ class_name IdleGoal
 
 ## Goal: Just rest/idle when nothing else to do
 
+
 func _setup_goal() -> void:
 	goal_name = "Idle"
-	base_priority = 0.5 # Very low priority - fallback goal
+	base_priority = 1.0 # Very low priority - fallback goal
 	
 	# Desired state: resting
 	add_desired_state("is_resting", true)

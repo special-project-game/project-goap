@@ -1,12 +1,19 @@
-[gd_scene load_steps=11 format=3 uid="uid://dhn4oxv8akx34"]
+[gd_scene load_steps=19 format=3 uid="uid://dhn4oxv8akx34"]
 
 [ext_resource type="Texture2D" uid="uid://d1yrbcnqjiusl" path="res://icon.svg" id="1_2ixv2"]
-[ext_resource type="Script" uid="uid://cwlkvctdpg85k" path="res://scripts/entities/predator.gd" id="1_w6bwu"]
+[ext_resource type="Script" uid="uid://cwlkvctdpg85k" path="res://Scripts/entities/predator.gd" id="1_w6bwu"]
 [ext_resource type="PackedScene" uid="uid://bd67twu1oip6e" path="res://scenes/attack.tscn" id="2_voa5e"]
 [ext_resource type="PackedScene" uid="uid://d3eq3jv6marhl" path="res://scenes/health_component.tscn" id="3_w6bwu"]
 [ext_resource type="PackedScene" uid="uid://datnoswldfogg" path="res://scenes/hit_box_component.tscn" id="4_gymde"]
 [ext_resource type="PackedScene" uid="uid://ds3doyrucb6ae" path="res://scenes/hurtbox_component.tscn" id="5_7ds8v"]
-[ext_resource type="Script" uid="uid://87gnbrp5xu1g" path="res://scripts/goap/PredatorGOAPAgentt.gd" id="7_gymde"]
+[ext_resource type="Script" uid="uid://87gnbrp5xu1g" path="res://Scripts/goap/PredatorGOAPAgentt.gd" id="7_gymde"]
+[ext_resource type="Script" uid="uid://cwf2h8yx5vn3q" path="res://Scripts/goap/goals/LevelUpGoal.gd" id="8_elnvq"]
+[ext_resource type="Script" uid="uid://bxm3k7qp2vnhw" path="res://Scripts/goap/goals/IdleGoal.gd" id="9_tfhhp"]
+[ext_resource type="Script" uid="uid://dyh4jnm5p8rwk" path="res://Scripts/goap/goals/SatisfyHungerGoal.gd" id="10_pfnrq"]
+[ext_resource type="Script" uid="uid://vstse5kkcxvh" path="res://Scripts/goap/actions/WanderAction.gd" id="11_pfnrq"]
+[ext_resource type="Script" uid="uid://ds5oy3kcm2rjp" path="res://Scripts/goap/actions/RestAction.gd" id="12_waw36"]
+[ext_resource type="Script" uid="uid://d28rnewrc6e4d" path="res://Scripts/goap/actions/KillAction.gd" id="13_bqn2a"]
+[ext_resource type="Script" uid="uid://cj7is4peji53m" path="res://Scripts/goap/actions/FindPreyAction.gd" id="14_hqjfx"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wacsr"]
 size = Vector2(4, 4)
@@ -17,8 +24,11 @@ size = Vector2(6, 6)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_elnvq"]
 size = Vector2(4, 4)
 
-[node name="Predator" type="CharacterBody2D"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pfnrq"]
+
+[node name="Predator" type="CharacterBody2D" groups=["entities", "monster"]]
 script = ExtResource("1_w6bwu")
+move_speed = 8.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(0, -2)
@@ -33,18 +43,56 @@ shape = SubResource("RectangleShape2D_wacsr")
 
 [node name="HealthComponent" parent="." instance=ExtResource("3_w6bwu")]
 
-[node name="HitBoxComponent" parent="." instance=ExtResource("4_gymde")]
+[node name="HitBoxComponent" parent="." node_paths=PackedStringArray("attack_component") instance=ExtResource("4_gymde")]
+attack_component = NodePath("../Attack")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HitBoxComponent"]
 position = Vector2(0, -2)
 shape = SubResource("RectangleShape2D_r2jyc")
 
-[node name="HurtBoxComponent" parent="." instance=ExtResource("5_7ds8v")]
+[node name="HurtBoxComponent" parent="." node_paths=PackedStringArray("health_component") instance=ExtResource("5_7ds8v")]
+health_component = NodePath("../HealthComponent")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBoxComponent"]
 position = Vector2(0, -2)
 shape = SubResource("RectangleShape2D_elnvq")
 disabled = true
 
-[node name="GOAPAgent" type="Node" parent="."]
+[node name="ScannerComponent" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ScannerComponent"]
+position = Vector2(0, -2)
+scale = Vector2(200, 200)
+shape = SubResource("RectangleShape2D_pfnrq")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+debug_enabled = true
+debug_use_custom = true
+debug_path_custom_color = Color(1, 0.6333333, 0, 1)
+
+[node name="GOAPAgent" type="Node" parent="." node_paths=PackedStringArray("entity")]
 script = ExtResource("7_gymde")
+entity = NodePath("..")
+
+[node name="LevelUpGoal" type="Node" parent="GOAPAgent"]
+script = ExtResource("8_elnvq")
+
+[node name="IdleGoal" type="Node" parent="GOAPAgent"]
+script = ExtResource("9_tfhhp")
+
+[node name="SatisfyHungerGoal" type="Node" parent="GOAPAgent"]
+script = ExtResource("10_pfnrq")
+
+[node name="WanderAction" type="Node" parent="GOAPAgent"]
+script = ExtResource("11_pfnrq")
+
+[node name="RestAction" type="Node" parent="GOAPAgent"]
+script = ExtResource("12_waw36")
+
+[node name="KillAction" type="Node" parent="GOAPAgent"]
+script = ExtResource("13_bqn2a")
+
+[node name="FindPreyAction" type="Node" parent="GOAPAgent"]
+script = ExtResource("14_hqjfx")

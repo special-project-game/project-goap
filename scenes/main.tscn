@@ -1,14 +1,14 @@
 [gd_scene load_steps=24 format=3 uid="uid://5nq607jqvt50"]
 
-[ext_resource type="Script" uid="uid://bdlt6d32wqywm" path="res://scripts/node_2d.gd" id="1_85g3d"]
-[ext_resource type="Script" uid="uid://buf7gkrb2px63" path="res://scripts/camera_2d.gd" id="2_choun"]
+[ext_resource type="Script" uid="uid://bdlt6d32wqywm" path="res://Scripts/node_2d.gd" id="1_85g3d"]
+[ext_resource type="Script" uid="uid://buf7gkrb2px63" path="res://Scripts/camera_2d.gd" id="2_choun"]
 [ext_resource type="Texture2D" uid="uid://djhnoqa2fj1yq" path="res://textures/texture_sets/grass_water.png" id="4_tipki"]
 [ext_resource type="Script" uid="uid://cjk8nronimk5r" path="res://addons/TileMapDual/TileMapDual.gd" id="5_85g3d"]
 [ext_resource type="Texture2D" uid="uid://be08o206u0gb6" path="res://textures/texture_sets/dirt_transp.png" id="5_tipki"]
 [ext_resource type="Texture2D" uid="uid://cwmevhhm48npo" path="res://textures/texture_sets/sand_trans.png" id="5_ya4ey"]
 [ext_resource type="Texture2D" uid="uid://ca83mvjabm0fm" path="res://textures/cursor/1.png" id="9_choun"]
 [ext_resource type="Texture2D" uid="uid://dobrvyh6v4vo0" path="res://textures/cursor/2.png" id="10_ya4ey"]
-[ext_resource type="Script" uid="uid://davm8kqp2vnhy" path="res://scripts/ui/PersonUIManager.gd" id="12_eb6dy"]
+[ext_resource type="Script" uid="uid://davm8kqp2vnhy" path="res://Scripts/ui/PersonUIManager.gd" id="12_eb6dy"]
 [ext_resource type="PackedScene" uid="uid://dkoe6am328ofj" path="res://scenes/tree.tscn" id="13_trceg"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_choun"]
@@ -401,12 +401,6 @@ metadata/_custom_type_script = "uid://cjk8nronimk5r"
 tile_set = SubResource("TileSet_4d7sh")
 
 [node name="ThingsContainer" type="Node" parent="."]
-
-[node name="Tree" parent="ThingsContainer" instance=ExtResource("13_trceg")]
-position = Vector2(13, 31)
-
-[node name="Tree2" parent="ThingsContainer" instance=ExtResource("13_trceg")]
-position = Vector2(83, -42)
 
 [node name="Cursor" type="AnimatedSprite2D" parent="."]
 texture_filter = 1

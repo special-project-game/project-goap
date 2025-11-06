@@ -33,6 +33,7 @@ enabled=PackedStringArray("res://addons/TileMapDual/plugin.cfg")
 trees=""
 entities="people, animal. monster"
 person=""
+monster=""
 
 [gui]
 

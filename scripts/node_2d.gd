@@ -9,6 +9,7 @@ var current_mode = TypeDefs.Mode.VIEW
 var entities = {
 		TypeDefs.Entity.PERSON: preload("res://scenes/person.tscn"),
 		TypeDefs.Entity.PIG: preload("res://scenes/pig.tscn"),
+		TypeDefs.Entity.PREDATOR: preload("res://scenes/predator.tscn"),
 	}
 
 const atlas_coordinates = {
