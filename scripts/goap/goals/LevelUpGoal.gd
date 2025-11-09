@@ -19,9 +19,11 @@ func _setup_goal() -> void:
 	
 	# Desired state: have enough wood to level up
 	# If Agent is predator, replace has_wood with has_killed
+	
 	if owner:
 		if owner.is_in_group("monster"):
-			add_desired_state("has_killed", true)
+				add_desired_state("has_killed", true)
+				add_desired_state("is_hungry", false)
 		else:
 			add_desired_state("has_wood", true)
 	else:
@@ -30,11 +32,9 @@ func _setup_goal() -> void:
 	print(desired_state)
 
 func get_priority(agent: Node, world_state: Dictionary) -> float:
-	# Higher priority if we're not hungry
-	if world_state.get("is_hungry", false):
-		return 1.0 # Lower priority when hungry
-	
-	# Always try to gather more wood (continuous goal)
+	# Higher priority if we're hungry
+	if not world_state.get("is_hungry", false):
+		return 1.0 # Lower priority when not hungry
 	return base_priority
 
 # Use base class is_satisfied() - checks if has_wood = true

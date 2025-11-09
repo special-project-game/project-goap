@@ -42,9 +42,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -11.0
+offset_left = -45.0
 offset_top = -17.0
-offset_right = 10.5
+offset_right = 44.0
 offset_bottom = -5.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -54,6 +54,7 @@ theme_override_font_sizes/font_size = 11
 text = "test"
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -2)
@@ -96,6 +97,7 @@ debug_path_custom_color = Color(1, 0.6333333, 0, 1)
 
 [node name="GOAPAgent" type="Node" parent="." node_paths=PackedStringArray("entity")]
 script = ExtResource("7_gymde")
+hunger_rate = 10.0
 entity = NodePath("..")
 
 [node name="LevelUpGoal" type="Node" parent="GOAPAgent"]

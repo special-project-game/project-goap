@@ -9,7 +9,7 @@ class_name PredatorGOAPAgent
 # Stats
 var hunger: float = 0.0
 var max_hunger: float = 100.0
-var hunger_rate: float = 1.0 # Hunger per second
+@export var hunger_rate: float = 1.0 # Hunger per second
 
 var food_count: int = 0
 var experience: int = 0
@@ -32,8 +32,9 @@ func _ready():
 		label = owner.get_node("Label")
 	
 	if not current_action == null:
+		var text = "%s, %.2f, %.2f" % [current_action.action_name, health_component.health, hunger]
 		label.set_visible(true)
-		label.set_text(current_action.action_name)
+		label.set_text(text)
 	else:
 		label.set_visible(false)
 
@@ -50,6 +51,7 @@ func _initialize_world_state() -> void:
 	world_state["has_food"] = false
 	world_state["has_killed"] = false
 	world_state["is_resting"] = false
+	world_state["prey_available"] = false
 	world_state["hunger"] = hunger
 	world_state["food_count"] = food_count
 	world_state["level"] = level
@@ -57,8 +59,9 @@ func _initialize_world_state() -> void:
 func _process(delta: float):
 	# Update label
 	if not current_action == null:
+		var text = "%s, %.2f, %.2f" % [current_action.action_name, health_component.health, hunger]
 		label.set_visible(true)
-		label.set_text(current_action.action_name)
+		label.set_text(text)
 	else:
 		label.set_visible(false)
 		
@@ -68,7 +71,9 @@ func _process(delta: float):
 	# if hunger maxed out, lose health
 	if hunger >= max_hunger and health_component:
 		health_component.health = max(0.0, health_component.health - 0.5 * delta) # Lose 0.5 health per second when starving
-	
+	if health_component.health <= 0:
+		get_parent().queue_free()
+
 	super._process(delta)
 
 func _update_world_state() -> void:
@@ -88,6 +93,7 @@ func _update_world_state() -> void:
 	world_state["near_tree"] = false
 	world_state["near_food"] = false
 	world_state["near_prey"] = false
+	#world_state["prey_available"] = false
 	
 	# Update level
 	world_state["level"] = level

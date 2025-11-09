@@ -20,6 +20,7 @@ func _setup_action() -> void:
 	
 	add_precondition("near_prey", true)
 	
+	add_effect("is_hungry", false)
 	add_effect("has_killed", true)
 	add_effect("near_prey", false)
 	
@@ -107,8 +108,10 @@ func perform(agent: Node, delta: float) -> bool:
 	# Target is dead, add kill exp and remove target from scene tree is it's still there
 	if current_target_health <= 0 and agent.has_node("GOAPAgent"):
 		var goap_agent = agent.get_node("GOAPAgent")
-		if goap_agent.has_method("add_kill_exp"):
+		if goap_agent.has_method("add_kill_exp") and goap_agent.has_method("add_food") and goap_agent.has_method("consume_food"):
 			goap_agent.add_kill_exp(1)
+			goap_agent.add_food(1)
+			goap_agent.consume_food(1)
 	
 		if is_instance_valid(target):
 			print("person queue freed by predator")

@@ -18,13 +18,14 @@ func _setup_action() -> void:
 
 func on_enter(agent: Node) -> void:
 	super.on_enter(agent)
-	print("PREDATOR ON ENTER DONE")
 	
 	# Get references
 	if agent.has_node("ScannerComponent"):
 		scanner_component = agent.get_node("ScannerComponent")
 	if agent.has_node("NavigationAgent2D"):
 		navigation_agent = agent.get_node("NavigationAgent2D")
+		
+	update_prey_availability(agent)
 	
 	target = _find_nearest_prey(agent)
 	
@@ -43,6 +44,7 @@ func perform(agent: Node, _delta: float) -> bool:
 		#print("target invalid")
 		# Don't print here - is_valid() will handle the replan
 		agent.velocity = Vector2.ZERO
+		update_prey_availability(agent)
 		target = _find_nearest_prey(agent)
 		return false
 	
@@ -85,6 +87,8 @@ func on_exit(agent: Node) -> void:
 	# Clear navigation target to remove debug visualization
 	if navigation_agent:
 		navigation_agent.target_position = agent.global_position
+	
+	update_prey_availability(agent)
 
 func _find_nearest_prey(agent: Node) -> Node:
 	if not scanner_component:
@@ -173,3 +177,53 @@ func _is_prey_reachable(agent: Node, prey: Node) -> bool:
 		return false
 	
 	return true
+
+func update_prey_availability(agent: Node) -> void:
+	var prey_available = false
+	var goap_agent: Node
+	
+	if agent.has_node("GOAPAgent"):
+		goap_agent = agent.get_node("GOAPAgent")
+	else:
+		false
+	
+	if not scanner_component:
+		if agent.has_node("ScannerComponent"):
+			scanner_component = agent.get_node("ScannerComponent")
+		else:
+			false
+	var nearby_bodies = scanner_component.get_overlapping_bodies()
+	for body in nearby_bodies:
+		if body.is_in_group("person"):
+			if _is_prey_reachable(agent, body):
+				prey_available = true
+				break
+	goap_agent.world_state["prey_available"] = prey_available
+	
+	
+
+func is_valid(agent: Node, world_state: Dictionary) -> bool:
+	if not super.is_valid(agent, world_state):
+		return false
+
+	#if not scanner_component:
+		#if agent.has_node("ScannerComponent"):
+			#scanner_component = agent.get_node("ScannerComponent")
+		#else:
+			#false
+	#
+	#if not navigation_agent:
+		#if agent.has_node("NavigationAgent2D"):
+			#navigation_agent = agent.get_node("NavigationAgent2D")
+		#else:
+			#false
+	#
+	#
+	#var nearby_bodies = scanner_component.get_overlapping_bodies()
+	#for body in nearby_bodies:
+		#if body.is_in_group("person"):
+			#if _is_prey_reachable(agent, body):
+				#return true
+	
+	update_prey_availability(agent)
+	return world_state.get("prey_available", false)
