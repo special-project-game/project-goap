@@ -125,7 +125,7 @@ func consume_food(amount: int = 1) -> void:
 	var removed = inventory.remove_item(ItemType.Type.APPLE, amount)
 	if removed > 0:
 		# Restore hunger
-		hunger = max(0.0, hunger - 50.0 * removed)
+		hunger = max(0.0, hunger - ItemType.get_food_value(ItemType.Type.APPLE) * removed)
 		print(entity.name, ": Ate ", removed, " food! Hunger reduced to ", hunger)
 
 func _level_up() -> void:
