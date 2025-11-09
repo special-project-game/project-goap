@@ -5,7 +5,8 @@ class_name KillAction
 # GOAP Action: Kill prey
 
 @onready var scanner_component: Area2D
-@onready var hit_box_component: HitBoxComponent
+@onready var hit_box_component: HitBoxComponent # This is just the attack range
+@onready var attack_component: Attack
 @onready var target_health_component: HealthComponent
 @onready var navigation_agent: NavigationAgent2D
 
@@ -35,6 +36,8 @@ func on_enter(agent: Node) -> void:
 		scanner_component = agent.get_node("ScannerComponent")
 	if agent.has_node("HitBoxComponent"):
 		hit_box_component = agent.get_node("HitBoxComponent")
+	if agent.has_node("Attack"):
+		attack_component = agent.get_node("Attack")
 	if agent.has_node("NavigationAgent2D"):
 		navigation_agent = agent.get_node("NavigationAgent2D")
 	
@@ -46,31 +49,72 @@ func perform(agent: Node, delta: float) -> bool:
 		return true
 		
 	var distance_to_target = agent.global_position.distance_to(target.global_position)
-	
-	if distance_to_target > 5.0:
-		var direction = agent.global_position.direction_to(target.global_position)
-		agent.velocity = direction * agent.move_speed
-		return false
-	
-	#if agent.global_position.distance_to(target.global_position) > 5:
-		#target = _find_nearest_prey(agent)
-	if target_health_component:
-		current_target_health = target_health_component.health
-	
-	print("PREDATOR'S TARGET: ", target, "\nTARGET'S HEALTH: ", current_target_health, "\nDISTANCE TO TARGET: ", agent.global_position.distance_to(target.global_position), "\n")
+	var is_target_in_attack_range: bool = false
 	
 	if hit_box_component:
-		hit_box_component.attack()
+		var overlapping_areas = hit_box_component.get_overlapping_areas()
+		for area in overlapping_areas:
+			if area.owner == target:
+				is_target_in_attack_range = true
+				break
+	else:
+		if distance_to_target <= KILL_RANGE:
+			is_target_in_attack_range = true
 	
+	if not is_target_in_attack_range:
+		# If target is not in attack range, navigate closer
+		if not navigation_agent.is_navigation_finished():
+			target = _find_nearest_prey(agent)
+			if is_instance_valid(target):
+				target_health_component = target.get_node("HealthComponent")
+				navigation_agent.target_position = target.global_position
+
+			var next_position = navigation_agent.get_next_path_position()
+			var direction = agent.global_position.direction_to(next_position)
+			agent.velocity = direction * agent.move_speed
+		else:
+			var direction = agent.global_position.direction_to(target.global_position)
+			agent.velocity = direction * agent.move_speed
+			navigation_agent.target_position = target.global_position
+		return false
+	
+	if attack_component and is_instance_valid(target):
+		attack_component.attack(target)
+		
+	
+	#if distance_to_target > 5.0:
+		#if not navigation_agent.is_navigation_finished():
+			#target = _find_nearest_prey(agent)
+			#var next_position = navigation_agent.get_next_path_position()
+			#var direction = agent.global_position.direction_to(next_position)
+			#agent.velocity = direction * agent.move_speed
+		#else:
+			## Navigation says finished but we're not at target - use direct movement
+			#var direction = agent.global_position.direction_to(target.global_position)
+			#agent.velocity = direction * agent.move_speed
+			#return false
+
+	if target_health_component:
+		current_target_health = target_health_component.health
+	else:
+		# Target might have been freed by something else or HealthComponent just removed
+		if is_instance_valid(target) and target.has_node("HealthComponent"):
+			target_health_component = target.get_node("HealthComponent")
+			current_target_health = target_health_component.health
+		else:
+			current_target_health = 0 # Assume target is dead lol
+
+	# Target is dead, add kill exp and remove target from scene tree is it's still there
 	if current_target_health <= 0 and agent.has_node("GOAPAgent"):
 		var goap_agent = agent.get_node("GOAPAgent")
 		if goap_agent.has_method("add_kill_exp"):
 			goap_agent.add_kill_exp(1)
 	
 		if is_instance_valid(target):
+			print("person queue freed by predator")
 			target.queue_free()
-	
 		
+		return true
 
 	return false
 		
@@ -92,6 +136,9 @@ func _find_nearest_prey(agent: Node) -> Node:
 	
 	for body in nearby_bodies:
 		if body.is_in_group("person"):
+			if not _is_prey_reachable(agent, body):
+				continue
+
 			var distance = agent.global_position.distance_to(body.global_position)
 			if distance < nearest_distance:
 				nearest_distance = distance

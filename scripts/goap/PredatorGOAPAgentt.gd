@@ -2,6 +2,7 @@
 extends GOAPAgent
 class_name PredatorGOAPAgent
 
+@onready var label: Label
 ## GOAP Agent specialized for Predator entities
 ## Manages stats like hunger, experience, and level
 
@@ -17,6 +18,8 @@ var level: int = 1
 # Health component reference
 var health_component: HealthComponent
 
+
+
 func _ready():
 	super._ready()
 	
@@ -24,6 +27,15 @@ func _ready():
 	if entity and "goap_controlled" in entity:
 		entity.goap_controlled = true
 		print(entity.name, ": GOAP control enabled, autonomous movement disabled")
+	
+	if owner.has_node("Label"):
+		label = owner.get_node("Label")
+	
+	if not current_action == null:
+		label.set_visible(true)
+		label.set_text(current_action.action_name)
+	else:
+		label.set_visible(false)
 
 func _initialize_world_state() -> void:
 	# Get health component
@@ -43,6 +55,13 @@ func _initialize_world_state() -> void:
 	world_state["level"] = level
 
 func _process(delta: float):
+	# Update label
+	if not current_action == null:
+		label.set_visible(true)
+		label.set_text(current_action.action_name)
+	else:
+		label.set_visible(false)
+		
 	# Update hunger
 	hunger = min(hunger + hunger_rate * delta, max_hunger)
 

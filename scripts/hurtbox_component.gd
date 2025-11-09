@@ -14,18 +14,18 @@ func damage(attack):
 		print("dmg received: " + str(attack))
 
 
-func _on_area_entered(hitbox: HitBoxComponent):
-	GlobalSignal.Attacking.connect(receive_attack)
-	#print("receive_attacak connected to " + str(owner.name))
-
-func receive_attack(attack_damage):
-	print(owner.name + " IS TAKING DAMAGE")
-	damage(attack_damage)
-
-
-func _on_area_exited(hitbox: HitBoxComponent):
-	GlobalSignal.Attacking.disconnect(receive_attack)
-	#if owner:
-		#print("receive_attack disconnected from " + str(owner.name))
-
-# for person to take damage
+#func _on_area_entered(hitbox: HitBoxComponent):
+	#GlobalSignal.Attacking.connect(receive_attack)
+	##print("receive_attacak connected to " + str(owner.name))
+#
+#func receive_attack(attack_damage):
+	#print(owner.name + " IS TAKING DAMAGE")
+	#damage(attack_damage)
+#
+#
+#func _on_area_exited(hitbox: HitBoxComponent):
+	#GlobalSignal.Attacking.disconnect(receive_attack)
+	##if owner:
+		##print("receive_attack disconnected from " + str(owner.name))
+#
+## for person to take damage

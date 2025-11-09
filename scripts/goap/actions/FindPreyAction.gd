@@ -40,7 +40,7 @@ func on_enter(agent: Node) -> void:
 func perform(agent: Node, _delta: float) -> bool:
 	# Check if target is valid FIRST
 	if not is_instance_valid(target):
-		print("target invalid")
+		#print("target invalid")
 		# Don't print here - is_valid() will handle the replan
 		agent.velocity = Vector2.ZERO
 		target = _find_nearest_prey(agent)
@@ -94,7 +94,7 @@ func _find_nearest_prey(agent: Node) -> Node:
 			return null
 			
 	var nearby_bodies = scanner_component.get_overlapping_bodies()
-	print(nearby_bodies)
+	#print(nearby_bodies)
 	var nearest_prey: Node = null
 	var nearest_distance: float = INF
 	
@@ -118,6 +118,7 @@ func _find_nearest_prey(agent: Node) -> Node:
 			if not _is_prey_reachable(agent, body):
 				preys_unreachable += 1
 				continue
+			body.get_node("Sprite2D").set_modulate(Color(0.0, 1.0, 0.517, 1.0))
 			
 			var distance = agent.global_position.distance_to(body.global_position)
 			if distance < nearest_distance:
