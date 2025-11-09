@@ -32,9 +32,14 @@ func _setup_goal() -> void:
 	print(desired_state)
 
 func get_priority(agent: Node, world_state: Dictionary) -> float:
-	# Higher priority if we're hungry
-	if not world_state.get("is_hungry", false):
-		return 1.0 # Lower priority when not hungry
+	
+	if owner.is_in_group("monster"):
+		# Higher priority if we're hungry
+		if not world_state.get("is_hungry", false):
+			return 1.0 # Lower priority when not hungry
+	
+	if world_state.get("is_hungry", false):
+		return 1.0 # Lower priority when hungry
 	return base_priority
 
 # Use base class is_satisfied() - checks if has_wood = true

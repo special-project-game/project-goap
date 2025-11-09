@@ -45,6 +45,7 @@ func _initialize_world_state() -> void:
 	world_state["level"] = level
 
 func _process(delta: float):
+	#print("Person: ", owner.last_facing_direction)
 	# Update hunger
 	hunger = min(hunger + hunger_rate * delta, max_hunger)
 

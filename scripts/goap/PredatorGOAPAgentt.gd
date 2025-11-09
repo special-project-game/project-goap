@@ -10,6 +10,7 @@ class_name PredatorGOAPAgent
 var hunger: float = 0.0
 var max_hunger: float = 100.0
 @export var hunger_rate: float = 1.0 # Hunger per second
+@export var heal_rate: float = 1.0
 
 var food_count: int = 0
 var experience: int = 0
@@ -57,6 +58,7 @@ func _initialize_world_state() -> void:
 	world_state["level"] = level
 
 func _process(delta: float):
+	print(owner.last_facing_direction)
 	# Update label
 	if not current_action == null:
 		var text = "%s, %.2f, %.2f" % [current_action.action_name, health_component.health, hunger]
@@ -73,6 +75,10 @@ func _process(delta: float):
 		health_component.health = max(0.0, health_component.health - 0.5 * delta) # Lose 0.5 health per second when starving
 	if health_component.health <= 0:
 		get_parent().queue_free()
+	
+	if hunger <= 30.0 and health_component.health < health_component.MAX_HEALTH:
+		health_component.health = min(health_component.health + heal_rate * delta, health_component.MAX_HEALTH)
+		hunger = min(hunger + hunger_rate * delta, max_hunger)
 
 	super._process(delta)
 

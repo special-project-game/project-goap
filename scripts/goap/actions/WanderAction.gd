@@ -6,7 +6,7 @@ class_name WanderAction
 
 @onready var navigation_agent: NavigationAgent2D
 
-const WANDER_DURATION: float = 5.0
+const WANDER_DURATION: float = 10.0
 const WANDER_RADIUS: float = 300.0
 const ARRIVED_THRESHOLD: float = 20.0
 
