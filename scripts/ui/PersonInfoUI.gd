@@ -4,6 +4,9 @@ extends Control
 ## Interactive UI that appears when clicking on a person
 ## Shows health, hunger, inventory, and current task
 
+# Preload inventory system classes
+const ItemType = preload("res://scripts/inventory/ItemType.gd")
+
 @export var person: CharacterBody2D
 @export var goap_agent: PersonGOAPAgent
 
@@ -115,12 +118,22 @@ func _update_level_exp():
 	exp_label.text = "Exp: %d/%d" % [exp, next_level_exp]
 
 func _update_inventory():
-	var wood = goap_agent.wood_count
-	var food = goap_agent.food_count
+	var inventory_text = "Inventory (%d/%d slots):\n" % [
+		goap_agent.inventory.get_used_slot_count(),
+		goap_agent.inventory.max_slots
+	]
 	
-	var inventory_text = "Inventory:\n"
-	inventory_text += "  Wood: %d\n" % wood
-	inventory_text += "  Food: %d" % food
+	# Get all items from inventory
+	var items = goap_agent.inventory.get_all_items()
+	
+	if items.is_empty():
+		inventory_text += "  (Empty)"
+	else:
+		# Display each item type with its total count
+		for item_type in items:
+			var item_name = ItemType.get_item_name(item_type)
+			var count = items[item_type]
+			inventory_text += "  %s: %d\n" % [item_name, count]
 	
 	inventory_label.text = inventory_text
 

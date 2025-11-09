@@ -3,6 +3,9 @@ extends CanvasLayer
 
 ## UI to display GOAP agent stats for debugging and monitoring
 
+# Preload inventory system classes
+const ItemType = preload("res://scripts/inventory/ItemType.gd")
+
 @export var goap_agent: PersonGOAPAgent
 
 @onready var label = $Panel/VBoxContainer/StatsLabel
@@ -32,7 +35,18 @@ func _update_stats_display():
 	text += "Experience: %d / %d\n" % [stats.experience, (stats.level + 1) * 100]
 	text += "Health: %.1f / %.1f\n" % [stats.health, stats.max_health]
 	text += "Hunger: %.1f / 100\n" % stats.hunger
-	text += "Wood: %d\n" % stats.wood_count
+	
+	# Display inventory summary
+	text += "\n=== INVENTORY (%d/%d) ===\n" % [
+		goap_agent.inventory.get_used_slot_count(),
+		goap_agent.inventory.max_slots
+	]
+	var items = goap_agent.inventory.get_all_items()
+	if items.is_empty():
+		text += "(Empty)\n"
+	else:
+		for item_type in items:
+			text += "%s: %d\n" % [ItemType.get_item_name(item_type), items[item_type]]
 	
 	label.text = text
 

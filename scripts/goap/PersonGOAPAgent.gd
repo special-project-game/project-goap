@@ -3,15 +3,29 @@ extends GOAPAgent
 class_name PersonGOAPAgent
 
 ## GOAP Agent specialized for Person entities
-## Manages stats like hunger, wood count, experience, and level
+## Manages stats like hunger, experience, level, and inventory
+
+# Preload inventory system classes
+const ItemType = preload("res://scripts/inventory/ItemType.gd")
+const Item = preload("res://scripts/inventory/Item.gd")
+const Inventory = preload("res://scripts/inventory/Inventory.gd")
 
 # Stats
 var hunger: float = 0.0
 var max_hunger: float = 100.0
 var hunger_rate: float = 1.0 # Hunger per second
 
-var wood_count: int = 0
-var food_count: int = 0
+# Inventory system
+var inventory: Inventory
+
+# Legacy compatibility (deprecated - use inventory instead)
+var wood_count: int = 0:
+	get:
+		return inventory.get_item_count(ItemType.Type.WOOD) if inventory else 0
+var food_count: int = 0:
+	get:
+		return inventory.get_item_count(ItemType.Type.APPLE) if inventory else 0
+
 var experience: int = 0
 var level: int = 1
 
@@ -19,6 +33,9 @@ var level: int = 1
 var health_component: HealthComponent
 
 func _ready():
+	# Initialize inventory system
+	inventory = Inventory.new(10)  # 10 slots
+	
 	super._ready()
 	
 	# Disable entity's autonomous movement when GOAP is active
@@ -39,8 +56,8 @@ func _initialize_world_state() -> void:
 	world_state["has_food"] = false
 	world_state["is_resting"] = false
 	world_state["hunger"] = hunger
-	world_state["wood_count"] = wood_count
-	world_state["food_count"] = food_count
+	world_state["wood_count"] = inventory.get_item_count(ItemType.Type.WOOD)
+	world_state["food_count"] = inventory.get_item_count(ItemType.Type.APPLE)
 	world_state["level"] = level
 
 func _process(delta: float):
@@ -58,8 +75,8 @@ func _update_world_state() -> void:
 	world_state["hunger"] = hunger
 	world_state["is_hungry"] = hunger >= 70.0
 	
-	# Update wood/resources
-	world_state["wood_count"] = wood_count
+	# Update wood/resources from inventory
+	world_state["wood_count"] = inventory.get_item_count(ItemType.Type.WOOD)
 	# Reset has_wood after each update cycle so LevelUpGoal keeps cycling
 	# This makes wood gathering a continuous activity
 	world_state["has_wood"] = false
@@ -67,8 +84,8 @@ func _update_world_state() -> void:
 	print(entity.name, ": _update_world_state called - has_wood reset to false")
 	
 	# Update food inventory
-	world_state["food_count"] = food_count
-	world_state["has_food"] = food_count > 0
+	world_state["food_count"] = inventory.get_item_count(ItemType.Type.APPLE)
+	world_state["has_food"] = inventory.get_item_count(ItemType.Type.APPLE) > 0
 	
 	# Reset temporary states
 	world_state["is_resting"] = false
@@ -83,22 +100,33 @@ func _update_world_state() -> void:
 		_level_up()
 
 func add_wood(amount: int = 1) -> void:
-	wood_count += amount
-	experience += amount * 10 # 10 exp per wood
-	print(entity.name, ": Got ", amount, " wood! Total: ", wood_count, " | Exp: ", experience)
+	var overflow = inventory.add_item(ItemType.Type.WOOD, amount)
+	var added = amount - overflow
+	if added > 0:
+		experience += added * 10 # 10 exp per wood
+		print(entity.name, ": Got ", added, " wood! Total: ", inventory.get_item_count(ItemType.Type.WOOD), " | Exp: ", experience)
+	if overflow > 0:
+		print(entity.name, ": Inventory full! Couldn't add ", overflow, " wood")
 
 func consume_wood(amount: int) -> void:
-	wood_count = max(0, wood_count - amount)
+	var removed = inventory.remove_item(ItemType.Type.WOOD, amount)
+	if removed < amount:
+		print(entity.name, ": Warning - tried to consume ", amount, " wood but only had ", removed)
 
 func add_food(amount: int = 1) -> void:
-	food_count += amount
-	print(entity.name, ": Got ", amount, " food! Total: ", food_count)
+	var overflow = inventory.add_item(ItemType.Type.APPLE, amount)
+	var added = amount - overflow
+	if added > 0:
+		print(entity.name, ": Got ", added, " food! Total: ", inventory.get_item_count(ItemType.Type.APPLE))
+	if overflow > 0:
+		print(entity.name, ": Inventory full! Couldn't add ", overflow, " food")
 
 func consume_food(amount: int = 1) -> void:
-	food_count = max(0, food_count - amount)
-	# Restore hunger
-	hunger = max(0.0, hunger - 50.0)
-	print(entity.name, ": Ate food! Hunger reduced to ", hunger)
+	var removed = inventory.remove_item(ItemType.Type.APPLE, amount)
+	if removed > 0:
+		# Restore hunger
+		hunger = max(0.0, hunger - 50.0 * removed)
+		print(entity.name, ": Ate ", removed, " food! Hunger reduced to ", hunger)
 
 func _level_up() -> void:
 	level += 1
@@ -120,8 +148,8 @@ func get_stats() -> Dictionary:
 		"level": level,
 		"experience": experience,
 		"hunger": hunger,
-		"wood_count": wood_count,
-		"food_count": food_count,
-		"health": health_component.health if health_component else 0,
-		"max_health": health_component.MAX_HEALTH if health_component else 0
+		"wood_count": inventory.get_item_count(ItemType.Type.WOOD),
+		"food_count": inventory.get_item_count(ItemType.Type.APPLE),
+		"health": health_component.health if health_component else 0.0,
+		"max_health": health_component.MAX_HEALTH if health_component else 0.0
 	}
