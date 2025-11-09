@@ -37,17 +37,20 @@ func _update_stats_display():
 	text += "Hunger: %.1f / 100\n" % stats.hunger
 	
 	# Display inventory summary
-	text += "\n=== INVENTORY (%d/%d) ===\n" % [
-		goap_agent.inventory.get_used_slot_count(),
-		goap_agent.inventory.max_slots
-	]
-	var items = goap_agent.inventory.get_all_items()
-	if items.is_empty():
-		text += "(Empty)\n"
+	if goap_agent.inventory:
+		text += "\n=== INVENTORY (%d/%d) ===\n" % [
+			goap_agent.inventory.get_used_slot_count(),
+			goap_agent.inventory.max_slots
+		]
+		var items = goap_agent.inventory.get_all_items()
+		if items.is_empty():
+			text += "(Empty)\n"
+		else:
+			for item_type in items:
+				text += "%s: %d\n" % [ItemType.get_item_name(item_type), items[item_type]]
 	else:
-		for item_type in items:
-			text += "%s: %d\n" % [ItemType.get_item_name(item_type), items[item_type]]
-	
+		text += "\n=== INVENTORY (No inventory) ===\n"
+		text += "(No inventory assigned)\n"
 	label.text = text
 
 func _update_plan_display():
