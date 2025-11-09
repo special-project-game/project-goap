@@ -118,6 +118,9 @@ func _update_level_exp():
 	exp_label.text = "Exp: %d/%d" % [exp, next_level_exp]
 
 func _update_inventory():
+	if not goap_agent.inventory:
+		inventory_label.text = "Inventory: (No inventory)"
+		return
 	var inventory_text = "Inventory (%d/%d slots):\n" % [
 		goap_agent.inventory.get_used_slot_count(),
 		goap_agent.inventory.max_slots
