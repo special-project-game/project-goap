@@ -109,7 +109,7 @@ func has_space_for(item_type: int, amount: int = 1) -> bool:
 	# Check empty slots
 	for slot in slots:
 		if slot.is_empty():
-			remaining -= 50  # Item.MAX_STACK_SIZE
+			remaining -= Item.MAX_STACK_SIZE
 			if remaining <= 0:
 				return true
 	
