@@ -9,6 +9,7 @@ class_name KillAction
 @onready var attack_component: Attack
 @onready var target_health_component: HealthComponent
 @onready var navigation_agent: NavigationAgent2D
+@onready var goap_target: GOAPAgent
 
 const KILL_RANGE : float = 20.0
 
@@ -44,6 +45,13 @@ func on_enter(agent: Node) -> void:
 	
 	if target.has_node("HealthComponent"):
 		target_health_component = target.get_node("HealthComponent")
+	
+	if target.has_node("GOAPAgent"):
+		goap_target = target.get_node("GOAPAgent")
+	
+	if is_instance_valid(target):
+		goap_target.is_target = true
+		goap_target.chaser = agent
 
 func perform(agent: Node, delta: float) -> bool:
 	if not is_instance_valid(target):

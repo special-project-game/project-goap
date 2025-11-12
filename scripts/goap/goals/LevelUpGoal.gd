@@ -37,6 +37,7 @@ func get_priority(agent: Node, world_state: Dictionary) -> float:
 		# Higher priority if we're hungry
 		if not world_state.get("is_hungry", false):
 			return 1.0 # Lower priority when not hungry
+		return base_priority
 	
 	if world_state.get("is_hungry", false):
 		return 1.0 # Lower priority when hungry

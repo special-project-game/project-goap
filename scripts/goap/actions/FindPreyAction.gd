@@ -5,6 +5,7 @@ class_name FindPreyAction
 # GOAP Action: Find prey to kill using NavigationAgent2D
 @onready var navigation_agent: NavigationAgent2D
 @onready var scanner_component: Area2D
+@onready var goap_target: GOAPAgent
 
 const ARRIVED_THRESHOLD : float = 10.0
 
@@ -25,11 +26,17 @@ func on_enter(agent: Node) -> void:
 	if agent.has_node("NavigationAgent2D"):
 		navigation_agent = agent.get_node("NavigationAgent2D")
 		
+	target = _find_nearest_prey(agent)
+	if target.has_node("GOAPAgent"):
+		goap_target = target.get_node("GOAPAgent")
+		
 	update_prey_availability(agent)
 	
-	target = _find_nearest_prey(agent)
+	
 	
 	if is_instance_valid(target) and navigation_agent:
+		goap_target.is_target = true
+		goap_target.chaser = agent
 		var target_pos = target.global_position
 		await agent.get_tree().physics_frame
 		navigation_agent.target_position = target_pos
@@ -121,8 +128,9 @@ func _find_nearest_prey(agent: Node) -> Node:
 			# Check if this prey is reachable via navigation
 			if not _is_prey_reachable(agent, body):
 				preys_unreachable += 1
+				body.get_node("Sprite2D").set_modulate(Color(1.0, 1.0, 1.0, 1.0)) # FOR DEBUG PURPOSE
 				continue
-			body.get_node("Sprite2D").set_modulate(Color(0.0, 1.0, 0.517, 1.0))
+			body.get_node("Sprite2D").set_modulate(Color(0.0, 1.0, 0.517, 1.0)) # FOR DEBUG PURPOSE
 			
 			var distance = agent.global_position.distance_to(body.global_position)
 			if distance < nearest_distance:

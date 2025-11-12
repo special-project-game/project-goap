@@ -1,8 +1,9 @@
-[gd_scene load_steps=50 format=3 uid="uid://d36crc7kindbf"]
+[gd_scene load_steps=53 format=3 uid="uid://d36crc7kindbf"]
 
 [ext_resource type="Script" uid="uid://carxwlbbbo7o" path="res://Scripts/entities/person.gd" id="1_5dovg"]
 [ext_resource type="Texture2D" uid="uid://tow4k7h2qrjt" path="res://textures/texture_sets/MiniWorldSprites/Characters/Workers/FarmerTemplate.png" id="2_5dovg"]
 [ext_resource type="PackedScene" uid="uid://d3eq3jv6marhl" path="res://scenes/health_component.tscn" id="3_h4n5y"]
+[ext_resource type="FontFile" uid="uid://dsv8rorgooxbr" path="res://assets/fonts/Micro5-Regular.ttf" id="3_rmolt"]
 [ext_resource type="PackedScene" uid="uid://ds3doyrucb6ae" path="res://scenes/hurtbox_component.tscn" id="4_8487m"]
 [ext_resource type="PackedScene" uid="uid://bd67twu1oip6e" path="res://scenes/attack.tscn" id="5_8487m"]
 [ext_resource type="PackedScene" uid="uid://datnoswldfogg" path="res://scenes/hit_box_component.tscn" id="6_8qhow"]
@@ -21,6 +22,8 @@
 [ext_resource type="Script" uid="uid://vstse5kkcxvh" path="res://Scripts/goap/actions/WanderAction.gd" id="17_wander"]
 [ext_resource type="Script" uid="uid://cwf2h8yx5vn3q" path="res://Scripts/goap/goals/LevelUpGoal.gd" id="18_1qagf"]
 [ext_resource type="Script" uid="uid://bxm3k7qp2vnhw" path="res://Scripts/goap/goals/IdleGoal.gd" id="19_pir7x"]
+[ext_resource type="Script" uid="uid://db1fttay7voh0" path="res://Scripts/goap/goals/BeSafeGoal.gd" id="22_bgppu"]
+[ext_resource type="Script" uid="uid://cfrg7dhsx4ta0" path="res://Scripts/goap/actions/RunAwayAction.gd" id="23_2xfh2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5dovg"]
 size = Vector2(4, 4)
@@ -287,6 +290,26 @@ frame = 1
 position = Vector2(0, -2)
 shape = SubResource("RectangleShape2D_5dovg")
 
+[node name="Label" type="Label" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -45.0
+offset_top = -17.0
+offset_right = 44.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("3_rmolt")
+theme_override_font_sizes/font_size = 11
+text = "test"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
 [node name="AnimationTree" type="AnimationTree" parent="."]
 tree_root = SubResource("AnimationNodeStateMachine_ym70v")
 anim_player = NodePath("../AnimationPlayer")
@@ -387,6 +410,12 @@ metadata/_custom_type_script = "uid://cwf2h8yx5vn3q"
 [node name="IdleGoal" type="Node" parent="GOAPAgent"]
 script = ExtResource("19_pir7x")
 metadata/_custom_type_script = "uid://bxm3k7qp2vnhw"
+
+[node name="BeSafeGoal" type="Node" parent="GOAPAgent"]
+script = ExtResource("22_bgppu")
+
+[node name="RunAwayAction" type="Node" parent="GOAPAgent"]
+script = ExtResource("23_2xfh2")
 
 [connection signal="area_entered" from="HurtBoxComponent" to="HurtBoxComponent" method="_on_area_entered"]
 [connection signal="area_exited" from="HurtBoxComponent" to="HurtBoxComponent" method="_on_area_exited"]

@@ -266,7 +266,6 @@ size = Vector2(4, 4)
 
 [node name="Predator" type="CharacterBody2D" node_paths=PackedStringArray("animation_tree") groups=["entities", "monster"]]
 script = ExtResource("1_w6bwu")
-move_speed = 8.0
 animation_tree = NodePath("AnimationTree")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -349,6 +348,7 @@ debug_path_custom_color = Color(1, 0.6333333, 0, 1)
 
 [node name="GOAPAgent" type="Node" parent="." node_paths=PackedStringArray("entity")]
 script = ExtResource("7_gymde")
+hunger_rate = 10.0
 entity = NodePath("..")
 
 [node name="LevelUpGoal" type="Node" parent="GOAPAgent"]
