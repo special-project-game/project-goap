@@ -18,6 +18,7 @@ var food_count: int = 0
 var experience: int = 0
 var level: int = 1
 
+#var has_target: bool = false
 @export var is_target: bool = false
 @export var chaser: Node = null
 
@@ -54,6 +55,7 @@ func _initialize_world_state() -> void:
 	world_state["near_food"] = false
 	world_state["has_wood"] = false
 	world_state["has_food"] = false
+	world_state["has_target"] = false
 	world_state["is_resting"] = false
 	world_state["is_safe"] = true
 	world_state["hunger"] = hunger

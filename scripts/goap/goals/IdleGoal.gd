@@ -20,4 +20,11 @@ func get_priority(agent: Node, world_state: Dictionary) -> float:
 		if not prey_available:
 			print("prey_available: ", prey_available)
 			return base_priority + 5.0
+	elif owner.is_in_group("person"):
+		var has_target = world_state.get("has_target", false)
+		
+		if not has_target:
+			print("has_target: ", has_target)
+			return base_priority + 5.0
+
 	return base_priority

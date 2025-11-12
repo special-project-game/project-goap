@@ -27,6 +27,7 @@ func is_valid(agent: Node, world_state: Dictionary) -> bool:
 		if not is_instance_valid(target):
 			print(agent.name, ": FindTreeAction.is_valid() - Tree target destroyed/freed, returning FALSE")
 			target = null
+			update_target_availability(agent, target)
 			# Clear navigation visualization
 			if navigation_agent:
 				navigation_agent.target_position = agent.global_position
@@ -36,12 +37,14 @@ func is_valid(agent: Node, world_state: Dictionary) -> bool:
 		if not _is_tree_reachable(agent, target):
 			print(agent.name, ": FindTreeAction.is_valid() - Tree target unreachable, returning FALSE")
 			target = null
+			update_target_availability(agent, target)
 			# Clear navigation visualization
 			if navigation_agent:
 				navigation_agent.target_position = agent.global_position
 			return false
 		
 		# Target is valid and reachable
+		update_target_availability(agent, target)
 		return true
 	
 	# No target - check if there are any reachable trees available
@@ -60,6 +63,7 @@ func on_enter(agent: Node) -> void:
 		scanner_component = agent.get_node("ScannerComponent")
 	if agent.has_node("NavigationAgent2D"):
 		navigation_agent = agent.get_node("NavigationAgent2D")
+	
 	
 	# Find target tree
 	target = _find_nearest_tree(agent)
@@ -194,3 +198,11 @@ func _is_tree_reachable(agent: Node, tree: Node) -> bool:
 		return false
 	
 	return true
+
+func update_target_availability(agent: Node, target: Node) -> void:
+	var goap_agent: GOAPAgent
+	
+	if agent.has_node("GOAPAgent"):
+		goap_agent = agent.get_node("GOAPAgent")
+		
+	goap_agent.world_state["has_target"] = target != null
