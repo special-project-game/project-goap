@@ -16,6 +16,12 @@ func _setup_goal() -> void:
 func get_priority(agent: Node, world_state: Dictionary) -> float:
 	var hunger = world_state.get("hunger", 0.0)
 	
+	if owner.is_in_group("monster"):
+		var prey_available = world_state.get("prey_available", false)
+		
+		if not prey_available:
+			return 0.0
+	
 	if hunger < hunger_threshold:
 		return 0.0 # Not hungry
 	

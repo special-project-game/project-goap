@@ -8,12 +8,12 @@ class_name HitBoxComponent
 func _ready():
 	collision_shape_2d.set_debug_color(Color(0.3, 0.5, 0.9, 0.5))
 
-func attack():
-	if not attack_component:
-		return
-	
-	if attack_component.can_attack():
-		attack_component.attack()
+#func attack():
+	#if not attack_component:
+		#return
+	#
+	#if attack_component.can_attack():
+		#attack_component.attack(target)
 		
 
 # hurtboxes store health component

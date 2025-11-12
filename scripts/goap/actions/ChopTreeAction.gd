@@ -6,6 +6,7 @@ class_name ChopTreeAction
 
 @onready var scanner_component: Area2D
 @onready var hit_box_component: HitBoxComponent
+@onready var attack_component: Attack
 
 const CHOP_RANGE: float = 20.0
 var chop_timer: float = 0.0
@@ -39,6 +40,8 @@ func on_enter(agent: Node) -> void:
 		scanner_component = agent.get_node("ScannerComponent")
 	if agent.has_node("Attack/HitBoxComponent"):
 		hit_box_component = agent.get_node("Attack/HitBoxComponent")
+	if agent.has_node("Attack"):
+		attack_component = agent.get_node("AttacK")
 	
 	# Find and set target tree
 	target = _find_nearest_tree(agent)
@@ -70,8 +73,8 @@ func perform(agent: Node, delta: float) -> bool:
 			chop_timer = 0.0
 			current_chops += 1
 			
-			if hit_box_component:
-				hit_box_component.attack()
+			if attack_component:
+				attack_component.attack(target)
 			
 			print(agent.name, ": Chopping tree... (", current_chops, "/", chops_needed, ")")
 			

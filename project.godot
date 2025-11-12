@@ -33,6 +33,7 @@ enabled=PackedStringArray("res://addons/TileMapDual/plugin.cfg")
 trees=""
 entities="people, animal. monster"
 person=""
+monster=""
 
 [gui]
 
@@ -96,6 +97,7 @@ mode_place_tile={
 2d_physics/layer_1="world"
 2d_physics/layer_2="entities"
 2d_physics/layer_3="plants"
+2d_physics/layer_4="predators"
 
 [rendering]
 

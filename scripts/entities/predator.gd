@@ -1,19 +1,17 @@
-# Person.gd
+#Predator.gd
 extends Entity
-class_name Person
+class_name Predator
 
-# Person-specific components and properties
+# Predator-specific components and properties
 @onready var health_component = $HealthComponent
 @onready var attack_component = $Attack
 @onready var root = get_parent()
 
+
 func _on_entity_ready():
 	super._on_entity_ready()
-	print("I'm Person " + str(self.name) + " initialized.")
-	# print("Health: " + str(health_component.health))
-	# print("Attack " + str(attack_component.attack_damage))
-
-# Override to implement Person-specific tile validation
+	print("Predator " + self.name + " initialized.")
+	
 func _is_valid_target_tile(map_pos: Vector2i) -> bool:
 	if not super._is_valid_target_tile(map_pos): # Check base class validation first
 		return false

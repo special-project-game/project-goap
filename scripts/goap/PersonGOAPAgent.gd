@@ -10,10 +10,13 @@ const ItemType = preload("res://scripts/inventory/ItemType.gd")
 const Item = preload("res://scripts/inventory/Item.gd")
 const Inventory = preload("res://scripts/inventory/Inventory.gd")
 
+@onready var label: Label
+
 # Stats
 var hunger: float = 0.0
 var max_hunger: float = 100.0
-var hunger_rate: float = 1.0 # Hunger per second
+@export var hunger_rate: float = 1.0 # Hunger per second
+@export var heal_rate: float = 1.0
 
 # Inventory system
 var inventory: Inventory
@@ -29,6 +32,10 @@ var food_count: int = 0:
 var experience: int = 0
 var level: int = 1
 
+#var has_target: bool = false
+@export var is_target: bool = false
+@export var chaser: Node = null
+
 # Health component reference
 var health_component: HealthComponent
 
@@ -42,6 +49,17 @@ func _ready():
 	if entity and "goap_controlled" in entity:
 		entity.goap_controlled = true
 		print(entity.name, ": GOAP control enabled, autonomous movement disabled")
+	
+	if owner.has_node("Label"):
+		label = owner.get_node("Label")
+	
+	# Update label
+	if not current_action == null:
+		var text = "%s, %.2f, %.2f" % [current_action.action_name, health_component.health, hunger]
+		label.set_visible(true)
+		label.set_text(text)
+	else:
+		label.set_visible(false)
 
 func _initialize_world_state() -> void:
 	# Get health component
@@ -54,19 +72,40 @@ func _initialize_world_state() -> void:
 	world_state["near_food"] = false
 	world_state["has_wood"] = false
 	world_state["has_food"] = false
+	world_state["has_target"] = false
 	world_state["is_resting"] = false
+	world_state["is_safe"] = true
 	world_state["hunger"] = hunger
 	world_state["wood_count"] = inventory.get_item_count(ItemType.Type.WOOD)
 	world_state["food_count"] = inventory.get_item_count(ItemType.Type.APPLE)
 	world_state["level"] = level
 
 func _process(delta: float):
+	# Update label
+	if not current_action == null:
+		var text = "%s, %.2f, %.2f" % [current_action.action_name, health_component.health, hunger]
+		label.set_visible(true)
+		label.set_text(text)
+	else:
+		label.set_visible(false)
+	#print("Person: ", owner.last_facing_direction)
 	# Update hunger
 	hunger = min(hunger + hunger_rate * delta, max_hunger)
 
 	# if hunger maxed out, lose health
 	if hunger >= max_hunger and health_component:
 		health_component.health = max(0.0, health_component.health - 0.5 * delta) # Lose 0.5 health per second when starving
+
+	if health_component.health <= 0:
+		owner.queue_free()
+	
+	if hunger <= 30.0 and health_component.health < health_component.MAX_HEALTH:
+		health_component.health = min(health_component.health + heal_rate * delta, health_component.MAX_HEALTH)
+		hunger = min(hunger + hunger_rate * delta, max_hunger)
+	
+	if is_target:
+		world_state["is_safe"] = false
+		
 	
 	super._process(delta)
 

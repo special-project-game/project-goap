@@ -12,9 +12,10 @@ const ObjectName = {
 	TypeDefs.Objects.TREE: "Tree",
 	TypeDefs.Objects.GRASS: "Grass",
 }
-enum Entity {PERSON, PIG}
+enum Entity {PERSON, PIG, PREDATOR}
 const EntityName = {
 	TypeDefs.Entity.PERSON: "Person",
 	TypeDefs.Entity.PIG: "Pig",
+	TypeDefs.Entity.PREDATOR: "Predator",
 }
 enum Mode {VIEW, PLACE_TILE, PLACE_OBJECT, PLACE_ENTITY}
