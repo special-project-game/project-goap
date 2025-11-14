@@ -1,9 +1,9 @@
 [gd_resource type="StyleBoxFlat" format=3 uid="uid://bctqpjdpywak8"]
 
 [resource]
-bg_color = Color(0.26043, 0.173542, 0.090567, 1)
+bg_color = Color(0.443565, 0.308024, 0.179044, 1)
 border_width_bottom = 6
-border_color = Color(0.366869, 0.254996, 0.143411, 1)
+border_color = Color(0.533277, 0.380442, 0.228788, 1)
 border_blend = true
 corner_radius_top_left = 14
 corner_radius_top_right = 14
