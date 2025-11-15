@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://dkoe6am328ofj"]
 
 [ext_resource type="Texture2D" uid="uid://rbu1dpxhu3vu" path="res://textures/texture_sets/MiniWorldSprites/Nature/Trees.png" id="1_avsvi"]
-[ext_resource type="Script" uid="uid://dqo31kj1e3psu" path="res://Scripts/tree.gd" id="1_vplca"]
+[ext_resource type="Script" uid="uid://dqo31kj1e3psu" path="res://scripts/tree.gd" id="1_vplca"]
 [ext_resource type="PackedScene" uid="uid://d3eq3jv6marhl" path="res://scenes/health_component.tscn" id="3_qd6xs"]
 [ext_resource type="PackedScene" uid="uid://ds3doyrucb6ae" path="res://scenes/hurtbox_component.tscn" id="4_ake3r"]
 
