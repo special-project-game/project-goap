@@ -13,10 +13,10 @@ func _setup_action() -> void:
 	action_name = "FindFood"
 	cost = 1.0
 	
-	# Precondition: must be hungry
-	add_precondition("is_hungry", true)
+	# Precondition: None - can gather food anytime
+	# (Will be prioritized by goals)
 	
-	# Effects: now near food
+	# Effects: now near food (which leads to getting apples)
 	add_effect("near_food", true)
 
 func is_valid(agent: Node, world_state: Dictionary) -> bool:
@@ -25,6 +25,20 @@ func is_valid(agent: Node, world_state: Dictionary) -> bool:
 	
 	# Check if there is food available
 	return _find_nearest_food(agent) != null
+
+## Override get_cost to make food gathering MUCH cheaper when inventory is empty
+func get_cost(agent: Node, world_state: Dictionary) -> float:
+	var food_count = world_state.get("food_count", 0)
+	
+	if food_count == 0:
+		# When empty, make this VERY cheap (high priority)
+		return cost * 0.1 # 10x cheaper!
+	elif food_count < 3:
+		# When low, make it moderately cheap
+		return cost * 0.5
+	else:
+		# Normal cost when well-stocked
+		return cost
 
 func on_enter(agent: Node) -> void:
 	super.on_enter(agent)

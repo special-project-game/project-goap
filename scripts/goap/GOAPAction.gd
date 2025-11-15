@@ -59,7 +59,8 @@ func perform(agent: Node, delta: float) -> bool:
 ## Called when the action completes or is interrupted
 func on_exit(agent: Node) -> void:
 	is_running = false
-	target = null
+	# Don't clear target here - let subsequent actions in the plan use it
+	# Target will be cleared when action is reset or invalidated
 
 ## Get the cost of this action (can be dynamic based on world state)
 func get_cost(agent: Node, world_state: Dictionary) -> float:
