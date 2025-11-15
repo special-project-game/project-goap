@@ -15,10 +15,12 @@
 [ext_resource type="Script" uid="uid://bdjo5p4xt3g3k" path="res://Scripts/goap/actions/FindTreeAction.gd" id="12_ov3s6"]
 [ext_resource type="Script" uid="uid://cu7hk8m2wvnlx" path="res://Scripts/goap/actions/ChopTreeAction.gd" id="13_pm2lx"]
 [ext_resource type="Script" uid="uid://27qp5nrc1tdv" path="res://Scripts/goap/actions/GetAppleAction.gd" id="14_apple"]
+[ext_resource type="Script" uid="uid://c2apple3tree4act" path="res://Scripts/goap/actions/FindAppleTreeAction.gd" id="14_findapple"]
 [ext_resource type="Script" uid="uid://dw3v7jfkqbmh0" path="res://Scripts/goap/actions/FindFoodAction.gd" id="14_bgppu"]
 [ext_resource type="Script" uid="uid://cytwmkd2rsj1b" path="res://Scripts/goap/actions/EatFoodAction.gd" id="15_2xfh2"]
 [ext_resource type="Script" uid="uid://ds5oy3kcm2rjp" path="res://Scripts/goap/actions/RestAction.gd" id="16_rmolt"]
 [ext_resource type="Script" uid="uid://dyh4jnm5p8rwk" path="res://Scripts/goap/goals/SatisfyHungerGoal.gd" id="17_ls67o"]
+[ext_resource type="Script" uid="uid://dpw8h5jnm2abc" path="res://Scripts/goap/goals/StockFoodGoal.gd" id="17_stock"]
 [ext_resource type="Script" uid="uid://vstse5kkcxvh" path="res://Scripts/goap/actions/WanderAction.gd" id="17_wander"]
 [ext_resource type="Script" uid="uid://cwf2h8yx5vn3q" path="res://Scripts/goap/goals/LevelUpGoal.gd" id="18_1qagf"]
 [ext_resource type="Script" uid="uid://bxm3k7qp2vnhw" path="res://Scripts/goap/goals/IdleGoal.gd" id="19_pir7x"]
@@ -368,6 +370,9 @@ hit_box_component = NodePath("../../HitBoxComponent")
 script = ExtResource("8_ym70v")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+path_desired_distance = 5.0
+target_desired_distance = 4.0
+path_max_distance = 10.0
 debug_enabled = true
 
 [node name="GOAPAgent" type="Node" parent="." node_paths=PackedStringArray("entity")]
@@ -383,6 +388,9 @@ metadata/_custom_type_script = "uid://cu7hk8m2wvnlx"
 
 [node name="GetAppleAction" type="Node" parent="GOAPAgent"]
 script = ExtResource("14_apple")
+
+[node name="FindAppleTreeAction" type="Node" parent="GOAPAgent"]
+script = ExtResource("14_findapple")
 
 [node name="FindFoodAction" type="Node" parent="GOAPAgent"]
 script = ExtResource("14_bgppu")
@@ -402,6 +410,10 @@ script = ExtResource("17_wander")
 [node name="SatisfyHungerGoal" type="Node" parent="GOAPAgent"]
 script = ExtResource("17_ls67o")
 metadata/_custom_type_script = "uid://dyh4jnm5p8rwk"
+
+[node name="StockFoodGoal" type="Node" parent="GOAPAgent"]
+script = ExtResource("17_stock")
+metadata/_custom_type_script = "uid://dpw8h5jnm2abc"
 
 [node name="LevelUpGoal" type="Node" parent="GOAPAgent"]
 script = ExtResource("18_1qagf")

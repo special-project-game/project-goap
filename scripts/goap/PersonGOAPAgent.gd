@@ -41,7 +41,7 @@ var health_component: HealthComponent
 
 func _ready():
 	# Initialize inventory system
-	inventory = Inventory.new(10)  # 10 slots
+	inventory = Inventory.new(10) # 10 slots
 	
 	super._ready()
 	
@@ -72,6 +72,7 @@ func _initialize_world_state() -> void:
 	world_state["near_food"] = false
 	world_state["has_wood"] = false
 	world_state["has_food"] = false
+	world_state["has_food_stock"] = false
 	world_state["has_target"] = false
 	world_state["is_resting"] = false
 	world_state["is_safe"] = true
@@ -124,7 +125,9 @@ func _update_world_state() -> void:
 	
 	# Update food inventory
 	world_state["food_count"] = inventory.get_item_count(ItemType.Type.APPLE)
-	world_state["has_food"] = inventory.get_item_count(ItemType.Type.APPLE) > 0
+	# Reset has_food like has_wood so StockFoodGoal keeps cycling until we have 3
+	world_state["has_food"] = inventory.get_item_count(ItemType.Type.APPLE) >= 3
+	world_state["has_food_stock"] = inventory.get_item_count(ItemType.Type.APPLE) >= 3
 	
 	# Reset temporary states
 	world_state["is_resting"] = false
@@ -151,7 +154,7 @@ func consume_wood(amount: int) -> void:
 	var removed = inventory.remove_item(ItemType.Type.WOOD, amount)
 	if removed < amount:
 		print(entity.name, ": Warning - tried to consume ", amount, " wood but only had ", removed)
-
+ 
 func add_food(amount: int = 1) -> void:
 	var overflow = inventory.add_item(ItemType.Type.APPLE, amount)
 	var added = amount - overflow
