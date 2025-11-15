@@ -51,6 +51,7 @@ func take_apple() -> bool:
 	
 	# Start regeneration timer
 	var regen_timer = Timer.new()
+	regen_timer.name = "AppleRegenTimer"
 	regen_timer.wait_time = apple_regen_time
 	regen_timer.one_shot = true
 	regen_timer.timeout.connect(_on_apple_regen)
@@ -63,3 +64,6 @@ func _on_apple_regen():
 	"""Called when apple regenerates"""
 	has_apple = true
 	print(name, ": Apple regenerated!")
+	# Remove the timer after it completes
+	if has_node("AppleRegenTimer"):
+		get_node("AppleRegenTimer").queue_free()
