@@ -31,6 +31,7 @@ const atlas_coordinates_reversed = {
 @onready var layers := [$Water_Grass, $Dirt, $Sand]
 @onready var objectlayer := $ObjectLayer
 @onready var navigation_region := $NavigationRegion2D
+@onready var day_night_cycle := $DayNightCycle
 
 # Navigation rebake state
 var navigation_rebake_timer: Timer = null
@@ -170,7 +171,7 @@ func place_obj(pos: Vector2i, obj: TypeDefs.Objects):
 
 func save_tiles_to_file():
 	print("Saving")
-	var save_data = {"tiles": {}, "camera": {}, "objects": {}, "entities": []}
+	var save_data = {"tiles": {}, "camera": {}, "objects": {}, "entities": [], "time": 0.0}
 	for pos in layers[TypeDefs.Layer.WATER_GRASS].get_used_cells():
 		var type = get_cell_type(pos)
 		if type == TypeDefs.Tile.WATER: # we don't need to save water tils as they're the fallback
@@ -203,6 +204,10 @@ func save_tiles_to_file():
 					
 	save_data["camera"]["pos"] = vec2_to_arr(camera.global_position)
 	save_data["camera"]["zoom"] = vec2_to_arr(camera.zoom)
+	
+	# Save current game time
+	if is_instance_valid(day_night_cycle):
+		save_data["time"] = day_night_cycle.get_time()
 		
 	var file = FileAccess.open("user://save.json", FileAccess.WRITE)
 	file.store_string(JSON.stringify(save_data))
@@ -276,6 +281,11 @@ func load_tiles_from_file():
 	var data = JSON.parse_string(file.get_as_text())
 	file.close()
 	
+	# Check if data is valid
+	if data == null:
+		printerr("Failed to parse save file - data is null")
+		return
+	
 	for pos_str in data["tiles"].keys():
 		var pos = str_to_var(pos_str)
 		var pos_vector = Vector2i(pos[0], pos[1])
@@ -297,6 +307,10 @@ func load_tiles_from_file():
 
 	camera.global_position = arr_to_vec2(data["camera"]["pos"])
 	camera.zoom = arr_to_vec2(data["camera"]["zoom"])
+	
+	# Restore game time
+	if data.has("time") and is_instance_valid(day_night_cycle):
+		day_night_cycle.set_time(data["time"])
 	
 func vec2_to_arr(vec: Vector2):
 	return [vec.x, vec.y]
