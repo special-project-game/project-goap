@@ -58,7 +58,6 @@ func _initialize_world_state() -> void:
 	world_state["level"] = level
 
 func _process(delta: float):
-	print(owner.last_facing_direction)
 	# Update label
 	if not current_action == null:
 		var text = "%s, %.2f, %.2f" % [current_action.action_name, health_component.health, hunger]

@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://ctl27dic16wxy"]
+
+[ext_resource type="Script" uid="uid://ur67jutqbdgi" path="res://scripts/spawner.gd" id="1_2vbf6"]
+
+[node name="Spawner" type="Node" node_paths=PackedStringArray("tile_layers")]
+script = ExtResource("1_2vbf6")
+spawn_count = 5
+tile_layers = [null, null, null]

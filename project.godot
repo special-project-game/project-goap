@@ -23,7 +23,6 @@ GlobalSignal="*res://scripts/global_signal.gd"
 [debug]
 
 file_logging/enable_file_logging=true
-file_logging/log_path="/Users/felix/Developer/project-goap/log.txt"
 
 [display]
 

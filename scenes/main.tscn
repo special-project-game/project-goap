@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://5nq607jqvt50"]
+[gd_scene load_steps=27 format=3 uid="uid://5nq607jqvt50"]
 
 [ext_resource type="Script" uid="uid://bdlt6d32wqywm" path="res://scripts/node_2d.gd" id="1_85g3d"]
 [ext_resource type="Script" uid="uid://buf7gkrb2px63" path="res://scripts/camera_2d.gd" id="2_choun"]
@@ -10,6 +10,8 @@
 [ext_resource type="Texture2D" uid="uid://dobrvyh6v4vo0" path="res://textures/cursor/2.png" id="10_ya4ey"]
 [ext_resource type="PackedScene" uid="uid://3vupj4lgcbdy" path="res://scenes/day_night_cycle.tscn" id="11_ya4ey"]
 [ext_resource type="Script" uid="uid://davm8kqp2vnhy" path="res://scripts/ui/PersonUIManager.gd" id="12_eb6dy"]
+[ext_resource type="PackedScene" uid="uid://ctl27dic16wxy" path="res://scenes/spawner.tscn" id="12_trceg"]
+[ext_resource type="PackedScene" uid="uid://dhn4oxv8akx34" path="res://scenes/predator.tscn" id="13_a8y0u"]
 [ext_resource type="PackedScene" uid="uid://dkoe6am328ofj" path="res://scenes/tree.tscn" id="13_trceg"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_choun"]
@@ -468,5 +470,10 @@ navigation_polygon = SubResource("NavigationPolygon_trceg")
 script = ExtResource("12_eb6dy")
 
 [node name="DayNightCycle" parent="." instance=ExtResource("11_ya4ey")]
+
+[node name="Spawner" parent="." node_paths=PackedStringArray("tile_layers") instance=ExtResource("12_trceg")]
+entity_node = ExtResource("13_a8y0u")
+spawn_interval = 1
+tile_layers = [NodePath("../Water_Grass"), NodePath("../Dirt"), NodePath("../Sand")]
 
 [connection signal="item_selected" from="CanvasLayer/ModeOptionButton" to="." method="_on_mode_option_button_item_selected"]

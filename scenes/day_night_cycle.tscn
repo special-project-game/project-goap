@@ -14,6 +14,8 @@ gradient = SubResource("Gradient_e4bus")
 [node name="DayNightCycle" type="Node2D"]
 script = ExtResource("1_e4bus")
 gradient = SubResource("GradientTexture1D_qf6xv")
+INGAME_SPEED = 60.0
+INITIAL_HOUR = 17
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 visible = false
