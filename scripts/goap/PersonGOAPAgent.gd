@@ -120,6 +120,10 @@ func _update_world_state() -> void:
 	world_state["hunger"] = hunger
 	world_state["is_hungry"] = hunger >= 70.0
 	
+	# Track previous food/wood counts to detect changes
+	var prev_food_count = world_state.get("food_count", 0)
+	var prev_wood_count = world_state.get("wood_count", 0)
+	
 	# Update wood/resources from inventory
 	world_state["wood_count"] = inventory.get_item_count(ItemType.Type.WOOD)
 	# Reset has_wood after each update cycle so LevelUpGoal keeps cycling
@@ -129,10 +133,15 @@ func _update_world_state() -> void:
 	print(entity.name, ": _update_world_state called - has_wood reset to false")
 	
 	# Update food inventory
-	world_state["food_count"] = inventory.get_item_count(ItemType.Type.APPLE)
+	var current_food_count = inventory.get_item_count(ItemType.Type.APPLE)
+	world_state["food_count"] = current_food_count
 	# Reset has_food like has_wood so StockFoodGoal keeps cycling until we have 3
-	world_state["has_food"] = inventory.get_item_count(ItemType.Type.APPLE) >= 3
-	world_state["has_food_stock"] = inventory.get_item_count(ItemType.Type.APPLE) >= 3
+	world_state["has_food"] = current_food_count >= 3
+	world_state["has_food_stock"] = current_food_count >= 3
+	
+	# Clear failed goals if inventory changed significantly (new resources became available)
+	if current_food_count > prev_food_count or world_state["wood_count"] > prev_wood_count:
+		clear_failed_goals()
 	
 	# Update sword inventory
 	world_state["sword_count"] = inventory.get_item_count(ItemType.Type.SWORD)
