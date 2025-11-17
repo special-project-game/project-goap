@@ -12,6 +12,7 @@ signal action_completed(action: GOAPAction)
 
 @export var entity: Node ## Reference to the entity (Person, etc.)
 @export var update_interval: float = 0.5 ## How often to replan (in seconds)
+@export var failed_goal_timeout: float = 5.0 ## How long to wait before retrying a failed goal
 
 var planner: GOAPPlanner
 var available_actions: Array[GOAPAction] = []
@@ -25,6 +26,9 @@ var current_action_index: int = 0
 
 var time_since_update: float = 0.0
 var is_planning: bool = false
+
+# Track goals that failed planning with timestamp
+var failed_goals: Dictionary = {} # goal -> timestamp when it failed
 
 func _ready():
 	planner = GOAPPlanner.new()
@@ -116,8 +120,18 @@ func _update_world_state() -> void:
 
 ## Select the highest priority goal
 func _select_new_goal() -> void:
-	var highest_priority_goal: GOAPGoal = null
-	var highest_priority: float = -1.0
+	# Clean up expired failed goals
+	var current_time = Time.get_ticks_msec() / 1000.0
+	var goals_to_remove = []
+	for goal in failed_goals:
+		if current_time - failed_goals[goal] > failed_goal_timeout:
+			goals_to_remove.append(goal)
+	for goal in goals_to_remove:
+		failed_goals.erase(goal)
+		print(entity.name, ": Cleared failed status for goal: ", goal.goal_name)
+	
+	# Build sorted list of goals by priority
+	var goal_priorities: Array = []
 	
 	print(entity.name, ": Selecting new goal from ", available_goals.size(), " goals")
 	print(entity.name, ": World state: has_wood=", world_state.get("has_wood"), " is_resting=", world_state.get("is_resting"), " is_hungry=", world_state.get("is_hungry"))
@@ -125,54 +139,81 @@ func _select_new_goal() -> void:
 	for goal in available_goals:
 		var is_satisfied = goal.is_satisfied(world_state)
 		var priority = goal.get_priority(entity, world_state)
-		print(entity.name, ": Goal ", goal.goal_name, " - Satisfied: ", is_satisfied, " Priority: ", priority)
+		var is_failed = failed_goals.has(goal)
+		print(entity.name, ": Goal ", goal.goal_name, " - Satisfied: ", is_satisfied, " Priority: ", priority, " Failed: ", is_failed)
 		
 		if is_satisfied:
 			continue
 		
-		if priority > highest_priority:
-			highest_priority = priority
-			highest_priority_goal = goal
+		if is_failed:
+			print(entity.name, ":   Skipping failed goal (will retry in ", failed_goal_timeout - (current_time - failed_goals[goal]), "s)")
+			continue
+		
+		goal_priorities.append({"goal": goal, "priority": priority})
 	
-	print(entity.name, ": Selected goal: ", highest_priority_goal.goal_name if highest_priority_goal else "None", " Priority: ", highest_priority)
+	# Sort goals by priority (highest first)
+	goal_priorities.sort_custom(func(a, b): return a["priority"] > b["priority"])
 	
-	# Always set a new goal, even if it's the same
-	# This handles cases where the previous plan failed
-	if highest_priority_goal:
-		if highest_priority_goal != current_goal or current_plan.is_empty():
-			_set_new_goal(highest_priority_goal)
-	elif current_goal:
-		# No valid unsatisfied goals - clear current goal
+	# Try goals in priority order until we find one that can be planned
+	for goal_data in goal_priorities:
+		var goal = goal_data["goal"]
+		print(entity.name, ": Attempting goal: ", goal.goal_name, " Priority: ", goal_data["priority"])
+		
+		if goal != current_goal or current_plan.is_empty():
+			if _try_set_goal(goal):
+				print(entity.name, ": Successfully planned for goal: ", goal.goal_name)
+				return
+			else:
+				print(entity.name, ": Planning failed, trying next goal...")
+		else:
+			# Same goal and we have a plan, keep it
+			print(entity.name, ": Keeping current goal: ", goal.goal_name)
+			return
+	
+	# No goals could be planned
+	print(entity.name, ": No goals available or all goals failed planning")
+	if current_goal:
 		current_goal = null
 		current_plan.clear()
 
-## Set a new goal and create a plan
-func _set_new_goal(goal: GOAPGoal) -> void:
+## Try to set a new goal and create a plan, returns true if successful
+func _try_set_goal(goal: GOAPGoal) -> bool:
 	# Cancel current action if any
 	if current_action:
 		current_action.on_exit(entity)
 		current_action = null
 	
-	current_goal = goal
-	current_plan.clear()
-	current_action_index = 0
-	
 	if not goal:
-		return
+		return false
 	
 	# Create a plan
 	is_planning = true
-	current_plan = planner.plan(entity, available_actions, world_state, goal)
+	var plan = planner.plan(entity, available_actions, world_state, goal)
 	is_planning = false
 	
-	if current_plan.is_empty():
+	if plan.is_empty():
 		print(entity.name, ": Failed to find plan for goal: ", goal.goal_name)
 		plan_failed.emit()
-		current_goal = null
+		# Mark this goal as failed
+		failed_goals[goal] = Time.get_ticks_msec() / 1000.0
+		return false
 	else:
+		# Success! Clear any previous failure
+		if failed_goals.has(goal):
+			failed_goals.erase(goal)
+		
+		current_goal = goal
+		current_plan = plan
+		current_action_index = 0
+		
 		print(entity.name, ": Plan found for ", goal.goal_name, " with ", current_plan.size(), " actions")
 		plan_found.emit(current_plan)
 		_start_next_action()
+		return true
+
+## Set a new goal and create a plan (legacy method for compatibility)
+func _set_new_goal(goal: GOAPGoal) -> void:
+	_try_set_goal(goal)
 
 ## Start the next action in the plan
 func _start_next_action() -> void:
@@ -202,3 +243,9 @@ func set_state(key: String, value) -> void:
 func replan() -> void:
 	if current_goal:
 		_set_new_goal(current_goal)
+
+## Clear all failed goal markers - call when world state changes significantly
+func clear_failed_goals() -> void:
+	if not failed_goals.is_empty():
+		print(entity.name, ": Clearing all failed goal markers due to world state change")
+		failed_goals.clear()
