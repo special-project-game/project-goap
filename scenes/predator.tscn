@@ -1,10 +1,11 @@
-[gd_scene load_steps=44 format=3 uid="uid://dhn4oxv8akx34"]
+[gd_scene load_steps=45 format=3 uid="uid://dhn4oxv8akx34"]
 
 [ext_resource type="Script" uid="uid://cwlkvctdpg85k" path="res://scripts/entities/predator.gd" id="1_w6bwu"]
 [ext_resource type="Texture2D" uid="uid://l7oqxddlcqc7" path="res://textures/texture_sets/MiniWorldSprites/Characters/Monsters/Orcs/Orc.png" id="2_hqjfx"]
 [ext_resource type="PackedScene" uid="uid://bd67twu1oip6e" path="res://scenes/attack.tscn" id="2_voa5e"]
 [ext_resource type="FontFile" uid="uid://dsv8rorgooxbr" path="res://assets/fonts/Micro5-Regular.ttf" id="3_hqjfx"]
 [ext_resource type="PackedScene" uid="uid://d3eq3jv6marhl" path="res://scenes/health_component.tscn" id="3_w6bwu"]
+[ext_resource type="PackedScene" uid="uid://tl46bua3mbu5" path="res://scenes/status.tscn" id="4_2qlvr"]
 [ext_resource type="PackedScene" uid="uid://datnoswldfogg" path="res://scenes/hit_box_component.tscn" id="4_gymde"]
 [ext_resource type="PackedScene" uid="uid://ds3doyrucb6ae" path="res://scenes/hurtbox_component.tscn" id="5_7ds8v"]
 [ext_resource type="Script" uid="uid://87gnbrp5xu1g" path="res://scripts/goap/PredatorGOAPAgentt.gd" id="7_gymde"]
@@ -276,6 +277,7 @@ hframes = 6
 vframes = 8
 
 [node name="Label" type="Label" parent="."]
+visible = false
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -298,6 +300,10 @@ autowrap_mode = 3
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -2)
 shape = SubResource("RectangleShape2D_wacsr")
+
+[node name="Status" parent="." instance=ExtResource("4_2qlvr")]
+offset_top = -8.0
+offset_bottom = -8.0
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 root_node = NodePath("../AnimationTree")

@@ -53,16 +53,16 @@ func _ready():
 		entity.goap_controlled = true
 		print(entity.name, ": GOAP control enabled, autonomous movement disabled")
 	
-	if owner.has_node("Label"):
-		label = owner.get_node("Label")
+	#if owner.has_node("Label"):
+		#label = owner.get_node("Label")
 	
-	# Update label
-	if not current_action == null:
-		var text = "%s, %.2f, %.2f" % [current_action.action_name, health_component.health, hunger]
-		label.set_visible(true)
-		label.set_text(text)
-	else:
-		label.set_visible(false)
+	## Update label
+	#if not current_action == null:
+		#var text = "%s, %.2f, %.2f" % [current_action.action_name, health_component.health, hunger]
+		#label.set_visible(true)
+		#label.set_text(text)
+	#else:
+		#label.set_visible(false)
 
 func _initialize_world_state() -> void:
 	# Get health component
@@ -87,13 +87,13 @@ func _initialize_world_state() -> void:
 	world_state["level"] = level
 
 func _process(delta: float):
-	# Update label
-	if not current_action == null:
-		var text = "%s, %.2f, %.2f" % [current_action.action_name, health_component.health, hunger]
-		label.set_visible(true)
-		label.set_text(text)
-	else:
-		label.set_visible(false)
+	## Update label
+	#if not current_action == null:
+		#var text = "%s, %.2f, %.2f" % [current_action.action_name, health_component.health, hunger]
+		#label.set_visible(true)
+		#label.set_text(text)
+	#else:
+		#label.set_visible(false)
 	#print("Person: ", owner.last_facing_direction)
 	# Update hunger
 	hunger = min(hunger + hunger_rate * delta, max_hunger)
