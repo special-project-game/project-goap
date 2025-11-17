@@ -9,6 +9,7 @@ enum Type {
 	STONE = 3,
 	BERRY = 4,
 	MEAT = 5,
+	SWORD = 6,
 	# Add more item types as needed
 }
 
@@ -27,6 +28,8 @@ static func get_item_name(type: Type) -> String:
 			return "Berry"
 		Type.MEAT:
 			return "Meat"
+		Type.SWORD:
+			return "Sword"
 		_:
 			return "Unknown"
 

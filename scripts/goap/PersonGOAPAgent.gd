@@ -28,6 +28,9 @@ var wood_count: int = 0:
 var food_count: int = 0:
 	get:
 		return inventory.get_item_count(ItemType.Type.APPLE) if inventory else 0
+var sword_count: int = 0:
+	get:
+		return inventory.get_item_count(ItemType.Type.SWORD) if inventory else 0
 
 var experience: int = 0
 var level: int = 1
@@ -76,9 +79,11 @@ func _initialize_world_state() -> void:
 	world_state["has_target"] = false
 	world_state["is_resting"] = false
 	world_state["is_safe"] = true
+	world_state["has_sword"] = false
 	world_state["hunger"] = hunger
 	world_state["wood_count"] = inventory.get_item_count(ItemType.Type.WOOD)
 	world_state["food_count"] = inventory.get_item_count(ItemType.Type.APPLE)
+	world_state["sword_count"] = inventory.get_item_count(ItemType.Type.SWORD)
 	world_state["level"] = level
 
 func _process(delta: float):
@@ -129,6 +134,10 @@ func _update_world_state() -> void:
 	world_state["has_food"] = inventory.get_item_count(ItemType.Type.APPLE) >= 3
 	world_state["has_food_stock"] = inventory.get_item_count(ItemType.Type.APPLE) >= 3
 	
+	# Update sword inventory
+	world_state["sword_count"] = inventory.get_item_count(ItemType.Type.SWORD)
+	world_state["has_sword"] = inventory.get_item_count(ItemType.Type.SWORD) > 0
+	
 	# Reset temporary states
 	world_state["is_resting"] = false
 	world_state["near_tree"] = false
@@ -170,6 +179,20 @@ func consume_food(amount: int = 1) -> void:
 		hunger = max(0.0, hunger - ItemType.get_food_value(ItemType.Type.APPLE) * removed)
 		print(entity.name, ": Ate ", removed, " food! Hunger reduced to ", hunger)
 
+func add_sword(amount: int = 1) -> void:
+	var overflow = inventory.add_item(ItemType.Type.SWORD, amount)
+	var added = amount - overflow
+	if added > 0:
+		experience += added * 50 # 50 exp per sword
+		print(entity.name, ": Crafted ", added, " sword! Total: ", inventory.get_item_count(ItemType.Type.SWORD), " | Exp: ", experience)
+	if overflow > 0:
+		print(entity.name, ": Inventory full! Couldn't add ", overflow, " sword")
+
+func consume_sword(amount: int) -> void:
+	var removed = inventory.remove_item(ItemType.Type.SWORD, amount)
+	if removed < amount:
+		print(entity.name, ": Warning - tried to consume ", amount, " sword but only had ", removed)
+
 func _level_up() -> void:
 	level += 1
 	print(entity.name, " LEVELED UP to level ", level, "!")
@@ -192,6 +215,7 @@ func get_stats() -> Dictionary:
 		"hunger": hunger,
 		"wood_count": inventory.get_item_count(ItemType.Type.WOOD),
 		"food_count": inventory.get_item_count(ItemType.Type.APPLE),
+		"sword_count": inventory.get_item_count(ItemType.Type.SWORD),
 		"health": health_component.health if health_component else 0.0,
 		"max_health": health_component.MAX_HEALTH if health_component else 0.0
 	}
