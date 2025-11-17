@@ -1,9 +1,10 @@
-[gd_scene load_steps=53 format=3 uid="uid://d36crc7kindbf"]
+[gd_scene load_steps=58 format=3 uid="uid://d36crc7kindbf"]
 
 [ext_resource type="Script" uid="uid://carxwlbbbo7o" path="res://scripts/entities/person.gd" id="1_5dovg"]
 [ext_resource type="Texture2D" uid="uid://tow4k7h2qrjt" path="res://textures/texture_sets/MiniWorldSprites/Characters/Workers/FarmerTemplate.png" id="2_5dovg"]
 [ext_resource type="PackedScene" uid="uid://d3eq3jv6marhl" path="res://scenes/health_component.tscn" id="3_h4n5y"]
 [ext_resource type="FontFile" uid="uid://dsv8rorgooxbr" path="res://assets/fonts/Micro5-Regular.ttf" id="3_rmolt"]
+[ext_resource type="PackedScene" uid="uid://tl46bua3mbu5" path="res://scenes/status.tscn" id="4_61wjg"]
 [ext_resource type="PackedScene" uid="uid://ds3doyrucb6ae" path="res://scenes/hurtbox_component.tscn" id="4_8487m"]
 [ext_resource type="PackedScene" uid="uid://bd67twu1oip6e" path="res://scenes/attack.tscn" id="5_8487m"]
 [ext_resource type="PackedScene" uid="uid://datnoswldfogg" path="res://scenes/hit_box_component.tscn" id="6_8qhow"]
@@ -15,8 +16,8 @@
 [ext_resource type="Script" uid="uid://bdjo5p4xt3g3k" path="res://scripts/goap/actions/FindTreeAction.gd" id="12_ov3s6"]
 [ext_resource type="Script" uid="uid://cu7hk8m2wvnlx" path="res://scripts/goap/actions/ChopTreeAction.gd" id="13_pm2lx"]
 [ext_resource type="Script" uid="uid://27qp5nrc1tdv" path="res://scripts/goap/actions/GetAppleAction.gd" id="14_apple"]
-[ext_resource type="Script" uid="uid://c2apple3tree4act" path="res://scripts/goap/actions/FindAppleTreeAction.gd" id="14_findapple"]
 [ext_resource type="Script" uid="uid://dw3v7jfkqbmh0" path="res://scripts/goap/actions/FindFoodAction.gd" id="14_bgppu"]
+[ext_resource type="Script" uid="uid://buhhgqoqqm0lf" path="res://scripts/goap/actions/FindAppleTreeAction.gd" id="14_findapple"]
 [ext_resource type="Script" uid="uid://cytwmkd2rsj1b" path="res://scripts/goap/actions/EatFoodAction.gd" id="15_2xfh2"]
 [ext_resource type="Script" uid="uid://ds5oy3kcm2rjp" path="res://scripts/goap/actions/RestAction.gd" id="16_rmolt"]
 [ext_resource type="Script" uid="uid://dyh4jnm5p8rwk" path="res://scripts/goap/goals/SatisfyHungerGoal.gd" id="17_ls67o"]
@@ -24,8 +25,8 @@
 [ext_resource type="Script" uid="uid://vstse5kkcxvh" path="res://scripts/goap/actions/WanderAction.gd" id="17_wander"]
 [ext_resource type="Script" uid="uid://cwf2h8yx5vn3q" path="res://scripts/goap/goals/LevelUpGoal.gd" id="18_1qagf"]
 [ext_resource type="Script" uid="uid://bxm3k7qp2vnhw" path="res://scripts/goap/goals/IdleGoal.gd" id="19_pir7x"]
-[ext_resource type="Script" uid="uid://csword4goal8gd" path="res://scripts/goap/goals/GetSwordGoal.gd" id="20_sword"]
-[ext_resource type="Script" uid="uid://ccraft6sword9gd" path="res://scripts/goap/actions/CraftSwordAction.gd" id="21_craft"]
+[ext_resource type="Script" uid="uid://bvpmeu74t5yrj" path="res://scripts/goap/goals/GetSwordGoal.gd" id="20_sword"]
+[ext_resource type="Script" uid="uid://0iags1il0ml8" path="res://scripts/goap/actions/CraftSwordAction.gd" id="21_craft"]
 [ext_resource type="Script" uid="uid://db1fttay7voh0" path="res://scripts/goap/goals/BeSafeGoal.gd" id="22_bgppu"]
 [ext_resource type="Script" uid="uid://cfrg7dhsx4ta0" path="res://scripts/goap/actions/RunAwayAction.gd" id="23_2xfh2"]
 
@@ -295,6 +296,7 @@ position = Vector2(0, -2)
 shape = SubResource("RectangleShape2D_5dovg")
 
 [node name="Label" type="Label" parent="."]
+visible = false
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -313,6 +315,10 @@ text = "test"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
+
+[node name="Status" parent="." instance=ExtResource("4_61wjg")]
+offset_top = -8.0
+offset_bottom = -8.0
 
 [node name="AnimationTree" type="AnimationTree" parent="."]
 tree_root = SubResource("AnimationNodeStateMachine_ym70v")
