@@ -24,6 +24,8 @@
 [ext_resource type="Script" uid="uid://vstse5kkcxvh" path="res://Scripts/goap/actions/WanderAction.gd" id="17_wander"]
 [ext_resource type="Script" uid="uid://cwf2h8yx5vn3q" path="res://Scripts/goap/goals/LevelUpGoal.gd" id="18_1qagf"]
 [ext_resource type="Script" uid="uid://bxm3k7qp2vnhw" path="res://Scripts/goap/goals/IdleGoal.gd" id="19_pir7x"]
+[ext_resource type="Script" uid="uid://csword4goal8gd" path="res://Scripts/goap/goals/GetSwordGoal.gd" id="20_sword"]
+[ext_resource type="Script" uid="uid://ccraft6sword9gd" path="res://Scripts/goap/actions/CraftSwordAction.gd" id="21_craft"]
 [ext_resource type="Script" uid="uid://db1fttay7voh0" path="res://Scripts/goap/goals/BeSafeGoal.gd" id="22_bgppu"]
 [ext_resource type="Script" uid="uid://cfrg7dhsx4ta0" path="res://Scripts/goap/actions/RunAwayAction.gd" id="23_2xfh2"]
 
@@ -422,6 +424,14 @@ metadata/_custom_type_script = "uid://cwf2h8yx5vn3q"
 [node name="IdleGoal" type="Node" parent="GOAPAgent"]
 script = ExtResource("19_pir7x")
 metadata/_custom_type_script = "uid://bxm3k7qp2vnhw"
+
+[node name="GetSwordGoal" type="Node" parent="GOAPAgent"]
+script = ExtResource("20_sword")
+metadata/_custom_type_script = "uid://csword4goal8gd"
+
+[node name="CraftSwordAction" type="Node" parent="GOAPAgent"]
+script = ExtResource("21_craft")
+metadata/_custom_type_script = "uid://ccraft6sword9gd"
 
 [node name="BeSafeGoal" type="Node" parent="GOAPAgent"]
 script = ExtResource("22_bgppu")

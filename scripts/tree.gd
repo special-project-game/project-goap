@@ -5,14 +5,16 @@ enum States {Baby, Teen, Adult, Old}
 @export var state: State
 @onready var timer = $Timer
 @onready var sprite = $Sprite2D
+@onready var apple_sprite = $AppleSprite
 
 var current_state := States.Baby
-var has_apple: bool = true
+var has_apple: bool = false
 var apple_regen_time: float = 10.0 # Seconds until apple regenerates
 
 func _ready():
 	timer.one_shot = true
 	enter_state(current_state)
+	update_apple_visibility()
 
 
 func enter_state(new_state: States):
@@ -30,8 +32,12 @@ func enter_state(new_state: States):
 			sprite.frame = 2
 			timer.wait_time = 15
 			timer.start()
+			has_apple = true
+			update_apple_visibility()
 		States.Old:
 			sprite.frame = 3
+			has_apple = true
+			update_apple_visibility()
 
 
 func _on_timer_timeout():
@@ -47,6 +53,7 @@ func take_apple() -> bool:
 		return false
 	
 	has_apple = false
+	update_apple_visibility()
 	print(name, ": Apple taken, will regenerate in ", apple_regen_time, " seconds")
 	
 	# Start regeneration timer
@@ -62,8 +69,16 @@ func take_apple() -> bool:
 
 func _on_apple_regen():
 	"""Called when apple regenerates"""
-	has_apple = true
-	print(name, ": Apple regenerated!")
+	# Only regenerate if tree is Adult or Old
+	if current_state == States.Adult or current_state == States.Old:
+		has_apple = true
+		update_apple_visibility()
+		print(name, ": Apple regenerated!")
 	# Remove the timer after it completes
 	if has_node("AppleRegenTimer"):
 		get_node("AppleRegenTimer").queue_free()
+
+func update_apple_visibility():
+	"""Update the visibility of the apple sprite based on availability"""
+	if apple_sprite:
+		apple_sprite.visible = has_apple

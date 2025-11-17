@@ -19,6 +19,10 @@ func _setup_action() -> void:
 	add_effect("near_tree", true)
 
 func is_valid(agent: Node, world_state: Dictionary) -> bool:
+	# If action is already running and has a target, skip expensive checks
+	if is_running and target != null and is_instance_valid(target):
+		return true
+	
 	# Check if we have a target set
 	var has_target = target != null
 	
@@ -48,11 +52,14 @@ func is_valid(agent: Node, world_state: Dictionary) -> bool:
 		return true
 	
 	# No target - check if there are any reachable trees available
-	print(agent.name, ": FindTreeAction.is_valid() - No target, searching for reachable trees")
-	var reachable_tree = _find_nearest_tree(agent)
-	if reachable_tree == null:
-		print(agent.name, ": FindTreeAction.is_valid() - No reachable trees found, returning FALSE")
-		return false
+	# Only do this expensive check if we're not already running
+	if not is_running:
+		print(agent.name, ": FindTreeAction.is_valid() - No target, searching for reachable trees")
+		var reachable_tree = _find_nearest_tree(agent)
+		if reachable_tree == null:
+			print(agent.name, ": FindTreeAction.is_valid() - No reachable trees found, returning FALSE")
+			return false
+	
 	return true
 
 func on_enter(agent: Node) -> void:
@@ -118,6 +125,8 @@ func perform(agent: Node, _delta: float) -> bool:
 func on_exit(agent: Node) -> void:
 	super.on_exit(agent)
 	agent.velocity = Vector2.ZERO
+	# Clear target so next execution finds a new tree
+	target = null
 	
 	# Clear navigation target to remove debug visualization
 	if navigation_agent:
@@ -140,6 +149,10 @@ func _find_nearest_tree(agent: Node) -> Node:
 	for body in nearby_bodies:
 		if body.is_in_group("trees"):
 			trees_checked += 1
+			# Skip trees that are queued for deletion
+			if not is_instance_valid(body) or body.is_queued_for_deletion():
+				trees_unreachable += 1
+				continue
 			# Check if this tree is reachable via navigation
 			if not _is_tree_reachable(agent, body):
 				trees_unreachable += 1

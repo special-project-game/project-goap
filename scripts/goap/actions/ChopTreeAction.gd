@@ -24,6 +24,12 @@ func _setup_action() -> void:
 	add_effect("has_wood", true)
 	add_effect("near_tree", false)
 
+func apply_effects(world_state: Dictionary) -> Dictionary:
+	# Override to properly increment wood_count
+	var new_state = super.apply_effects(world_state)
+	new_state["wood_count"] = new_state.get("wood_count", 0) + 1
+	return new_state
+
 func is_valid(_agent: Node, _world_state: Dictionary) -> bool:
 	# For planning purposes, this action is valid as long as it could theoretically be executed
 	# The precondition "near_tree" ensures we're actually near one when executing
