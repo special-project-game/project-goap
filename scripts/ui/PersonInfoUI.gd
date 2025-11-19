@@ -162,11 +162,11 @@ func _update_hunger() -> void:
 	# Color indicators
 	var pct := float(current) / float(max)
 	if pct < 0.3:
-		hunger_bar.modulate = Color.GREEN
+		hunger_bar.modulate = Color.DARK_RED
 	elif pct < 0.7:
-		hunger_bar.modulate = Color.YELLOW
+		hunger_bar.modulate = Color.ORANGE_RED
 	else:
-		hunger_bar.modulate = Color.RED
+		hunger_bar.modulate = Color.YELLOW
 
 func _update_inventory() -> void:
 	if not goap_agent.inventory:
