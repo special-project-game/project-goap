@@ -21,6 +21,14 @@ func _setup_action() -> void:
 func is_valid(agent: Node, world_state: Dictionary) -> bool:
 	# If action is already running and has a target, skip expensive checks
 	if is_running and target != null and is_instance_valid(target):
+		# Still validate that the target is reachable
+		if not _is_tree_reachable(agent, target):
+			print(agent.name, ": FindTreeAction.is_valid() - Tree target unreachable, returning FALSE")
+			target = null
+			update_target_availability(agent, target)
+			if navigation_agent:
+				navigation_agent.target_position = agent.global_position
+			return false
 		return true
 	
 	# Check if we have a target set
@@ -29,37 +37,34 @@ func is_valid(agent: Node, world_state: Dictionary) -> bool:
 	# If we have a target reference, check if it's still valid
 	if has_target:
 		if not is_instance_valid(target):
-			print(agent.name, ": FindTreeAction.is_valid() - Tree target destroyed/freed, returning FALSE")
+			print(agent.name, ": FindTreeAction.is_valid() - Tree target destroyed/freed, checking for other trees")
 			target = null
 			update_target_availability(agent, target)
 			# Clear navigation visualization
 			if navigation_agent:
 				navigation_agent.target_position = agent.global_position
-			return false
-		
-		# Target is valid, check if reachable
-		if not _is_tree_reachable(agent, target):
-			print(agent.name, ": FindTreeAction.is_valid() - Tree target unreachable, returning FALSE")
+			# Fall through to check if ANY trees exist
+		elif not _is_tree_reachable(agent, target):
+			print(agent.name, ": FindTreeAction.is_valid() - Tree target unreachable, checking for other trees")
 			target = null
 			update_target_availability(agent, target)
 			# Clear navigation visualization
 			if navigation_agent:
 				navigation_agent.target_position = agent.global_position
-			return false
-		
-		# Target is valid and reachable
-		update_target_availability(agent, target)
-		return true
+			# Fall through to check if ANY trees exist
+		else:
+			# Target is valid and reachable
+			update_target_availability(agent, target)
+			return true
 	
-	# No target - check if there are any reachable trees available
-	# Only do this expensive check if we're not already running
-	if not is_running:
-		print(agent.name, ": FindTreeAction.is_valid() - No target, searching for reachable trees")
-		var reachable_tree = _find_nearest_tree(agent)
-		if reachable_tree == null:
-			print(agent.name, ": FindTreeAction.is_valid() - No reachable trees found, returning FALSE")
-			return false
+	# No valid target - check if there are ANY reachable trees available
+	print(agent.name, ": FindTreeAction.is_valid() - No target, searching for reachable trees")
+	var reachable_tree = _find_nearest_tree(agent)
+	if reachable_tree == null:
+		print(agent.name, ": FindTreeAction.is_valid() - No reachable trees found, action INVALID")
+		return false
 	
+	# Found a valid tree, action is valid
 	return true
 
 func on_enter(agent: Node) -> void:
@@ -84,12 +89,21 @@ func on_enter(agent: Node) -> void:
 		print(agent.name, ": NavigationAgent is_navigation_finished: ", navigation_agent.is_navigation_finished())
 		print(agent.name, ": Distance to target: ", navigation_agent.distance_to_target())
 
-func perform(agent: Node, _delta: float) -> bool:
+func perform(agent: Node, delta: float) -> bool:
 	# Check if target is valid FIRST
 	if not is_instance_valid(target):
 		# Don't print here - is_valid() will handle the replan
 		agent.velocity = Vector2.ZERO
 		return false
+	
+	# Periodically recalculate to find nearest tree (every 2 seconds by default)
+	if should_recalculate_target(delta):
+		var new_target = _recalculate_target(agent)
+		if new_target != null and new_target != target:
+			print(agent.name, ": Switching to a closer tree")
+			target = new_target
+			if navigation_agent:
+				navigation_agent.target_position = target.global_position
 	
 	# Check if we've arrived
 	var distance_to_tree = agent.global_position.distance_to(target.global_position)
@@ -219,3 +233,7 @@ func update_target_availability(agent: Node, target: Node) -> void:
 		goap_agent = agent.get_node("GOAPAgent")
 		
 	goap_agent.world_state["has_target"] = target != null
+
+## Override from base class - recalculate nearest tree
+func _recalculate_target(agent: Node) -> Node:
+	return _find_nearest_tree(agent)

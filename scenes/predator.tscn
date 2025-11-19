@@ -326,12 +326,12 @@ position = Vector2(0, -2)
 shape = SubResource("RectangleShape2D_r2jyc")
 
 [node name="HurtBoxComponent" parent="." node_paths=PackedStringArray("health_component") instance=ExtResource("5_7ds8v")]
+collision_layer = 8
 health_component = NodePath("../HealthComponent")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBoxComponent"]
 position = Vector2(0, -2)
 shape = SubResource("RectangleShape2D_elnvq")
-disabled = true
 
 [node name="ScannerComponent" type="Area2D" parent="."]
 collision_layer = 0

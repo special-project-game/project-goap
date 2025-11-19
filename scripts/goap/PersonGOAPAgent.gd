@@ -80,6 +80,8 @@ func _initialize_world_state() -> void:
 	world_state["is_resting"] = false
 	world_state["is_safe"] = true
 	world_state["has_sword"] = false
+	world_state["near_predator"] = false
+	world_state["has_killed_predator"] = false
 	world_state["hunger"] = hunger
 	world_state["wood_count"] = inventory.get_item_count(ItemType.Type.WOOD)
 	world_state["food_count"] = inventory.get_item_count(ItemType.Type.APPLE)
@@ -130,8 +132,6 @@ func _update_world_state() -> void:
 	# This makes wood gathering a continuous activity
 	world_state["has_wood"] = false
 	
-	print(entity.name, ": _update_world_state called - has_wood reset to false")
-	
 	# Update food inventory
 	var current_food_count = inventory.get_item_count(ItemType.Type.APPLE)
 	world_state["food_count"] = current_food_count
@@ -151,6 +151,8 @@ func _update_world_state() -> void:
 	world_state["is_resting"] = false
 	world_state["near_tree"] = false
 	world_state["near_food"] = false
+	world_state["near_predator"] = false
+	world_state["has_killed_predator"] = false
 	
 	# Update level
 	world_state["level"] = level

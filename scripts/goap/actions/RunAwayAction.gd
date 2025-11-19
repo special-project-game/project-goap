@@ -14,6 +14,7 @@ func _setup_action() -> void:
 	cost = 1.0
 	
 	add_precondition("is_safe", false)
+	add_precondition("has_sword", false)
 	
 	add_effect("is_safe", true)
 

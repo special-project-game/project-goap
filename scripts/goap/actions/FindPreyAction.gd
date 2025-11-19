@@ -45,7 +45,7 @@ func on_enter(agent: Node) -> void:
 		print(agent.name, ": Distance to target: ", navigation_agent.distance_to_target())
 
 
-func perform(agent: Node, _delta: float) -> bool:
+func perform(agent: Node, delta: float) -> bool:
 	# Check if target is valid FIRST
 	if not is_instance_valid(target):
 		#print("target invalid")
@@ -54,6 +54,28 @@ func perform(agent: Node, _delta: float) -> bool:
 		update_prey_availability(agent)
 		target = _find_nearest_prey(agent)
 		return false
+	
+	# Periodically recalculate to find nearest prey (every 2 seconds by default)
+	if should_recalculate_target(delta):
+		var new_target = _recalculate_target(agent)
+		if new_target != null and new_target != target:
+			print(agent.name, ": Switching to a closer prey")
+			# Update the old target
+			if is_instance_valid(target) and target.has_node("GOAPAgent"):
+				var old_goap = target.get_node("GOAPAgent")
+				old_goap.is_target = false
+				old_goap.chaser = null
+			
+			target = new_target
+			
+			# Update the new target
+			if target.has_node("GOAPAgent"):
+				goap_target = target.get_node("GOAPAgent")
+				goap_target.is_target = true
+				goap_target.chaser = agent
+			
+			if navigation_agent:
+				navigation_agent.target_position = target.global_position
 	
 	# Check if we've arrived
 	var distance_to_prey = agent.global_position.distance_to(target.global_position)
@@ -235,3 +257,7 @@ func is_valid(agent: Node, world_state: Dictionary) -> bool:
 	
 	update_prey_availability(agent)
 	return world_state.get("prey_available", false)
+
+## Override from base class - recalculate nearest prey
+func _recalculate_target(agent: Node) -> Node:
+	return _find_nearest_prey(agent)
