@@ -13,7 +13,6 @@ const ICON_PATH := "res://icons/"
 var selected_slot: Control = null
 var original_position: Vector2
 
-
 func _ready():
 	original_position = position
 
@@ -32,11 +31,9 @@ func _ready():
 	_slide_in()
 	set_process_input(true)
 
-
 func _connect_button(btn: Button, func_ref):
 	if not btn.pressed.is_connected(func_ref):
 		btn.pressed.connect(func_ref)
-
 
 func _setup_slot(slot: Control) -> void:
 	var icon: TextureRect = slot.get_node("Icon")
@@ -51,13 +48,11 @@ func _setup_slot(slot: Control) -> void:
 			_on_slot_clicked(slot)
 	)
 
-
 func _slide_in():
 	position.y = original_position.y + 40
 	var t := create_tween()
 	t.tween_property(self, "position:y", original_position.y, 0.25)\
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-
 
 func _update_selected_button(selected: Button):
 	for btn in mode_buttons.get_children():
@@ -69,29 +64,34 @@ func _update_selected_button(selected: Button):
 		else:
 			t.tween_property(btn, "modulate", Color(0.8, 0.8, 0.8), 0.15)
 
+func _select_first_available_slot():
+	for slot in item_grid.get_children():
+		if slot.visible and slot.has_meta("id") and slot.get_meta("id") != null:
+			_on_slot_clicked(slot)
+			return
 
 func _on_tiles_pressed():
 	_update_selected_button(mode_buttons.get_node("TilesButton"))
 	emit_signal("mode_selected", TypeDefs.Mode.PLACE_TILE)
 	_populate(TypeDefs.Tile.values(), TypeDefs.TileName)
+	_select_first_available_slot()
 
 
 func _on_objects_pressed():
 	_update_selected_button(mode_buttons.get_node("ObjectsButton"))
 	emit_signal("mode_selected", TypeDefs.Mode.PLACE_OBJECT)
 	_populate(TypeDefs.Objects.values(), TypeDefs.ObjectName)
-
+	_select_first_available_slot()
 
 func _on_entities_pressed():
 	_update_selected_button(mode_buttons.get_node("EntitiesButton"))
 	emit_signal("mode_selected", TypeDefs.Mode.PLACE_ENTITY)
 	_populate(TypeDefs.Entity.values(), TypeDefs.EntityName)
-
+	_select_first_available_slot()
 
 func _populate(id_list: Array, name_dict: Dictionary):
 	selected_slot = null
 
-	# reset label
 	selected_label.text = ""
 	selected_label.modulate.a = 0.0
 
@@ -109,7 +109,6 @@ func _populate(id_list: Array, name_dict: Dictionary):
 			var icon_node: TextureRect = slot.get_node("Icon")
 			var bg: TextureRect = slot.get_node("Background")
 
-			# reset highlight
 			bg.modulate = Color(1, 1, 1, 1)
 
 			var icon_path = ICON_PATH + name.to_lower() + ".png"
@@ -118,14 +117,12 @@ func _populate(id_list: Array, name_dict: Dictionary):
 			else:
 				icon_node.texture = null
 
-			# fade-in slot
 			slot.modulate.a = 0.0
 			create_tween().tween_property(slot, "modulate:a", 1.0, 0.2)
 		else:
 			slot.hide()
 			slot.set_meta("id", null)
 			slot.set_meta("name", null)
-
 
 func _on_slot_clicked(slot: Control):
 	if not slot.has_meta("id") or slot.get_meta("id") == null:
@@ -135,38 +132,28 @@ func _on_slot_clicked(slot: Control):
 	var name = slot.get_meta("name")
 	emit_signal("item_selected", id)
 
-	# remove previous highlight
 	if selected_slot:
 		var prev_bg: TextureRect = selected_slot.get_node("Background")
 		prev_bg.modulate = Color(1, 1, 1, 1)
 
-	# new highlight using modulate
 	var bg: TextureRect = slot.get_node("Background")
 	bg.modulate = Color(1.4, 1.3, 0.9, 1.0)
 
 	selected_slot = slot
 
-	# LABEL UPDATE
 	selected_label.text = str(name)
-
-	# reset alpha
 	selected_label.modulate.a = 0.0
 
 	var t := create_tween()
 	t.set_parallel(false)
 
-	# fade in
 	t.tween_property(selected_label, "modulate:a", 1.0, 0.20)\
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
-	# wait 2.5 seconds (adjust here!)
 	t.tween_interval(2.5)
 
-	# fade out
 	t.tween_property(selected_label, "modulate:a", 0.0, 0.25)\
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
-
-
 
 func _input(event):
 	if event is InputEventKey and event.pressed and not event.echo:

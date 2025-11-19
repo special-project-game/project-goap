@@ -1,138 +1,186 @@
-[gd_scene load_steps=2 format=3 uid="uid://bwm8kqp2vnhxy"]
+[gd_scene load_steps=9 format=3 uid="uid://bwm8kqp2vnhxy"]
 
-[ext_resource type="Script" path="res://scripts/ui/PersonInfoUI.gd" id="1_person_info"]
+[ext_resource type="Theme" uid="uid://dx0hr713gc6o" path="res://assets/theme & stylebox/person_info_ui.tres" id="1_2lbjk"]
+[ext_resource type="Script" uid="uid://b4adt54sihmkc" path="res://scripts/ui/PersonInfoUI.gd" id="1_person_info"]
+[ext_resource type="FontFile" uid="uid://f27fgiuf0h5d" path="res://assets/fonts/MinecraftRegular-Bmg3.otf" id="2_7xsxv"]
+[ext_resource type="Texture2D" uid="uid://dcj4h7tggdecr" path="res://icons/heart.png" id="4_rn06n"]
+[ext_resource type="Texture2D" uid="uid://vxs7hsyhmerg" path="res://icons/hunger.png" id="5_bvktq"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_7xsxv"]
+content_margin_left = 4.0
+content_margin_top = 0.0
+content_margin_right = 4.0
+content_margin_bottom = 0.0
+color = Color(0.564706, 0.384314, 0.364706, 1)
+
+[sub_resource type="Theme" id="Theme_8yqsm"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_2lbjk"]
+color = Color(0.564706, 0.384314, 0.364706, 1)
 
 [node name="PersonInfoUI" type="Control"]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 300.0
 offset_bottom = 400.0
+mouse_filter = 2
+theme = ExtResource("1_2lbjk")
 script = ExtResource("1_person_info")
 
-[node name="Panel" type="Panel" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 0
+offset_right = 223.0
+offset_bottom = 347.0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 10.0
-offset_right = -10.0
-offset_bottom = -10.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="HeaderContainer" type="HBoxContainer" parent="Panel/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
 layout_mode = 2
 
-[node name="LevelLabel" type="Label" parent="Panel/VBoxContainer/HeaderContainer"]
+[node name="HeaderContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="PersonIcon" type="TextureRect" parent="PanelContainer/VBoxContainer/HeaderContainer"]
+layout_mode = 2
+
+[node name="NameLevelLabel" type="Label" parent="PanelContainer/VBoxContainer/HeaderContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("2_7xsxv")
+theme_override_font_sizes/font_size = 20
 text = "Level 1"
 vertical_alignment = 1
 
-[node name="ExpLabel" type="Label" parent="Panel/VBoxContainer/HeaderContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Exp: 0/200"
-horizontal_alignment = 2
-vertical_alignment = 1
-
-[node name="CloseButton" type="Button" parent="Panel/VBoxContainer/HeaderContainer"]
+[node name="CloseButton" type="Button" parent="PanelContainer/VBoxContainer/HeaderContainer"]
 layout_mode = 2
 text = "X"
 
-[node name="HSeparator" type="HSeparator" parent="Panel/VBoxContainer"]
+[node name="ExpLabel" type="Label" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("2_7xsxv")
+theme_override_font_sizes/font_size = 20
+text = "Exp"
+vertical_alignment = 1
+
+[node name="Separator" type="HSeparator" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+theme_override_styles/separator = SubResource("StyleBoxLine_7xsxv")
+
+[node name="StatsContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme = SubResource("Theme_8yqsm")
+
+[node name="HealthRow" type="HBoxContainer" parent="PanelContainer/VBoxContainer/StatsContainer"]
 layout_mode = 2
 
-[node name="StatsContainer" type="VBoxContainer" parent="Panel/VBoxContainer"]
+[node name="HealthIcon" type="TextureRect" parent="PanelContainer/VBoxContainer/StatsContainer/HealthRow"]
 layout_mode = 2
+texture = ExtResource("4_rn06n")
 
-[node name="HealthBar" type="ProgressBar" parent="Panel/VBoxContainer/StatsContainer"]
+[node name="HealthValueLabel" type="Label" parent="PanelContainer/VBoxContainer/StatsContainer/HealthRow"]
 layout_mode = 2
-max_value = 10.0
-value = 10.0
-show_percentage = false
-
-[node name="HealthLabel" type="Label" parent="Panel/VBoxContainer/StatsContainer/HealthBar"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+theme_override_fonts/font = ExtResource("2_7xsxv")
+theme_override_font_sizes/font_size = 20
 text = "Health: 10/10"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HungerBar" type="ProgressBar" parent="Panel/VBoxContainer/StatsContainer"]
+[node name="HealthBar" type="ProgressBar" parent="PanelContainer/VBoxContainer/StatsContainer"]
+custom_minimum_size = Vector2(200, 8)
 layout_mode = 2
-max_value = 100.0
+size_flags_horizontal = 4
+size_flags_vertical = 3
+max_value = 10.0
+value = 10.0
 show_percentage = false
 
-[node name="HungerLabel" type="Label" parent="Panel/VBoxContainer/StatsContainer/HungerBar"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Hunger: 0/100"
+[node name="HungerRow" type="HBoxContainer" parent="PanelContainer/VBoxContainer/StatsContainer"]
+layout_mode = 2
+
+[node name="HungerIcon" type="TextureRect" parent="PanelContainer/VBoxContainer/StatsContainer/HungerRow"]
+layout_mode = 2
+texture = ExtResource("5_bvktq")
+
+[node name="HungerValueLabel" type="Label" parent="PanelContainer/VBoxContainer/StatsContainer/HungerRow"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_7xsxv")
+theme_override_font_sizes/font_size = 20
+text = "Hunger: 10/10"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HSeparator2" type="HSeparator" parent="Panel/VBoxContainer"]
+[node name="HungerBar" type="ProgressBar" parent="PanelContainer/VBoxContainer/StatsContainer"]
+custom_minimum_size = Vector2(200, 8)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+max_value = 10.0
+value = 10.0
+show_percentage = false
+
+[node name="Separator2" type="HSeparator" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+theme_override_styles/separator = SubResource("StyleBoxLine_2lbjk")
+
+[node name="InventoryContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="InventoryContainer" type="VBoxContainer" parent="Panel/VBoxContainer"]
-layout_mode = 2
-
-[node name="InventoryTitle" type="Label" parent="Panel/VBoxContainer/InventoryContainer"]
+[node name="InventoryTitle" type="Label" parent="PanelContainer/VBoxContainer/InventoryContainer"]
 layout_mode = 2
 theme_type_variation = &"HeaderMedium"
+theme_override_fonts/font = ExtResource("2_7xsxv")
+theme_override_font_sizes/font_size = 30
 text = "Inventory"
 
-[node name="InventoryLabel" type="Label" parent="Panel/VBoxContainer/InventoryContainer"]
+[node name="InventoryLabel" type="Label" parent="PanelContainer/VBoxContainer/InventoryContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_7xsxv")
+theme_override_font_sizes/font_size = 20
 text = "  Wood: 0"
 
-[node name="HSeparator3" type="HSeparator" parent="Panel/VBoxContainer"]
+[node name="Separator3" type="HSeparator" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+theme_override_styles/separator = SubResource("StyleBoxLine_2lbjk")
+
+[node name="TaskContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="TaskContainer" type="VBoxContainer" parent="Panel/VBoxContainer"]
-layout_mode = 2
-
-[node name="TaskTitle" type="Label" parent="Panel/VBoxContainer/TaskContainer"]
+[node name="TaskTitle" type="Label" parent="PanelContainer/VBoxContainer/TaskContainer"]
 layout_mode = 2
 theme_type_variation = &"HeaderMedium"
+theme_override_fonts/font = ExtResource("2_7xsxv")
+theme_override_font_sizes/font_size = 30
 text = "Current Task"
 
-[node name="TaskLabel" type="Label" parent="Panel/VBoxContainer/TaskContainer"]
+[node name="TaskLabel" type="Label" parent="PanelContainer/VBoxContainer/TaskContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_7xsxv")
+theme_override_font_sizes/font_size = 20
 text = "  Goal: None
   Action: Idle"
 
-[node name="HSeparator4" type="HSeparator" parent="Panel/VBoxContainer"]
+[node name="HSeparator4" type="HSeparator" parent="PanelContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_constants/separation = 4
+theme_override_styles/separator = SubResource("StyleBoxLine_2lbjk")
 
-[node name="PlanContainer" type="VBoxContainer" parent="Panel/VBoxContainer"]
+[node name="PlanContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="PlanTitle" type="Label" parent="Panel/VBoxContainer/PlanContainer"]
+[node name="PlanTitle" type="Label" parent="PanelContainer/VBoxContainer/PlanContainer"]
 layout_mode = 2
 theme_type_variation = &"HeaderMedium"
+theme_override_fonts/font = ExtResource("2_7xsxv")
+theme_override_font_sizes/font_size = 30
 text = "Action Plan"
 
-[node name="PlanLabel" type="Label" parent="Panel/VBoxContainer/PlanContainer"]
+[node name="PlanLabel" type="Label" parent="PanelContainer/VBoxContainer/PlanContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("2_7xsxv")
+theme_override_font_sizes/font_size = 20
 text = "  No active plan"
 vertical_alignment = 1

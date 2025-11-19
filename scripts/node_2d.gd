@@ -190,20 +190,18 @@ func save_tiles_to_file():
 func _ready():
 	cursor.play()
 
-	if objectlayer:
-		objectlayer.add_to_group("objectlayer")
-
-	# CONNECT TOOLBAR SIGNALS
 	if toolbar:
 		toolbar.mode_selected.connect(_on_toolbar_mode_selected)
 		toolbar.item_selected.connect(_on_toolbar_item_selected)
+
+		toolbar._on_tiles_pressed()
+
 	else:
-		print("Toolbar NOT found at $CanvasLayer/Control/Toolbar")
+		print("Toolbar NOT found!")
 
 	load_tiles_from_file()
 	fill_empty_with_water(100, 100)
 
-	# Setup navigation rebake timer
 	navigation_rebake_timer = Timer.new()
 	navigation_rebake_timer.one_shot = true
 	navigation_rebake_timer.wait_time = NAVIGATION_REBAKE_DELAY
