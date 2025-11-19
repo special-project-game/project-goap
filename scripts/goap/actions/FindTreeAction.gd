@@ -28,7 +28,7 @@ func is_valid(agent: Node, world_state: Dictionary) -> bool:
 			update_target_availability(agent, target)
 			if navigation_agent:
 				navigation_agent.target_position = agent.global_position
-			return false
+			# Do not return here; fall through to check for other trees
 		return true
 	
 	# Check if we have a target set
