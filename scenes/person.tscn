@@ -29,6 +29,9 @@
 [ext_resource type="Script" uid="uid://0iags1il0ml8" path="res://scripts/goap/actions/CraftSwordAction.gd" id="21_craft"]
 [ext_resource type="Script" uid="uid://db1fttay7voh0" path="res://scripts/goap/goals/BeSafeGoal.gd" id="22_bgppu"]
 [ext_resource type="Script" uid="uid://cfrg7dhsx4ta0" path="res://scripts/goap/actions/RunAwayAction.gd" id="23_2xfh2"]
+[ext_resource type="Script" uid="uid://cfindpred8act9" path="res://scripts/goap/actions/FindPredatorAction.gd" id="24_findpred"]
+[ext_resource type="Script" uid="uid://cattackpred7gd" path="res://scripts/goap/actions/AttackPredatorAction.gd" id="25_attackpred"]
+[ext_resource type="Script" uid="uid://cdefend9territ" path="res://scripts/goap/goals/DefendTerritoryGoal.gd" id="26_defend"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5dovg"]
 size = Vector2(4, 4)
@@ -348,6 +351,7 @@ shape = SubResource("RectangleShape2D_8qhow")
 [node name="HitBoxComponent" parent="." node_paths=PackedStringArray("attack_component") instance=ExtResource("6_8qhow")]
 visible = false
 collision_layer = 2
+collision_mask = 8
 attack_component = NodePath("../Attack")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HitBoxComponent"]
@@ -444,6 +448,15 @@ script = ExtResource("22_bgppu")
 
 [node name="RunAwayAction" type="Node" parent="GOAPAgent"]
 script = ExtResource("23_2xfh2")
+
+[node name="DefendTerritoryGoal" type="Node" parent="GOAPAgent"]
+script = ExtResource("26_defend")
+
+[node name="FindPredatorAction" type="Node" parent="GOAPAgent"]
+script = ExtResource("24_findpred")
+
+[node name="AttackPredatorAction" type="Node" parent="GOAPAgent"]
+script = ExtResource("25_attackpred")
 
 [connection signal="area_entered" from="HurtBoxComponent" to="HurtBoxComponent" method="_on_area_entered"]
 [connection signal="area_exited" from="HurtBoxComponent" to="HurtBoxComponent" method="_on_area_exited"]

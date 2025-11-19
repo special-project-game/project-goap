@@ -18,37 +18,45 @@ func _setup_action() -> void:
 	add_effect("near_apple_tree", true)
 
 func is_valid(agent: Node, world_state: Dictionary) -> bool:
+	# If action is already running and has a valid target with apples, skip expensive checks
+	if is_running and target != null and is_instance_valid(target):
+		# Check if tree still has apples
+		if "has_apple" in target and not target.has_apple:
+			print(agent.name, ": FindAppleTreeAction.is_valid() - Tree has no apples, checking for other trees")
+			target = null
+			# Fall through to check if ANY apple trees exist
+		else:
+			return true
+	
 	# Check if we have a target set
 	var has_target = target != null
 	
 	# If we have a target reference, check if it's still valid and has apples
 	if has_target:
 		if not is_instance_valid(target):
-			print(agent.name, ": FindAppleTreeAction.is_valid() - Tree target destroyed/freed, returning FALSE")
+			print(agent.name, ": FindAppleTreeAction.is_valid() - Tree target destroyed/freed, checking for other trees")
 			target = null
-			return false
-		
-		# Check if tree still has apples
-		if "has_apple" in target and not target.has_apple:
-			print(agent.name, ": FindAppleTreeAction.is_valid() - Tree has no apples, searching for new tree")
+			# Fall through to check if ANY apple trees exist
+		elif "has_apple" in target and not target.has_apple:
+			print(agent.name, ": FindAppleTreeAction.is_valid() - Tree has no apples, checking for other trees")
 			target = null
-			return _find_nearest_tree_with_apple(agent) != null
-		
-		# Target is valid, check if reachable
-		if not _is_tree_reachable(agent, target):
-			print(agent.name, ": FindAppleTreeAction.is_valid() - Tree target unreachable, returning FALSE")
+			# Fall through to check if ANY apple trees exist
+		elif not _is_tree_reachable(agent, target):
+			print(agent.name, ": FindAppleTreeAction.is_valid() - Tree target unreachable, checking for other trees")
 			target = null
-			return false
-		
-		# Target is valid and reachable and has apple
-		return true
+			# Fall through to check if ANY apple trees exist
+		else:
+			# Target is valid, has apples, and is reachable
+			return true
 	
-	# No target - check if there are any reachable trees with apples available
-	print(agent.name, ": FindAppleTreeAction.is_valid() - No target, searching for trees with apples")
+	# No valid target - check if there are ANY reachable trees with apples available
+	print(agent.name, ": FindAppleTreeAction.is_valid() - Searching for trees with apples")
 	var reachable_tree = _find_nearest_tree_with_apple(agent)
 	if reachable_tree == null:
-		print(agent.name, ": FindAppleTreeAction.is_valid() - No reachable trees with apples found, returning FALSE")
+		print(agent.name, ": FindAppleTreeAction.is_valid() - No reachable trees with apples found, action INVALID")
 		return false
+	
+	# Found a valid tree with apples, action is valid
 	return true
 
 func on_enter(agent: Node) -> void:
@@ -70,7 +78,7 @@ func on_enter(agent: Node) -> void:
 		navigation_agent.target_position = target_pos
 		print(agent.name, ": Navigating to tree with apple at ", target_pos)
 
-func perform(agent: Node, _delta: float) -> bool:
+func perform(agent: Node, delta: float) -> bool:
 	# Check if target is valid FIRST
 	if not is_instance_valid(target):
 		agent.velocity = Vector2.ZERO
@@ -81,6 +89,15 @@ func perform(agent: Node, _delta: float) -> bool:
 		print(agent.name, ": Target tree lost its apple during navigation")
 		agent.velocity = Vector2.ZERO
 		return false
+	
+	# Periodically recalculate to find nearest apple tree (every 2 seconds by default)
+	if should_recalculate_target(delta):
+		var new_target = _recalculate_target(agent)
+		if new_target != null and new_target != target:
+			print(agent.name, ": Switching to a closer apple tree")
+			target = new_target
+			if navigation_agent:
+				navigation_agent.target_position = target.global_position
 	
 	# Check if we've arrived
 	var distance_to_tree = agent.global_position.distance_to(target.global_position)
@@ -196,3 +213,7 @@ func _is_tree_reachable(agent: Node, tree: Node) -> bool:
 		return false
 	
 	return true
+
+## Override from base class - recalculate nearest apple tree
+func _recalculate_target(agent: Node) -> Node:
+	return _find_nearest_tree_with_apple(agent)

@@ -13,6 +13,10 @@ var effects: Dictionary = {}
 var target: Node = null
 var is_running: bool = false
 
+# Periodic target recalculation
+@export var target_recalc_interval: float = 2.0 ## How often to recalculate nearest target (in seconds)
+var time_since_last_recalc: float = 0.0
+
 func _init():
 	_setup_action()
 
@@ -50,6 +54,7 @@ func is_valid(agent: Node, world_state: Dictionary) -> bool:
 ## Called when the action starts executing
 func on_enter(agent: Node) -> void:
 	is_running = true
+	time_since_last_recalc = 0.0 # Reset timer when action starts
 
 ## Called every frame while the action is running
 ## Returns true when complete, false while still running
@@ -70,3 +75,18 @@ func get_cost(agent: Node, world_state: Dictionary) -> float:
 func reset() -> void:
 	is_running = false
 	target = null
+	time_since_last_recalc = 0.0
+
+## Helper method for actions that need to periodically recalculate their target
+## Override _recalculate_target() in child classes to implement custom logic
+func should_recalculate_target(delta: float) -> bool:
+	time_since_last_recalc += delta
+	if time_since_last_recalc >= target_recalc_interval:
+		time_since_last_recalc = 0.0
+		return true
+	return false
+
+## Override this in child classes to implement target recalculation
+## Should return the new target node or null if no valid target found
+func _recalculate_target(agent: Node) -> Node:
+	return target # Default: keep current target

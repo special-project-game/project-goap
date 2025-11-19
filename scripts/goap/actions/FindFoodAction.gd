@@ -23,8 +23,15 @@ func is_valid(agent: Node, world_state: Dictionary) -> bool:
 	if not super.is_valid(agent, world_state):
 		return false
 	
-	# Check if there is food available
-	return _find_nearest_food(agent) != null
+	# If action is already running and has a valid target, skip expensive checks
+	if is_running and target != null and is_instance_valid(target):
+		return true
+	
+	# Check if there is ANY food available (not just our current target)
+	var food_exists = _find_nearest_food(agent) != null
+	if not food_exists:
+		print(agent.name, ": FindFoodAction.is_valid() - No food sources available, action INVALID")
+	return food_exists
 
 ## Override get_cost to make food gathering MUCH cheaper when inventory is empty
 func get_cost(agent: Node, world_state: Dictionary) -> float:
@@ -63,6 +70,14 @@ func perform(agent: Node, delta: float) -> bool:
 	
 	if not navigation_agent:
 		return false
+	
+	# Periodically recalculate to find nearest food source (every 2 seconds by default)
+	if should_recalculate_target(delta):
+		var new_target = _recalculate_target(agent)
+		if new_target != null and new_target != target:
+			print(agent.name, ": Switching to a closer food source")
+			target = new_target
+			navigation_agent.target_position = target.global_position
 	
 	# Check if we've arrived
 	var distance_to_food = agent.global_position.distance_to(target.global_position)
@@ -112,3 +127,7 @@ func _find_nearest_food(agent: Node) -> Node:
 				nearest_food = body
 	
 	return nearest_food
+
+## Override from base class - recalculate nearest food
+func _recalculate_target(agent: Node) -> Node:
+	return _find_nearest_food(agent)

@@ -12,6 +12,7 @@ signal action_completed(action: GOAPAction)
 
 @export var entity: Node ## Reference to the entity (Person, etc.)
 @export var update_interval: float = 0.5 ## How often to replan (in seconds)
+@export var action_validation_interval: float = 0.2 ## How often to check if current action is still valid (in seconds)
 @export var failed_goal_timeout: float = 5.0 ## How long to wait before retrying a failed goal
 
 var planner: GOAPPlanner
@@ -25,6 +26,7 @@ var current_action: GOAPAction = null
 var current_action_index: int = 0
 
 var time_since_update: float = 0.0
+var time_since_action_validation: float = 0.0
 var is_planning: bool = false
 
 # Track goals that failed planning with timestamp
@@ -60,37 +62,23 @@ func _process(delta: float):
 		return
 	
 	time_since_update += delta
-	
-	# Update world state and check for replanning
-	if time_since_update >= update_interval:
-		time_since_update = 0.0
-		_update_world_state()
-		
-		# Check if we need to select a new goal:
-		# 1. No current goal
-		# 2. Current goal is satisfied
-		# 3. We have a goal but no plan (plan failed or completed)
-		var needs_replan = not current_goal or current_goal.is_satisfied(world_state) or current_plan.is_empty()
-		
-		if needs_replan:
-			print(entity.name, ": Goal check - current_goal exists: ", current_goal != null, " is_satisfied: ", current_goal.is_satisfied(world_state) if current_goal else "N/A", " plan_empty: ", current_plan.is_empty())
-			if current_goal and current_goal.is_satisfied(world_state):
-				goal_completed.emit(current_goal)
-			_select_new_goal()
+	time_since_action_validation += delta
 	
 	# Execute current plan
 	if current_action and not is_planning:
-		# Check if action is still valid before performing
-		var is_action_valid = current_action.is_valid(entity, world_state)
-		if not is_action_valid:
-			print(entity.name, ": Action ", current_action.action_name, " became invalid, abandoning plan and goal")
-			current_action.on_exit(entity)
-			current_action = null
-			current_plan.clear()
-			current_action_index = 0
-			current_goal = null # Clear goal so we select a new one
-			time_since_update = update_interval # Force immediate replan
-			return
+		# Check if action is still valid more frequently than full replanning
+		if time_since_action_validation >= action_validation_interval:
+			time_since_action_validation = 0.0
+			var is_action_valid = current_action.is_valid(entity, world_state)
+			if not is_action_valid:
+				print(entity.name, ": Action ", current_action.action_name, " became invalid, abandoning plan and forcing replan")
+				current_action.on_exit(entity)
+				current_action = null
+				current_plan.clear()
+				current_action_index = 0
+				current_goal = null # Clear goal so we select a new one
+				time_since_update = update_interval # Force immediate replan
+				return
 		
 		var action_complete = current_action.perform(entity, delta)
 		
@@ -112,6 +100,23 @@ func _process(delta: float):
 				_on_plan_completed()
 			else:
 				_start_next_action()
+	
+	# Update world state and check for replanning
+	if time_since_update >= update_interval:
+		time_since_update = 0.0
+		_update_world_state()
+		
+		# Check if we need to select a new goal:
+		# 1. No current goal
+		# 2. Current goal is satisfied
+		# 3. We have a goal but no plan (plan failed or completed)
+		var needs_replan = not current_goal or current_goal.is_satisfied(world_state) or current_plan.is_empty()
+		
+		if needs_replan:
+			print(entity.name, ": Goal check - current_goal exists: ", current_goal != null, " is_satisfied: ", current_goal.is_satisfied(world_state) if current_goal else "N/A", " plan_empty: ", current_plan.is_empty())
+			if current_goal and current_goal.is_satisfied(world_state):
+				goal_completed.emit(current_goal)
+			_select_new_goal()
 
 ## Update the world state based on current conditions
 func _update_world_state() -> void:

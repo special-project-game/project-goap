@@ -16,6 +16,9 @@ var food_count: int = 0
 var experience: int = 0
 var level: int = 1
 
+var is_target: bool = false
+var chaser: Node = null
+
 # Health component reference
 var health_component: HealthComponent
 
