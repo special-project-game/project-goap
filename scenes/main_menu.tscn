@@ -1,13 +1,17 @@
-[gd_scene load_steps=11 format=3 uid="uid://2yvq6yiiep7y"]
+[gd_scene load_steps=16 format=3 uid="uid://2yvq6yiiep7y"]
 
 [ext_resource type="Script" uid="uid://0m4n6rkaaith" path="res://scripts/main_menu.gd" id="1_bqqt6"]
 [ext_resource type="Texture2D" uid="uid://bauiwbplygtnb" path="res://menubg.png" id="1_ekxnf"]
 [ext_resource type="Theme" uid="uid://bopntjqdsj2tt" path="res://assets/theme & stylebox/main_menu.tres" id="1_oa1go"]
 [ext_resource type="StyleBox" uid="uid://bqgxatjmdvt3" path="res://assets/theme & stylebox/normal_button.tres" id="2_8ln24"]
+[ext_resource type="Shader" uid="uid://cpqi5bms82xip" path="res://assets/theme & stylebox/main_menu.gdshader" id="3_flqon"]
 [ext_resource type="StyleBox" uid="uid://bcpo8hk3kbhp2" path="res://assets/theme & stylebox/hover_button.tres" id="5_oa1go"]
 [ext_resource type="AudioStream" uid="uid://c58xuubelc0cx" path="res://sounds/main.wav" id="7_jk1qb"]
 [ext_resource type="FontFile" uid="uid://cp51f6s3yfdk4" path="res://assets/fonts/MinecraftBold-nMK1.otf" id="7_tbmy8"]
 [ext_resource type="AudioStream" uid="uid://bw1ct8vmufhpw" path="res://sounds/opening.ogg" id="8_5dd4i"]
+[ext_resource type="PackedScene" uid="uid://b4hbw1ggvfefj" path="res://scenes/option_menu.tscn" id="9_jk1qb"]
+[ext_resource type="AudioStream" uid="uid://7fyb83esudxl" path="res://sounds/open.wav" id="10_lgwnu"]
+[ext_resource type="AudioStream" uid="uid://cp6pabllh7fj6" path="res://sounds/close.wav" id="11_flqon"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_wu84c"]
 texture = ExtResource("1_ekxnf")
@@ -16,6 +20,10 @@ modulate_color = Color(0.396889, 0.396889, 0.396889, 1)
 [sub_resource type="Theme" id="Theme_tbmy8"]
 Button/styles/hover = ExtResource("5_oa1go")
 Button/styles/normal = ExtResource("2_8ln24")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rcqid"]
+shader = ExtResource("3_flqon")
+shader_parameter/blur_radius = 4.0
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -111,13 +119,37 @@ text = "DEFINNITELY
 not WorldBox"
 horizontal_alignment = 1
 
+[node name="BlurOverlay" type="ColorRect" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_rcqid")
+layout_mode = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+mouse_filter = 2
+color = Color(0.152941, 0.152941, 0.152941, 0.780392)
+
+[node name="OptionsMenu" parent="." instance=ExtResource("9_jk1qb")]
+layout_mode = 1
+
 [node name="ClickSFX" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("7_jk1qb")
+bus = &"SFX"
 
 [node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("8_5dd4i")
-volume_db = -7.0
+volume_db = -4.0
 autoplay = true
+bus = &"Music"
+
+[node name="SwooshOpen" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("10_lgwnu")
+volume_db = -12.0
+bus = &"SFX"
+
+[node name="SwooshClose" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("11_flqon")
+volume_db = -12.0
+bus = &"SFX"
 
 [connection signal="pressed" from="NinePatchRect/VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="NinePatchRect/VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]

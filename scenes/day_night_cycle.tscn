@@ -1,12 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://3vupj4lgcbdy"]
+[gd_scene load_steps=7 format=3 uid="uid://3vupj4lgcbdy"]
 
 [ext_resource type="Script" uid="uid://c8tl1vdolqlsa" path="res://scripts/day_night_cycle.gd" id="1_e4bus"]
 [ext_resource type="PackedScene" uid="uid://n0u05b845an0" path="res://scenes/day_night_cycle_ui.tscn" id="2_qf6xv"]
+[ext_resource type="AudioStream" uid="uid://fl81p71jwx5f" path="res://sounds/noon2.ogg" id="3_4dyh5"]
+[ext_resource type="AudioStream" uid="uid://dt4cu0dtq6bq4" path="res://sounds/night.ogg" id="4_p8v4h"]
 
 [sub_resource type="Gradient" id="Gradient_e4bus"]
 interpolation_mode = 2
-offsets = PackedFloat32Array(0, 0.2202166, 0.40433213, 0.55595666, 0.6425993, 0.71841156, 1)
-colors = PackedColorArray(0.23436797, 0.2759877, 0.64363873, 1, 0.45123845, 0.42580286, 0.8118614, 1, 0.68751913, 0.431193, 0.84390867, 1, 0.98447615, 0.5696492, 0.70312023, 1, 1, 0.61645645, 0.464711, 1, 1, 0.74848056, 0.5680605, 1, 1, 1, 1, 1)
+offsets = PackedFloat32Array(0, 0.220217, 0.404332, 0.555957, 0.642599, 0.718412, 1)
+colors = PackedColorArray(0.234368, 0.275988, 0.643639, 1, 0.451238, 0.425803, 0.811861, 1, 0.687519, 0.431193, 0.843909, 1, 0.984476, 0.569649, 0.70312, 1, 1, 0.616456, 0.464711, 1, 1, 0.748481, 0.568061, 1, 1, 1, 1, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_qf6xv"]
 gradient = SubResource("Gradient_e4bus")
@@ -14,12 +16,10 @@ gradient = SubResource("Gradient_e4bus")
 [node name="DayNightCycle" type="Node2D"]
 script = ExtResource("1_e4bus")
 gradient = SubResource("GradientTexture1D_qf6xv")
-INGAME_SPEED = 60.0
-INITIAL_HOUR = 17
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 visible = false
-color = Color(0.77254903, 0.77254903, 0.77254903, 1)
+color = Color(0.772549, 0.772549, 0.772549, 1)
 
 [node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
 unique_name_in_owner = true
@@ -29,3 +29,15 @@ blend_mode = 2
 
 [node name="DayNightCycleUI" parent="CanvasLayer" instance=ExtResource("2_qf6xv")]
 mouse_filter = 2
+
+[node name="DayAmbience" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_4dyh5")
+volume_db = -10.0
+bus = &"Music"
+parameters/looping = true
+
+[node name="NightAmbience" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_p8v4h")
+volume_db = -5.0
+bus = &"Music"
+parameters/looping = true

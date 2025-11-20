@@ -558,20 +558,24 @@ horizontal_alignment = 1
 [node name="ClickSFX1" type="AudioStreamPlayer" parent="CanvasLayer/Control/Toolbar"]
 stream = ExtResource("16_yc10j")
 volume_db = -10.0
+bus = &"SFX"
 
 [node name="ClickSFX2" type="AudioStreamPlayer" parent="CanvasLayer/Control/Toolbar"]
 stream = ExtResource("17_jscy8")
 volume_db = -10.0
+bus = &"SFX"
 
 [node name="ClickSFX3" type="AudioStreamPlayer" parent="CanvasLayer/Control/Toolbar"]
 stream = ExtResource("18_y6deb")
 volume_db = -6.0
 pitch_scale = 1.4
+bus = &"SFX"
 
 [node name="ClickSFX4" type="AudioStreamPlayer" parent="CanvasLayer/Control/Toolbar"]
 stream = ExtResource("20_2wyq8")
 volume_db = -9.0
 pitch_scale = 1.18
+bus = &"SFX"
 
 [node name="ZoomLevel" type="Label" parent="CanvasLayer/Control"]
 layout_mode = 0
@@ -591,8 +595,7 @@ navigation_polygon = SubResource("NavigationPolygon_trceg")
 script = ExtResource("12_eb6dy")
 
 [node name="DayNightCycle" parent="." instance=ExtResource("11_ya4ey")]
-MINUTES_PER_REAL_SECOND = 60.0
-INITIAL_HOUR = 12
+INITIAL_HOUR = 17
 
 [node name="Spawner" parent="." node_paths=PackedStringArray("tile_layers") instance=ExtResource("12_trceg")]
 entity_node = ExtResource("13_a8y0u")
