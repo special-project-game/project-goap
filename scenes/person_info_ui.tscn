@@ -1,10 +1,12 @@
-[gd_scene load_steps=9 format=3 uid="uid://bwm8kqp2vnhxy"]
+[gd_scene load_steps=11 format=3 uid="uid://bwm8kqp2vnhxy"]
 
 [ext_resource type="Theme" uid="uid://dx0hr713gc6o" path="res://assets/theme & stylebox/person_info_ui.tres" id="1_2lbjk"]
 [ext_resource type="Script" uid="uid://b4adt54sihmkc" path="res://scripts/ui/PersonInfoUI.gd" id="1_person_info"]
 [ext_resource type="FontFile" uid="uid://f27fgiuf0h5d" path="res://assets/fonts/MinecraftRegular-Bmg3.otf" id="2_7xsxv"]
 [ext_resource type="Texture2D" uid="uid://dcj4h7tggdecr" path="res://icons/heart.png" id="4_rn06n"]
 [ext_resource type="Texture2D" uid="uid://vxs7hsyhmerg" path="res://icons/hunger.png" id="5_bvktq"]
+[ext_resource type="AudioStream" uid="uid://7fyb83esudxl" path="res://sounds/open.wav" id="6_8yqsm"]
+[ext_resource type="AudioStream" uid="uid://cp6pabllh7fj6" path="res://sounds/close.wav" id="7_girwx"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_7xsxv"]
 content_margin_left = 4.0
@@ -184,3 +186,11 @@ theme_override_fonts/font = ExtResource("2_7xsxv")
 theme_override_font_sizes/font_size = 20
 text = "  No active plan"
 vertical_alignment = 1
+
+[node name="SwooshOpenSFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_8yqsm")
+volume_db = -12.0
+
+[node name="SwooshCloseSFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_girwx")
+volume_db = -12.0

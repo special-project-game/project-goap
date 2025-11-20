@@ -5,7 +5,7 @@ const TypeDefs = preload("res://scripts/TypeDef.gd")
 @onready var item_grid: GridContainer = $ItemGrid
 @onready var selected_label: Label = $SelectedLabel
 
-# 5 click sounds
+# 4 click sounds
 @onready var click_sfx := [
 	$ClickSFX1,
 	$ClickSFX2,
