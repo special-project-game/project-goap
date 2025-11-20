@@ -71,23 +71,24 @@ func _select_first_available_slot():
 			return
 
 func _on_tiles_pressed():
-	_update_selected_button(mode_buttons.get_node("TilesButton"))
+	var btn: Button = mode_buttons.get_node("TilesButton")
+	_update_selected_button(btn)
 	emit_signal("mode_selected", TypeDefs.Mode.PLACE_TILE)
 	_populate(TypeDefs.Tile.values(), TypeDefs.TileName)
-	_select_first_available_slot()
 
 
 func _on_objects_pressed():
-	_update_selected_button(mode_buttons.get_node("ObjectsButton"))
+	var btn: Button = mode_buttons.get_node("ObjectsButton")
+	_update_selected_button(btn)
 	emit_signal("mode_selected", TypeDefs.Mode.PLACE_OBJECT)
 	_populate(TypeDefs.Objects.values(), TypeDefs.ObjectName)
-	_select_first_available_slot()
+
 
 func _on_entities_pressed():
-	_update_selected_button(mode_buttons.get_node("EntitiesButton"))
+	var btn: Button = mode_buttons.get_node("EntitiesButton")
+	_update_selected_button(btn)
 	emit_signal("mode_selected", TypeDefs.Mode.PLACE_ENTITY)
 	_populate(TypeDefs.Entity.values(), TypeDefs.EntityName)
-	_select_first_available_slot()
 
 func _populate(id_list: Array, name_dict: Dictionary):
 	selected_slot = null
