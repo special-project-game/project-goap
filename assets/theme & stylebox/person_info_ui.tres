@@ -1,0 +1,28 @@
+[gd_resource type="Theme" load_steps=6 format=3 uid="uid://dx0hr713gc6o"]
+
+[ext_resource type="StyleBox" uid="uid://bvc58h05ixqc6" path="res://assets/theme & stylebox/x_hover.tres" id="1_0ytov"]
+[ext_resource type="StyleBox" uid="uid://by2nhqe32pyg0" path="res://assets/theme & stylebox/x_normal.tres" id="1_w0b7e"]
+[ext_resource type="StyleBox" uid="uid://5rxhbumeb446" path="res://assets/theme & stylebox/x_press.tres" id="2_0ytov"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gbrru"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2lbjk"]
+bg_color = Color(0.768627, 0.603922, 0.423529, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.862745, 0.72549, 0.541176, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+shadow_color = Color(0.564706, 0.384314, 0.364706, 1)
+shadow_size = 2
+
+[resource]
+Button/styles/focus = SubResource("StyleBoxEmpty_gbrru")
+Button/styles/hover = ExtResource("1_0ytov")
+Button/styles/normal = ExtResource("1_w0b7e")
+Button/styles/pressed = ExtResource("2_0ytov")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_2lbjk")

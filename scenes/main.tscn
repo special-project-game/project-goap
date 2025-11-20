@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://5nq607jqvt50"]
+[gd_scene load_steps=35 format=3 uid="uid://5nq607jqvt50"]
 
 [ext_resource type="Script" uid="uid://bdlt6d32wqywm" path="res://scripts/node_2d.gd" id="1_85g3d"]
 [ext_resource type="Script" uid="uid://buf7gkrb2px63" path="res://scripts/camera_2d.gd" id="2_choun"]
@@ -7,12 +7,18 @@
 [ext_resource type="Texture2D" uid="uid://be08o206u0gb6" path="res://textures/texture_sets/dirt_transp.png" id="5_tipki"]
 [ext_resource type="Texture2D" uid="uid://cwmevhhm48npo" path="res://textures/texture_sets/sand_trans.png" id="5_ya4ey"]
 [ext_resource type="Texture2D" uid="uid://ca83mvjabm0fm" path="res://textures/cursor/1.png" id="9_choun"]
+[ext_resource type="Texture2D" uid="uid://3uddivl04d2i" path="res://textures/backpack_weather/Inventory_1.png" id="10_eb6dy"]
 [ext_resource type="Texture2D" uid="uid://dobrvyh6v4vo0" path="res://textures/cursor/2.png" id="10_ya4ey"]
+[ext_resource type="Script" uid="uid://nlfv6x0x82y7" path="res://scripts/toolbar.gd" id="11_a8y0u"]
+[ext_resource type="PackedScene" uid="uid://dnia6q47n2xmh" path="res://scenes/slot.tscn" id="11_trceg"]
 [ext_resource type="PackedScene" uid="uid://3vupj4lgcbdy" path="res://scenes/day_night_cycle.tscn" id="11_ya4ey"]
 [ext_resource type="Script" uid="uid://davm8kqp2vnhy" path="res://scripts/ui/PersonUIManager.gd" id="12_eb6dy"]
+[ext_resource type="StyleBox" uid="uid://dqrtatsl04kt6" path="res://assets/theme & stylebox/hover_button_tb.tres" id="12_jbj1t"]
 [ext_resource type="PackedScene" uid="uid://ctl27dic16wxy" path="res://scenes/spawner.tscn" id="12_trceg"]
 [ext_resource type="PackedScene" uid="uid://dhn4oxv8akx34" path="res://scenes/predator.tscn" id="13_a8y0u"]
+[ext_resource type="StyleBox" uid="uid://0ai04atm47l1" path="res://assets/theme & stylebox/normal_button_tb.tres" id="13_muem4"]
 [ext_resource type="PackedScene" uid="uid://dkoe6am328ofj" path="res://scenes/tree.tscn" id="13_trceg"]
+[ext_resource type="StyleBox" uid="uid://cgr1emvxhn45e" path="res://assets/theme & stylebox/pressed_button_tb.tres" id="14_dp3eg"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_choun"]
 light_mode = 2
@@ -371,6 +377,14 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_trceg"]
+
+[sub_resource type="Theme" id="Theme_jbj1t"]
+Button/styles/focus = SubResource("StyleBoxEmpty_trceg")
+Button/styles/hover = ExtResource("12_jbj1t")
+Button/styles/normal = ExtResource("13_muem4")
+Button/styles/pressed = ExtResource("14_dp3eg")
+
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_trceg"]
 vertices = PackedVector2Array(553.977, 301, -590.969, 302.992, -588.023, -335, 552.008, -335.992)
 polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
@@ -411,15 +425,134 @@ sprite_frames = SubResource("SpriteFrames_eb6dy")
 frame_progress = 0.548559
 
 [node name="Camera2D" type="Camera2D" parent="." node_paths=PackedStringArray("label")]
-position = Vector2(-16, -16)
+position = Vector2(-2, -48)
 script = ExtResource("2_choun")
 min_zoom = 1.0
 max_zoom = 10.0
-label = NodePath("../CanvasLayer/ZoomLevel")
+label = NodePath("../CanvasLayer/Control/ZoomLevel")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="ZoomLevel" type="Label" parent="CanvasLayer"]
+[node name="Control" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Toolbar" type="NinePatchRect" parent="CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 249.125
+offset_top = 531.0
+offset_right = 862.875
+offset_bottom = 608.0
+grow_horizontal = 2
+grow_vertical = 0
+texture = ExtResource("10_eb6dy")
+patch_margin_left = 9
+patch_margin_top = 9
+patch_margin_right = 9
+patch_margin_bottom = 9
+axis_stretch_horizontal = 2
+axis_stretch_vertical = 2
+script = ExtResource("11_a8y0u")
+
+[node name="ModeButtons" type="HBoxContainer" parent="CanvasLayer/Control/Toolbar"]
+z_index = -1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -257.0
+offset_top = -57.5
+offset_right = 257.0
+offset_bottom = -33.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_jbj1t")
+theme_override_constants/separation = 12
+
+[node name="TilesButton" type="Button" parent="CanvasLayer/Control/Toolbar/ModeButtons"]
+layout_mode = 2
+toggle_mode = true
+text = "Tiles"
+
+[node name="ObjectsButton" type="Button" parent="CanvasLayer/Control/Toolbar/ModeButtons"]
+layout_mode = 2
+toggle_mode = true
+text = "Objects"
+
+[node name="EntitiesButton" type="Button" parent="CanvasLayer/Control/Toolbar/ModeButtons"]
+layout_mode = 2
+toggle_mode = true
+text = "Entities"
+
+[node name="ItemGrid" type="GridContainer" parent="CanvasLayer/Control/Toolbar"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 21.0
+offset_top = -27.5
+offset_right = 357.0
+offset_bottom = 5.44116
+grow_vertical = 2
+scale = Vector2(1.7, 1.7)
+columns = 20
+
+[node name="Slot" parent="CanvasLayer/Control/Toolbar/ItemGrid" instance=ExtResource("11_trceg")]
+layout_mode = 2
+
+[node name="Slot2" parent="CanvasLayer/Control/Toolbar/ItemGrid" instance=ExtResource("11_trceg")]
+layout_mode = 2
+
+[node name="Slot3" parent="CanvasLayer/Control/Toolbar/ItemGrid" instance=ExtResource("11_trceg")]
+layout_mode = 2
+
+[node name="Slot4" parent="CanvasLayer/Control/Toolbar/ItemGrid" instance=ExtResource("11_trceg")]
+layout_mode = 2
+
+[node name="Slot5" parent="CanvasLayer/Control/Toolbar/ItemGrid" instance=ExtResource("11_trceg")]
+layout_mode = 2
+
+[node name="Slot6" parent="CanvasLayer/Control/Toolbar/ItemGrid" instance=ExtResource("11_trceg")]
+layout_mode = 2
+
+[node name="Slot7" parent="CanvasLayer/Control/Toolbar/ItemGrid" instance=ExtResource("11_trceg")]
+layout_mode = 2
+
+[node name="Slot8" parent="CanvasLayer/Control/Toolbar/ItemGrid" instance=ExtResource("11_trceg")]
+layout_mode = 2
+
+[node name="Slot9" parent="CanvasLayer/Control/Toolbar/ItemGrid" instance=ExtResource("11_trceg")]
+layout_mode = 2
+
+[node name="Slot10" parent="CanvasLayer/Control/Toolbar/ItemGrid" instance=ExtResource("11_trceg")]
+layout_mode = 2
+
+[node name="SelectedLabel" type="Label" parent="CanvasLayer/Control/Toolbar"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -51.9375
+offset_top = -93.1667
+offset_right = 51.9375
+offset_bottom = -70.8333
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_alignment = 1
+
+[node name="ZoomLevel" type="Label" parent="CanvasLayer/Control"]
+layout_mode = 0
 offset_left = 20.0
 offset_top = 15.0
 offset_right = 125.0
@@ -427,40 +560,6 @@ offset_bottom = 1106.0
 scale = Vector2(0.05, 0.05)
 theme_override_font_sizes/font_size = 800
 text = "Zoom Level: 5"
-
-[node name="Mode" type="Label" parent="CanvasLayer"]
-offset_left = 20.0
-offset_top = 57.0
-offset_right = 4469.0
-offset_bottom = 1148.0
-scale = Vector2(0.05, 0.05)
-theme_override_font_sizes/font_size = 800
-text = "Mode:"
-
-[node name="ModeOptionButton" type="OptionButton" parent="CanvasLayer"]
-offset_left = 146.0
-offset_top = 56.0
-offset_right = 251.0
-offset_bottom = 87.0
-scale = Vector2(2, 2)
-selected = 0
-item_count = 4
-popup/item_0/text = "View"
-popup/item_0/id = 0
-popup/item_1/text = "Place Tile"
-popup/item_1/id = 1
-popup/item_2/text = "Place Object"
-popup/item_2/id = 2
-popup/item_3/text = "Place Entity"
-popup/item_3/id = 3
-
-[node name="OptionButton" type="OptionButton" parent="CanvasLayer"]
-visible = false
-offset_left = 24.0
-offset_top = 110.0
-offset_right = 56.0
-offset_bottom = 130.0
-scale = Vector2(2, 2)
 
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
 visible = false
@@ -470,10 +569,10 @@ navigation_polygon = SubResource("NavigationPolygon_trceg")
 script = ExtResource("12_eb6dy")
 
 [node name="DayNightCycle" parent="." instance=ExtResource("11_ya4ey")]
+MINUTES_PER_REAL_SECOND = 60.0
+INITIAL_HOUR = 12
 
 [node name="Spawner" parent="." node_paths=PackedStringArray("tile_layers") instance=ExtResource("12_trceg")]
 entity_node = ExtResource("13_a8y0u")
 spawn_interval = 1
 tile_layers = [NodePath("../Water_Grass"), NodePath("../Dirt"), NodePath("../Sand")]
-
-[connection signal="item_selected" from="CanvasLayer/ModeOptionButton" to="." method="_on_mode_option_button_item_selected"]

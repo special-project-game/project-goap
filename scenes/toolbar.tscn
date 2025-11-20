@@ -1,0 +1,110 @@
+[gd_scene load_steps=6 format=3 uid="uid://h2x71qrutwss"]
+
+[ext_resource type="Texture2D" uid="uid://3uddivl04d2i" path="res://textures/backpack_weather/Inventory_1.png" id="1_0lhma"]
+[ext_resource type="Script" path="res://scenes/toolbar.gd" id="2_u1tii"]
+[ext_resource type="PackedScene" uid="uid://dnia6q47n2xmh" path="res://scenes/slot.tscn" id="3_ls1wr"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jkv2x"]
+bg_color = Color(0.768627, 0.603922, 0.423529, 1)
+border_width_left = 8
+border_color = Color(0.564706, 0.384314, 0.364706, 0)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_detail = 4
+expand_margin_left = 2.0
+expand_margin_right = 2.0
+
+[sub_resource type="Theme" id="Theme_xvh4g"]
+Button/styles/normal = SubResource("StyleBoxFlat_jkv2x")
+
+[node name="Toolbar" type="NinePatchRect"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 249.125
+offset_top = 531.0
+offset_right = 862.875
+offset_bottom = 608.0
+grow_horizontal = 2
+grow_vertical = 0
+texture = ExtResource("1_0lhma")
+patch_margin_left = 9
+patch_margin_top = 9
+patch_margin_right = 9
+patch_margin_bottom = 9
+axis_stretch_horizontal = 2
+axis_stretch_vertical = 2
+script = ExtResource("2_u1tii")
+
+[node name="ModeButtons" type="HBoxContainer" parent="."]
+z_index = -1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -257.0
+offset_top = -57.5
+offset_right = 257.0
+offset_bottom = -33.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_xvh4g")
+
+[node name="TilesButton" type="Button" parent="ModeButtons"]
+layout_mode = 2
+text = "Tiles"
+
+[node name="ObjectsButton" type="Button" parent="ModeButtons"]
+layout_mode = 2
+text = "Objects"
+
+[node name="EntitiesButton" type="Button" parent="ModeButtons"]
+layout_mode = 2
+text = "Entities"
+
+[node name="ItemGrid" type="GridContainer" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 21.0
+offset_top = -27.5
+offset_right = 357.0
+offset_bottom = 5.44116
+grow_vertical = 2
+scale = Vector2(1.7, 1.7)
+columns = 20
+
+[node name="Slot" parent="ItemGrid" instance=ExtResource("3_ls1wr")]
+layout_mode = 2
+
+[node name="Slot2" parent="ItemGrid" instance=ExtResource("3_ls1wr")]
+layout_mode = 2
+
+[node name="Slot3" parent="ItemGrid" instance=ExtResource("3_ls1wr")]
+layout_mode = 2
+
+[node name="Slot4" parent="ItemGrid" instance=ExtResource("3_ls1wr")]
+layout_mode = 2
+
+[node name="Slot5" parent="ItemGrid" instance=ExtResource("3_ls1wr")]
+layout_mode = 2
+
+[node name="Slot6" parent="ItemGrid" instance=ExtResource("3_ls1wr")]
+layout_mode = 2
+
+[node name="Slot7" parent="ItemGrid" instance=ExtResource("3_ls1wr")]
+layout_mode = 2
+
+[node name="Slot8" parent="ItemGrid" instance=ExtResource("3_ls1wr")]
+layout_mode = 2
+
+[node name="Slot9" parent="ItemGrid" instance=ExtResource("3_ls1wr")]
+layout_mode = 2
+
+[node name="Slot10" parent="ItemGrid" instance=ExtResource("3_ls1wr")]
+layout_mode = 2

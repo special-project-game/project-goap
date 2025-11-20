@@ -1,4 +1,4 @@
-[gd_scene load_steps=58 format=3 uid="uid://d36crc7kindbf"]
+[gd_scene load_steps=61 format=3 uid="uid://d36crc7kindbf"]
 
 [ext_resource type="Script" uid="uid://carxwlbbbo7o" path="res://scripts/entities/person.gd" id="1_5dovg"]
 [ext_resource type="Texture2D" uid="uid://tow4k7h2qrjt" path="res://textures/texture_sets/MiniWorldSprites/Characters/Workers/FarmerTemplate.png" id="2_5dovg"]
@@ -29,9 +29,9 @@
 [ext_resource type="Script" uid="uid://0iags1il0ml8" path="res://scripts/goap/actions/CraftSwordAction.gd" id="21_craft"]
 [ext_resource type="Script" uid="uid://db1fttay7voh0" path="res://scripts/goap/goals/BeSafeGoal.gd" id="22_bgppu"]
 [ext_resource type="Script" uid="uid://cfrg7dhsx4ta0" path="res://scripts/goap/actions/RunAwayAction.gd" id="23_2xfh2"]
-[ext_resource type="Script" uid="uid://cfindpred8act9" path="res://scripts/goap/actions/FindPredatorAction.gd" id="24_findpred"]
-[ext_resource type="Script" uid="uid://cattackpred7gd" path="res://scripts/goap/actions/AttackPredatorAction.gd" id="25_attackpred"]
-[ext_resource type="Script" uid="uid://cdefend9territ" path="res://scripts/goap/goals/DefendTerritoryGoal.gd" id="26_defend"]
+[ext_resource type="Script" uid="uid://cx7e0essq0c5g" path="res://scripts/goap/actions/FindPredatorAction.gd" id="24_findpred"]
+[ext_resource type="Script" uid="uid://c1yan7quqt7p1" path="res://scripts/goap/actions/AttackPredatorAction.gd" id="25_attackpred"]
+[ext_resource type="Script" uid="uid://bw0tdyrwr2g7r" path="res://scripts/goap/goals/DefendTerritoryGoal.gd" id="26_defend"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5dovg"]
 size = Vector2(4, 4)
