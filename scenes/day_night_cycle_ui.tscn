@@ -1,15 +1,15 @@
 [gd_scene load_steps=4 format=3 uid="uid://n0u05b845an0"]
 
-[ext_resource type="FontFile" uid="uid://dsv8rorgooxbr" path="res://assets/fonts/Micro5-Regular.ttf" id="1_1bx0f"]
 [ext_resource type="Script" uid="uid://ppf1jkq3uayl" path="res://scripts/ui/day_night_cycle_ui.gd" id="1_ukgtc"]
+[ext_resource type="FontFile" uid="uid://f27fgiuf0h5d" path="res://assets/fonts/MinecraftRegular-Bmg3.otf" id="2_ukgtc"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ukgtc"]
-bg_color = Color(0.8, 0.60160005, 0.304, 1)
+bg_color = Color(0.768627, 0.603922, 0.423529, 1)
 border_width_left = 8
 border_width_top = 8
 border_width_right = 8
 border_width_bottom = 8
-border_color = Color(0.64, 0.36842665, 0.21119998, 1)
+border_color = Color(0.564706, 0.384314, 0.364706, 1)
 corner_radius_top_left = 20
 corner_radius_top_right = 20
 corner_radius_bottom_right = 20
@@ -40,16 +40,16 @@ offset_bottom = 64.0
 [node name="DayLabelBackground" type="Label" parent="Panel/CenterContainer2"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_fonts/font = ExtResource("1_1bx0f")
-theme_override_font_sizes/font_size = 44
+theme_override_fonts/font = ExtResource("2_ukgtc")
+theme_override_font_sizes/font_size = 34
 text = "day"
 vertical_alignment = 1
 
 [node name="DayLabel" type="Label" parent="Panel/CenterContainer2/DayLabelBackground"]
 unique_name_in_owner = true
 layout_mode = 0
-theme_override_fonts/font = ExtResource("1_1bx0f")
-theme_override_font_sizes/font_size = 44
+theme_override_fonts/font = ExtResource("2_ukgtc")
+theme_override_font_sizes/font_size = 34
 text = "day"
 vertical_alignment = 1
 
@@ -62,15 +62,15 @@ offset_bottom = 128.0
 [node name="TimeLabelBackground" type="Label" parent="Panel/CenterContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_fonts/font = ExtResource("1_1bx0f")
-theme_override_font_sizes/font_size = 44
+theme_override_fonts/font = ExtResource("2_ukgtc")
+theme_override_font_sizes/font_size = 34
 text = "time"
 vertical_alignment = 1
 
 [node name="TimeLabel" type="Label" parent="Panel/CenterContainer/TimeLabelBackground"]
 unique_name_in_owner = true
 layout_mode = 0
-theme_override_fonts/font = ExtResource("1_1bx0f")
-theme_override_font_sizes/font_size = 44
+theme_override_fonts/font = ExtResource("2_ukgtc")
+theme_override_font_sizes/font_size = 34
 text = "time"
 vertical_alignment = 1
