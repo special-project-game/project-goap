@@ -59,7 +59,6 @@ func _process(delta):
 		is_night = true
 		_on_night_started()
 
-	# Sunrise → DAY
 	if hour == 5 and is_night:
 		is_night = false
 		_on_night_ended()
@@ -77,19 +76,15 @@ func _recalculate_time():
 		past_minute = minute
 		time_tick.emit(day, hour, minute)
 
-
 func _crossfade(from_player: AudioStreamPlayer, to_player: AudioStreamPlayer, to_target_db: float, fade_time := 2.0):
-	# Make sure both are playing for overlap
 	if from_player and not from_player.playing:
 		from_player.play()
 	if to_player and not to_player.playing:
 		to_player.play()
 
-	# Fade-in starts from quiet
 	to_player.volume_db = -20
 
 	var t := create_tween()
-
 	t.tween_property(to_player, "volume_db", to_target_db, fade_time)\
 		.set_trans(Tween.TRANS_SINE)
 
@@ -106,13 +101,11 @@ func _crossfade(from_player: AudioStreamPlayer, to_player: AudioStreamPlayer, to
 
 
 func _play_day_ambience():
-	# Day ambience final volume = -13 dB
-	_crossfade(night_player, day_player, -13)
+	_crossfade(night_player, day_player, -10)
 
 
 func _play_night_ambience():
-	# Night ambience final volume = -7 dB
-	_crossfade(day_player, night_player, -7)
+	_crossfade(day_player, night_player, -2)
 
 
 func _on_night_started():

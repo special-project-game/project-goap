@@ -38,6 +38,6 @@ parameters/looping = true
 
 [node name="NightAmbience" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("4_p8v4h")
-volume_db = -5.0
+volume_db = -2.0
 bus = &"Music"
 parameters/looping = true

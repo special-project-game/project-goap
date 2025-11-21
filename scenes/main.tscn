@@ -595,6 +595,7 @@ navigation_polygon = SubResource("NavigationPolygon_trceg")
 script = ExtResource("12_eb6dy")
 
 [node name="DayNightCycle" parent="." instance=ExtResource("11_ya4ey")]
+MINUTES_PER_REAL_SECOND = 20.0
 INITIAL_HOUR = 17
 
 [node name="Spawner" parent="." node_paths=PackedStringArray("tile_layers") instance=ExtResource("12_trceg")]
