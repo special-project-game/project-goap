@@ -15,6 +15,8 @@ const ItemType = preload("res://scripts/inventory/ItemType.gd")
 @onready var inventory_label: Label = $PanelContainer/VBoxContainer/InventoryContainer/InventoryLabel
 @onready var task_label: Label = $PanelContainer/VBoxContainer/TaskContainer/TaskLabel
 @onready var plan_label: Label = $PanelContainer/VBoxContainer/PlanContainer/PlanLabel
+@onready var swoosh_open: AudioStreamPlayer = $SwooshOpenSFX
+@onready var swoosh_close: AudioStreamPlayer = $SwooshCloseSFX
 
 var update_timer := 0.0
 var update_interval := 0.1
@@ -58,6 +60,8 @@ func show_for_person(target_person: CharacterBody2D) -> void:
 
 #Fade-in function
 func _fade_in() -> void:
+	if swoosh_open:
+		swoosh_open.play()
 	show()
 
 	if fade_tween:
@@ -65,12 +69,13 @@ func _fade_in() -> void:
 
 	fade_tween = create_tween()
 
-	# Start slightly right + transparent
 	self.modulate.a = 0.0
 	self.position.x += 40
-	fade_tween.tween_property(self, "modulate:a", 1.0, 0.25).set_trans(Tween.TRANS_SINE)
 
-	fade_tween.parallel().tween_property(self, "position:x", self.position.x - 40, 0.25).set_trans(Tween.TRANS_SINE)
+	fade_tween.tween_property(self, "modulate:a", 1.0, 0.25)\
+		.set_trans(Tween.TRANS_SINE)
+	fade_tween.parallel().tween_property(self, "position:x", self.position.x - 40, 0.25)\
+		.set_trans(Tween.TRANS_SINE)
 
 #Fade out after close button
 func _on_close_pressed() -> void:
@@ -78,18 +83,19 @@ func _on_close_pressed() -> void:
 
 # NEW: fade-out function
 func _fade_out() -> void:
+	if swoosh_close:
+		swoosh_close.play()
+		
 	if fade_tween:
 		fade_tween.kill()
 
 	fade_tween = create_tween()
 
-	# Fade to invisible
-	fade_tween.tween_property(self, "modulate:a", 0.0, 0.25).set_trans(Tween.TRANS_SINE)
+	fade_tween.tween_property(self, "modulate:a", 0.0, 0.25)\
+		.set_trans(Tween.TRANS_SINE)
+	fade_tween.parallel().tween_property(self, "position:x", self.position.x + 40, 0.25)\
+		.set_trans(Tween.TRANS_SINE)
 
-	# Slide right
-	fade_tween.parallel().tween_property(self, "position:x", self.position.x + 40, 0.25).set_trans(Tween.TRANS_SINE)
-
-	# Hide when animation finishes
 	fade_tween.finished.connect(func():
 		hide()
 	)
@@ -207,14 +213,20 @@ func _update_task() -> void:
 func _update_plan() -> void:
 	var text := "Action Plan:\n"
 
-	if goap_agent.current_plan.is_empty():
+	var plan := goap_agent.current_plan
+	var index := goap_agent.current_action_index
+
+	if plan.is_empty():
 		text += "  No active plan"
 	else:
-		for i in range(goap_agent.current_plan.size()):
-			var action = goap_agent.current_plan[i]
-			if i == goap_agent.current_action_index:
-				text += "  ▶ %s\n" % action.action_name
-			else:
-				text += "    %s\n" % action.action_name
+		# Show 2 actions: current & the next one
+		for i in range(index, min(index + 2, plan.size())):
+			var action = plan[i]
 
+			if i == index:
+				text += "  ▶ %s\n" % action.action_name  # highlight active
+			else:
+				text += "    %s\n" % action.action_name  # next action
+
+	# If fewer than 2 actions exist, no problem — it shows what it can
 	plan_label.text = text

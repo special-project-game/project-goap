@@ -5,13 +5,32 @@ const TypeDefs = preload("res://scripts/TypeDef.gd")
 @onready var item_grid: GridContainer = $ItemGrid
 @onready var selected_label: Label = $SelectedLabel
 
+# 4 click sounds
+@onready var click_sfx := [
+	$ClickSFX1,
+	$ClickSFX2,
+	$ClickSFX3,
+	$ClickSFX4
+]
+
+var click_index := 0
+var initialized := false
+
 signal mode_selected(mode: TypeDefs.Mode)
 signal item_selected(id: int)
 
 const ICON_PATH := "res://icons/"
-
 var selected_slot: Control = null
 var original_position: Vector2
+
+
+func play_click_sfx():
+	if not initialized:
+		return
+
+	click_sfx[click_index].play()
+	click_index = (click_index + 1) % 4
+
 
 func _ready():
 	original_position = position
@@ -23,17 +42,29 @@ func _ready():
 	for slot in item_grid.get_children():
 		_setup_slot(slot)
 
-	# start with empty label
 	selected_label.text = ""
 	selected_label.modulate.a = 0.0
 
-	_on_tiles_pressed()
 	_slide_in()
+	_clear_all_slots()
+
 	set_process_input(true)
+
+	await get_tree().create_timer(0.3).timeout
+	initialized = true
+
+
+func _clear_all_slots():
+	for slot in item_grid.get_children():
+		slot.hide()
+		slot.set_meta("id", null)
+		slot.set_meta("name", null)
+
 
 func _connect_button(btn: Button, func_ref):
 	if not btn.pressed.is_connected(func_ref):
 		btn.pressed.connect(func_ref)
+
 
 func _setup_slot(slot: Control) -> void:
 	var icon: TextureRect = slot.get_node("Icon")
@@ -48,51 +79,47 @@ func _setup_slot(slot: Control) -> void:
 			_on_slot_clicked(slot)
 	)
 
+
 func _slide_in():
 	position.y = original_position.y + 40
 	var t := create_tween()
 	t.tween_property(self, "position:y", original_position.y, 0.25)\
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
+
 func _update_selected_button(selected: Button):
 	for btn in mode_buttons.get_children():
 		btn.button_pressed = (btn == selected)
-
 		var t := create_tween()
 		if btn == selected:
 			t.tween_property(btn, "modulate", Color(1, 1, 1), 0.15)
 		else:
 			t.tween_property(btn, "modulate", Color(0.8, 0.8, 0.8), 0.15)
 
-func _select_first_available_slot():
-	for slot in item_grid.get_children():
-		if slot.visible and slot.has_meta("id") and slot.get_meta("id") != null:
-			_on_slot_clicked(slot)
-			return
 
 func _on_tiles_pressed():
-	var btn: Button = mode_buttons.get_node("TilesButton")
-	_update_selected_button(btn)
+	play_click_sfx()
+	_update_selected_button(mode_buttons.get_node("TilesButton"))
 	emit_signal("mode_selected", TypeDefs.Mode.PLACE_TILE)
 	_populate(TypeDefs.Tile.values(), TypeDefs.TileName)
 
 
 func _on_objects_pressed():
-	var btn: Button = mode_buttons.get_node("ObjectsButton")
-	_update_selected_button(btn)
+	play_click_sfx()
+	_update_selected_button(mode_buttons.get_node("ObjectsButton"))
 	emit_signal("mode_selected", TypeDefs.Mode.PLACE_OBJECT)
 	_populate(TypeDefs.Objects.values(), TypeDefs.ObjectName)
 
 
 func _on_entities_pressed():
-	var btn: Button = mode_buttons.get_node("EntitiesButton")
-	_update_selected_button(btn)
+	play_click_sfx()
+	_update_selected_button(mode_buttons.get_node("EntitiesButton"))
 	emit_signal("mode_selected", TypeDefs.Mode.PLACE_ENTITY)
 	_populate(TypeDefs.Entity.values(), TypeDefs.EntityName)
 
+
 func _populate(id_list: Array, name_dict: Dictionary):
 	selected_slot = null
-
 	selected_label.text = ""
 	selected_label.modulate.a = 0.0
 
@@ -108,15 +135,14 @@ func _populate(id_list: Array, name_dict: Dictionary):
 			slot.set_meta("name", name)
 
 			var icon_node: TextureRect = slot.get_node("Icon")
-			var bg: TextureRect = slot.get_node("Background")
-
-			bg.modulate = Color(1, 1, 1, 1)
+			icon_node.texture = null
 
 			var icon_path = ICON_PATH + name.to_lower() + ".png"
 			if ResourceLoader.exists(icon_path):
 				icon_node.texture = load(icon_path)
-			else:
-				icon_node.texture = null
+
+			var bg: TextureRect = slot.get_node("Background")
+			bg.modulate = Color(1, 1, 1, 1)
 
 			slot.modulate.a = 0.0
 			create_tween().tween_property(slot, "modulate:a", 1.0, 0.2)
@@ -125,7 +151,10 @@ func _populate(id_list: Array, name_dict: Dictionary):
 			slot.set_meta("id", null)
 			slot.set_meta("name", null)
 
+
 func _on_slot_clicked(slot: Control):
+	play_click_sfx()
+
 	if not slot.has_meta("id") or slot.get_meta("id") == null:
 		return
 
@@ -146,15 +175,10 @@ func _on_slot_clicked(slot: Control):
 	selected_label.modulate.a = 0.0
 
 	var t := create_tween()
-	t.set_parallel(false)
-
-	t.tween_property(selected_label, "modulate:a", 1.0, 0.20)\
-		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-
+	t.tween_property(selected_label, "modulate:a", 1.0, 0.20)
 	t.tween_interval(2.5)
+	t.tween_property(selected_label, "modulate:a", 0.0, 0.25)
 
-	t.tween_property(selected_label, "modulate:a", 0.0, 0.25)\
-		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 
 func _input(event):
 	if event is InputEventKey and event.pressed and not event.echo:

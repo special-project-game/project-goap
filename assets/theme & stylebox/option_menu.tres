@@ -1,0 +1,63 @@
+[gd_resource type="Theme" load_steps=13 format=3 uid="uid://bgxv3mwle2xnq"]
+
+[ext_resource type="StyleBox" uid="uid://bvc58h05ixqc6" path="res://assets/theme & stylebox/x_hover.tres" id="1_urrlb"]
+[ext_resource type="StyleBox" uid="uid://by2nhqe32pyg0" path="res://assets/theme & stylebox/x_normal.tres" id="2_j7jvy"]
+[ext_resource type="StyleBox" uid="uid://5rxhbumeb446" path="res://assets/theme & stylebox/x_press.tres" id="3_fac8s"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w64pu"]
+
+[sub_resource type="SVGTexture" id="SVGTexture_kdaxe"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><circle cx=\"8\" cy=\"8\" r=\"7\" fill=\"#fefefe\" fill-opacity=\".75\"/></svg>
+"
+
+[sub_resource type="SVGTexture" id="SVGTexture_p3w2l"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><circle cx=\"8\" cy=\"8\" r=\"7\" fill=\"#fefefe\" fill-opacity=\".37\"/></svg>
+"
+
+[sub_resource type="SVGTexture" id="SVGTexture_63mej"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><circle cx=\"8\" cy=\"8\" r=\"7\" fill=\"#fefefe\"/></svg>
+"
+
+[sub_resource type="SVGTexture" id="SVGTexture_0sgrq"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"4\" height=\"16\"><path fill=\"#fff\" fill-opacity=\".25\" d=\"M1 0h2v16H1z\"/></svg>
+"
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_q0enn"]
+color = Color(0.866667, 0.447059, 0.286275, 1)
+thickness = 8
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_ytixl"]
+color = Color(0.866667, 0.447059, 0.286275, 1)
+thickness = 8
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_mupcm"]
+color = Color(1, 1, 1, 1)
+thickness = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cqjjs"]
+bg_color = Color(0.768627, 0.603922, 0.423529, 1)
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(0.564706, 0.384314, 0.364706, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[resource]
+Button/styles/focus = SubResource("StyleBoxEmpty_w64pu")
+Button/styles/hover = ExtResource("1_urrlb")
+Button/styles/normal = ExtResource("2_j7jvy")
+Button/styles/pressed = ExtResource("3_fac8s")
+HSlider/constants/center_grabber = 0
+HSlider/constants/grabber_offset = 0
+HSlider/icons/grabber = SubResource("SVGTexture_kdaxe")
+HSlider/icons/grabber_disabled = SubResource("SVGTexture_p3w2l")
+HSlider/icons/grabber_highlight = SubResource("SVGTexture_63mej")
+HSlider/icons/tick = SubResource("SVGTexture_0sgrq")
+HSlider/styles/grabber_area = SubResource("StyleBoxLine_q0enn")
+HSlider/styles/grabber_area_highlight = SubResource("StyleBoxLine_ytixl")
+HSlider/styles/slider = SubResource("StyleBoxLine_mupcm")
+Panel/styles/panel = SubResource("StyleBoxFlat_cqjjs")
