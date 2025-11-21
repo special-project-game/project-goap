@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://5nq607jqvt50"]
+[gd_scene load_steps=39 format=3 uid="uid://5nq607jqvt50"]
 
 [ext_resource type="Script" uid="uid://bdlt6d32wqywm" path="res://scripts/node_2d.gd" id="1_85g3d"]
 [ext_resource type="Script" uid="uid://buf7gkrb2px63" path="res://scripts/camera_2d.gd" id="2_choun"]
@@ -19,6 +19,10 @@
 [ext_resource type="StyleBox" uid="uid://0ai04atm47l1" path="res://assets/theme & stylebox/normal_button_tb.tres" id="13_muem4"]
 [ext_resource type="PackedScene" uid="uid://dkoe6am328ofj" path="res://scenes/tree.tscn" id="13_trceg"]
 [ext_resource type="StyleBox" uid="uid://cgr1emvxhn45e" path="res://assets/theme & stylebox/pressed_button_tb.tres" id="14_dp3eg"]
+[ext_resource type="AudioStream" uid="uid://bmex4xkh8gxoa" path="res://sounds/sound1.wav" id="16_yc10j"]
+[ext_resource type="AudioStream" uid="uid://bo8bax7bexvfc" path="res://sounds/sound2.wav" id="17_jscy8"]
+[ext_resource type="AudioStream" uid="uid://iqopgumi4xdv" path="res://sounds/sound3.mp3" id="18_y6deb"]
+[ext_resource type="AudioStream" uid="uid://cyd7m2qalvdlu" path="res://sounds/sound5.mp3" id="20_2wyq8"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_choun"]
 light_mode = 2
@@ -551,6 +555,28 @@ grow_horizontal = 2
 grow_vertical = 2
 horizontal_alignment = 1
 
+[node name="ClickSFX1" type="AudioStreamPlayer" parent="CanvasLayer/Control/Toolbar"]
+stream = ExtResource("16_yc10j")
+volume_db = -10.0
+bus = &"SFX"
+
+[node name="ClickSFX2" type="AudioStreamPlayer" parent="CanvasLayer/Control/Toolbar"]
+stream = ExtResource("17_jscy8")
+volume_db = -10.0
+bus = &"SFX"
+
+[node name="ClickSFX3" type="AudioStreamPlayer" parent="CanvasLayer/Control/Toolbar"]
+stream = ExtResource("18_y6deb")
+volume_db = -6.0
+pitch_scale = 1.4
+bus = &"SFX"
+
+[node name="ClickSFX4" type="AudioStreamPlayer" parent="CanvasLayer/Control/Toolbar"]
+stream = ExtResource("20_2wyq8")
+volume_db = -9.0
+pitch_scale = 1.18
+bus = &"SFX"
+
 [node name="ZoomLevel" type="Label" parent="CanvasLayer/Control"]
 layout_mode = 0
 offset_left = 20.0
@@ -569,8 +595,8 @@ navigation_polygon = SubResource("NavigationPolygon_trceg")
 script = ExtResource("12_eb6dy")
 
 [node name="DayNightCycle" parent="." instance=ExtResource("11_ya4ey")]
-MINUTES_PER_REAL_SECOND = 60.0
-INITIAL_HOUR = 12
+MINUTES_PER_REAL_SECOND = 20.0
+INITIAL_HOUR = 17
 
 [node name="Spawner" parent="." node_paths=PackedStringArray("tile_layers") instance=ExtResource("12_trceg")]
 entity_node = ExtResource("13_a8y0u")

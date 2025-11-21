@@ -1,0 +1,145 @@
+[gd_scene load_steps=9 format=3 uid="uid://b4hbw1ggvfefj"]
+
+[ext_resource type="Script" uid="uid://dmst6ifr1gky5" path="res://scripts/option_menu.gd" id="1_40sux"]
+[ext_resource type="Theme" uid="uid://bgxv3mwle2xnq" path="res://assets/theme & stylebox/option_menu.tres" id="1_hrgik"]
+[ext_resource type="FontFile" uid="uid://f27fgiuf0h5d" path="res://assets/fonts/MinecraftRegular-Bmg3.otf" id="2_1xj3o"]
+[ext_resource type="FontFile" uid="uid://cp51f6s3yfdk4" path="res://assets/fonts/MinecraftBold-nMK1.otf" id="3_2mid4"]
+
+[sub_resource type="SVGTexture" id="SVGTexture_hrgik"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><circle cx=\"8\" cy=\"8\" r=\"7\" fill=\"#fefefe\" fill-opacity=\".75\"/></svg>
+"
+base_scale = 0.9
+
+[sub_resource type="SVGTexture" id="SVGTexture_2mid4"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><circle cx=\"8\" cy=\"8\" r=\"7\" fill=\"#fefefe\" fill-opacity=\".75\"/></svg>
+"
+base_scale = 0.9
+
+[sub_resource type="SVGTexture" id="SVGTexture_x6sq6"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><circle cx=\"8\" cy=\"8\" r=\"7\" fill=\"#fefefe\"/></svg>
+"
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_x6sq6"]
+content_margin_left = 4.0
+content_margin_top = 0.0
+content_margin_right = 4.0
+content_margin_bottom = 0.0
+color = Color(0.564706, 0.384314, 0.364706, 1)
+thickness = 4
+
+[node name="OptionsMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -110.0
+offset_right = 150.0
+offset_bottom = 110.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_hrgik")
+script = ExtResource("1_40sux")
+metadata/_edit_horizontal_guides_ = [1508.0]
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -139.0
+offset_top = -103.0
+offset_right = 136.0
+offset_bottom = 103.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="Title Label" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_2mid4")
+theme_override_font_sizes/font_size = 30
+text = "Options"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MusicRow" type="HBoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="MusicLabel" type="Label" parent="Panel/VBoxContainer/MusicRow"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_2mid4")
+theme_override_font_sizes/font_size = 20
+text = "Music"
+vertical_alignment = 1
+
+[node name="MusicSlider" type="HSlider" parent="Panel/VBoxContainer/MusicRow"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/center_grabber = 1
+theme_override_icons/grabber = SubResource("SVGTexture_hrgik")
+min_value = -40.0
+max_value = 0.0
+step = 0.1
+
+[node name="SFXRow" type="HBoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer/SFXRow"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_2mid4")
+theme_override_font_sizes/font_size = 20
+text = "SFX"
+vertical_alignment = 1
+
+[node name="SFXSlider" type="HSlider" parent="Panel/VBoxContainer/SFXRow"]
+custom_minimum_size = Vector2(209, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 4
+theme_override_constants/center_grabber = 1
+theme_override_icons/grabber = SubResource("SVGTexture_2mid4")
+theme_override_icons/grabber_highlight = SubResource("SVGTexture_x6sq6")
+min_value = -40.0
+max_value = 0.0
+step = 0.1
+
+[node name="HSeparator" type="HSeparator" parent="."]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 111.0
+offset_right = 294.0
+offset_bottom = 149.0
+theme_override_constants/separation = 38
+theme_override_styles/separator = SubResource("StyleBoxLine_x6sq6")
+
+[node name="CloseButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -126.0
+offset_top = 44.0
+offset_right = 125.0
+offset_bottom = 84.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("2_1xj3o")
+theme_override_font_sizes/font_size = 30
+text = "Back"
