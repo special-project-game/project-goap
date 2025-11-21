@@ -185,7 +185,7 @@ func save_tiles_to_file():
 	save_data["camera"]["zoom"] = vec2_to_arr(camera.zoom)
 		# Save current game time
 	if is_instance_valid(day_night_cycle):
-		save_data["time"] = day_night_cycle.get_time()	
+		save_data["time"] = day_night_cycle.time
 	var file = FileAccess.open("user://save.json", FileAccess.WRITE)
 	file.store_string(JSON.stringify(save_data))
 	file.close()
@@ -294,7 +294,7 @@ func load_tiles_from_file():
 	
 	# Restore game time
 	if data.has("time") and is_instance_valid(day_night_cycle):
-		day_night_cycle.set_time(data["time"])
+		day_night_cycle.time = data["time"]
 	
 func vec2_to_arr(vec: Vector2):
 	return [vec.x, vec.y]
