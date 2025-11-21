@@ -22,9 +22,12 @@ color = Color(0.564706, 0.384314, 0.364706, 1)
 
 [node name="PersonInfoUI" type="Control"]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 300.0
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -300.0
 offset_bottom = 400.0
+grow_horizontal = 0
 mouse_filter = 2
 theme = ExtResource("1_2lbjk")
 script = ExtResource("1_person_info")
